@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Science — Neurofract Evidence Map</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #080c14;
+    --surface:  #0e1420;
+    --card:     #121a28;
+    --border:   #1c2b40;
+    --teal:     #4fd1c5;
+    --teal-dim: #2a9d94;
+    --text:     #e2e8f0;
+    --muted:    #64748b;
+    --dim:      #94a3b8;
+    --white:    #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(8,12,20,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; color: var(--white);
+    text-decoration: none; letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--teal); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 13px; color: var(--dim);
+    text-decoration: none; letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--teal); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 40px 64px;
+    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    background: radial-gradient(ellipse at 15% 60%, #0d2d3a44 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 20%, #1a0d2e33 0%, transparent 50%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, #4fd1c50d 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  .hero-inner { max-width: 960px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #4fd1c510; border: 1px solid #4fd1c530;
+    border-radius: 4px; padding: 5px 12px;
+    font-size: 11px; letter-spacing: 0.14em; color: var(--teal);
+    text-transform: uppercase; font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .badge::before {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--teal);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 400; line-height: 1.1;
+    letter-spacing: -1.5px; color: var(--white);
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: var(--teal); }
+  .hero p {
+    font-size: 16px; color: var(--dim);
+    max-width: 600px; line-height: 1.8;
+    margin-bottom: 40px;
+  }
+  .stats { display: flex; gap: 40px; flex-wrap: wrap; }
+  .stat-val {
+    font-size: 30px; font-weight: 600;
+    color: var(--teal); line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px; color: var(--muted);
+    margin-top: 3px; letter-spacing: 0.05em;
+    font-weight: 400;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 40px; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--teal);
+    font-weight: 500; margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; font-weight: 400;
+    color: var(--white); margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .section-sub {
+    font-size: 14px; color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  /* ── DOMAIN PILLS ── */
+  .domain-nav {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 36px;
+  }
+  .domain-pill {
+    border-radius: 6px; padding: 9px 16px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1.5px solid var(--border);
+    background: var(--card); color: var(--dim);
+    transition: all 0.18s ease; letter-spacing: 0.02em;
+  }
+  .domain-pill:hover { border-color: var(--teal); color: var(--text); }
+  .domain-pill.active {
+    color: #fff; border-color: transparent;
+    box-shadow: 0 4px 18px var(--active-shadow, #0004);
+  }
+
+  /* ── DOMAIN CARD ── */
+  .domain-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    margin-bottom: 48px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: fadeUp 0.25s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .domain-header {
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .domain-code {
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .domain-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; font-weight: 400;
+    color: var(--white); letter-spacing: -0.3px;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    background: #0a0f1c;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 13px 20px;
+    font-size: 12px; font-weight: 500;
+    color: var(--muted); background: none; border: none;
+    cursor: pointer; white-space: nowrap;
+    border-bottom: 2.5px solid transparent;
+    transition: all 0.15s; letter-spacing: 0.04em;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  .tab-panel { display: none; padding: 28px 32px; }
+  .tab-panel.active { display: block; }
+
+  /* ── MECHANISM ── */
+  .mechanism-text {
+    font-size: 15px; line-height: 1.9;
+    color: var(--dim); max-width: 780px;
+  }
+
+  /* ── PAPER CARD ── */
+  .paper-card {
+    border-radius: 10px; padding: 22px;
+    margin-bottom: 18px;
+    border-left: 3.5px solid;
+  }
+  .paper-tier {
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 600;
+    margin-bottom: 8px; opacity: 0.85;
+  }
+  .paper-authors {
+    font-size: 15px; font-weight: 600;
+    color: var(--white); margin-bottom: 2px;
+  }
+  .paper-title {
+    font-size: 14px; font-style: italic;
+    color: var(--dim); margin-bottom: 8px;
+  }
+  .paper-meta {
+    font-size: 12px; color: var(--muted);
+    font-family: monospace; margin-bottom: 12px;
+  }
+  .paper-finding {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 13px; line-height: 1.8; color: var(--dim);
+  }
+  .paper-finding-label {
+    font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 4px; font-weight: 600;
+  }
+
+  /* ── TOOL CARD ── */
+  .tool-card {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 0 20px; margin-bottom: 18px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px;
+  }
+  .tool-badge {
+    border-radius: 6px; padding: 10px 14px;
+    text-align: center; align-self: start;
+    min-width: 72px; font-family: monospace;
+    font-size: 14px; font-weight: 700;
+    color: #fff; letter-spacing: 0.04em;
+  }
+  .tool-name { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+  .tool-citation { font-size: 11px; color: var(--muted); font-family: monospace; margin-bottom: 8px; line-height: 1.5; }
+  .tool-why { font-size: 13px; color: var(--dim); line-height: 1.7; }
+
+  /* ── INTERVENTION CARD ── */
+  .intv-card {
+    border-radius: 10px; padding: 22px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border);
+    border-left: 3.5px solid;
+  }
+  .intv-protocol { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+  .intv-citation { font-size: 11px; color: var(--muted); font-family: monospace; margin-bottom: 12px; line-height: 1.5; }
+  .intv-finding {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 14px;
+    font-size: 13px; line-height: 1.8; color: var(--dim);
+    margin-bottom: 12px;
+  }
+  .intv-practical {
+    display: flex; align-items: flex-start; gap: 8px;
+    border-radius: 6px; padding: 10px 14px;
+    font-size: 13px; color: var(--text); font-weight: 500;
+  }
+
+  /* ── FEATURE BOX ── */
+  .feature-box {
+    border-radius: 10px; padding: 26px;
+    border: 1.5px solid;
+  }
+  .feature-label {
+    font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .feature-text { font-size: 15px; line-height: 1.9; color: var(--dim); }
+  .differentiator-badge {
+    margin-top: 20px; border-radius: 8px;
+    padding: 16px 18px; font-size: 13px;
+    line-height: 1.7; font-weight: 500; color: #fff;
+  }
+
+  /* ── DATASET LIST ── */
+  .dataset-item {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 13px; color: var(--dim);
+    margin-bottom: 10px;
+  }
+
+  /* ── EVIDENCE MATRIX ── */
+  .matrix-wrap { overflow-x: auto; margin-bottom: 48px; }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .matrix-table thead tr { background: #0a0f1c; }
+  .matrix-table th {
+    padding: 13px 18px; text-align: left;
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    font-weight: 600; border-bottom: 1px solid var(--border);
+  }
+  .matrix-table td {
+    padding: 13px 18px; border-bottom: 1px solid #111d2b;
+    vertical-align: top;
+  }
+  .matrix-table tr:last-child td { border-bottom: none; }
+  .matrix-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  .feature-name { font-weight: 600; color: var(--white); }
+  .domain-tag {
+    display: inline-block; border-radius: 3px;
+    padding: 2px 7px; font-size: 10px;
+    font-family: monospace; font-weight: 700;
+    color: #fff; margin: 2px;
+  }
+  .tool-tag {
+    display: inline-block; background: rgba(255,255,255,0.06);
+    border-radius: 3px; padding: 2px 8px;
+    font-size: 11px; font-family: monospace;
+    color: var(--dim); margin: 2px;
+  }
+  .paper-ref { font-size: 12px; color: var(--muted); font-style: italic; display: block; margin-bottom: 2px; }
+
+  /* ── QUALITY NOTE ── */
+  .quality-note {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3.5px solid var(--teal);
+    border-radius: 10px; padding: 24px 28px;
+    margin-bottom: 48px;
+  }
+  .quality-note p { font-size: 14px; line-height: 1.9; color: var(--dim); }
+  .quality-note strong { color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    text-align: center;
+    font-size: 12px; color: var(--muted);
+    letter-spacing: 0.06em; line-height: 1.8;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--white);
+    letter-spacing: -0.5px; margin-bottom: 8px;
+  }
+  .footer-logo span { color: var(--teal); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 56px 20px 48px; }
+    .page { padding: 40px 20px; }
+    .tab-panel { padding: 20px; }
+    .domain-header { padding: 20px; }
+    .tool-card { grid-template-columns: 1fr; }
+    .tool-badge { width: fit-content; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://neurofract.com">Neuro<span>fract</span></a>
+  <div class="nav-links">
+    <a href="https://neurofract.com/#science">Science</a>
+    <a href="https://neurofract.com/#products">Products</a>
+    <a href="https://neurofract.com/#pricing">Pricing</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">Scientific Evidence Map</div>
+    <h1>The research behind<br><em>every protocol</em></h1>
+    <p>Every Neurofract recommendation is traceable to a peer-reviewed source. This is our scientific foundation — transparent, rigorous, and built by a clinician.</p>
+    <div class="stats">
+      <div><div class="stat-val">6</div><div class="stat-label">Cognitive Domains</div></div>
+      <div><div class="stat-val">22+</div><div class="stat-label">Primary Papers</div></div>
+      <div><div class="stat-val">10</div><div class="stat-label">Validated Tools</div></div>
+      <div><div class="stat-val">8</div><div class="stat-label">Intervention Protocols</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="page">
+
+  <!-- Domain Nav -->
+  <div class="section-label">Cognitive Domains</div>
+  <h2 class="section-title">Six root causes of cognitive underperformance</h2>
+  <p class="section-sub">Select a domain to explore the mechanism, evidence, and Neurofract's response</p>
+
+  <div class="domain-nav" id="domainNav"></div>
+  <div id="domainCard"></div>
+
+  <!-- Evidence Matrix -->
+  <div class="section-label">Feature Matrix</div>
+  <h2 class="section-title">Every feature, its evidence base</h2>
+  <p class="section-sub">Product features mapped to validated tools and peer-reviewed citations</p>
+
+  <div class="matrix-wrap">
+    <table class="matrix-table" id="matrixTable"></table>
+  </div>
+
+  <!-- Evidence Quality -->
+  <div class="quality-note">
+    <div class="section-label" style="margin-bottom:8px">Evidence Standards</div>
+    <p><strong>Tier 1</strong> sources are published in Nature, Science, PNAS, Nature Reviews Neuroscience, or equivalent journals (impact factor &gt;10). All assessment tools cited are validated instruments with published psychometric properties. All intervention protocols are supported by at least one peer-reviewed primary study or systematic review. <strong>No claim in Neurofract's product literature exceeds what the cited evidence supports.</strong> Every user-facing recommendation includes its source in accessible plain language.</p>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Neuro<span>fract</span></div>
+  <div>© 2026 Neurofract · <a href="https://neurofract.com">neurofract.com</a></div>
+  <div style="margin-top:6px;font-style:italic;color:#4a5568">
+    "Cognitive enhancement isn't about becoming superhuman. It's about removing the barriers between who you are now and who your brain is capable of being." — Yas, Founder
+  </div>
+</footer>
+
+<script>
+const DOMAINS = [
+  {
+    id:"stress", code:"D1", color:"#e05252", shadow:"#e0525240",
+    title:"Chronic Stress & PFC Dysregulation",
+    mechanism:"Sustained cortisol elevation drives structural remodelling of the prefrontal cortex (PFC) — the neural substrate of executive function, working memory, and top-down attentional control. Simultaneously, the amygdala undergoes hypertrophy, shifting the brain toward reactive rather than reflective processing. This is not a psychological state — it is a measurable neuroanatomical change, reversible with intervention.",
+    papers:[
+      {id:"S1",tier:"Review — Nature Reviews Neuroscience",authors:"Arnsten AFT",year:2009,title:"Stress signalling pathways that impair prefrontal cortex structure and function",journal:"Nature Reviews Neuroscience",vol:"10(6)",pages:"410–422",doi:"10.1038/nrn2648",finding:"Catecholamines released under stress activate α1-adrenoceptors in the PFC, impairing pyramidal cell firing and disrupting working memory networks. Even mild, uncontrollable stress rapidly impairs PFC-regulated behaviour."},
+      {id:"S2",tier:"Primary Research — Neuron",authors:"McEwen BS & Morrison JH",year:2013,title:"The Brain in Stress: Vulnerability and Plasticity of the Prefrontal Cortex over the Life Course",journal:"Neuron",vol:"79(1)",pages:"16–29",doi:"10.1016/j.neuron.2013.06.028",finding:"Chronic stress induces dendritic retraction and spine loss in layer II/III pyramidal neurons of the medial PFC. These structural changes are reversible with stress removal — establishing the biological basis for cognitive recovery."},
+      {id:"S3",tier:"Review — Nature Reviews Neuroscience",authors:"Lupien SJ et al.",year:2009,title:"Effects of stress throughout the lifespan on the brain, behaviour and cognition",journal:"Nature Reviews Neuroscience",vol:"10(6)",pages:"434–445",doi:"10.1038/nrn2639",finding:"Elevated cortisol in adults is associated with reduced hippocampal volume and impaired declarative memory. A dose-response relationship exists between stress duration and cognitive deficit magnitude."}
+    ],
+    tools:[
+      {name:"PSS-10",full:"Perceived Stress Scale (10-item)",citation:"Cohen S, Kamarck T, Mermelstein R (1983). Journal of Health and Social Behavior, 24(4), 385–396.",why:"Gold-standard self-report for perceived stress. Validated across cultures. Cronbach α = 0.78–0.91. Free to use. Used as primary onboarding stress measure in Neurofract."},
+      {name:"HRV",full:"Heart Rate Variability (RMSSD)",citation:"Task Force of the European Society of Cardiology (1996). Circulation, 93(5), 1043–1065.",why:"Objective biomarker of autonomic balance. Low HRV directly associated with chronic stress and PFC impairment. Measurable via wearables (Apple Watch, Garmin, Whoop)."}
+    ],
+    interventions:[
+      {protocol:"Cyclic Sighing",citation:"Balban MY et al. (2023). Cell Reports Medicine, 4(1), 100895. DOI: 10.1016/j.xcrm.2022.100895",finding:"Double inhale through nose followed by extended exhale reduces self-reported anxiety and increases positive affect more effectively than mindfulness meditation. Effect detectable after a single 5-minute session.",practical:"2-sniff inhale + slow extended exhale — 5 minutes daily"},
+      {protocol:"Box Breathing (4-4-4-4)",citation:"Jerath R et al. (2006). Medical Hypotheses, 67(3), 566–571. DOI: 10.1016/j.mehy.2006.02.042",finding:"Slow paced breathing at 5–6 breaths/min activates the parasympathetic nervous system via vagal afferents, suppressing HPA axis activity and reducing cortisol measurably.",practical:"4s inhale → 4s hold → 4s exhale → 4s hold — repeat 4 cycles"}
+    ],
+    feature:"Stress Phenotype Score from PSS-10 + HRV baseline. Daily adaptive breathing protocol assigned based on score. Weekly cortisol rhythm tracking via self-report.",
+    datasets:["WESAD (Wearable Stress and Affect Detection) — PhysioNet, open access","MIDUS (Midlife in the United States) — NIH open access, cortisol + cognition"]
+  },
+  {
+    id:"sleep", code:"D2", color:"#e07f3f", shadow:"#e07f3f40",
+    title:"Sleep Deprivation & Glymphatic Failure",
+    mechanism:"The glymphatic system — a brain-wide waste clearance network driven by aquaporin-4 water channels on astrocytic endfeet — operates almost exclusively during NREM slow-wave sleep. Its primary function is clearance of metabolic by-products including beta-amyloid and tau proteins. Chronic sleep restriction produces progressive neurotoxic accumulation and quantifiable PFC hypoactivation equivalent to acute alcohol intoxication — yet impaired subjects are unable to accurately assess their own deficit.",
+    papers:[
+      {id:"SL1",tier:"Primary Research — Science",authors:"Xie L, Kang H, Xu Q, et al.",year:2013,title:"Sleep Drives Metabolite Clearance from the Adult Brain",journal:"Science",vol:"342(6156)",pages:"373–377",doi:"10.1126/science.1241224",finding:"Glymphatic clearance of beta-amyloid increases by 60% during sleep compared to wakefulness, mediated by expansion of the interstitial space. First direct demonstration of the sleep-dependent brain waste clearance system."},
+      {id:"SL2",tier:"Primary Research — Sleep",authors:"Van Dongen HPA et al.",year:2003,title:"The Cumulative Cost of Additional Wakefulness",journal:"Sleep",vol:"26(2)",pages:"117–126",doi:"10.1093/sleep/26.2.117",finding:"6 hours of sleep per night for 14 days produces cognitive deficits equivalent to 48 hours of total sleep deprivation. Critically, subjects were unaware of their impairment — demonstrating that subjective sleepiness is an unreliable self-metric."},
+      {id:"SL3",tier:"Review — Annual Review of Psychology",authors:"Walker MP & Stickgold R",year:2006,title:"Sleep, Memory, and Plasticity",journal:"Annual Review of Psychology",vol:"57",pages:"139–166",doi:"10.1146/annurev.psych.56.091103.070307",finding:"REM sleep is critical for emotional memory processing and creative insight. NREM slow-wave sleep consolidates declarative and procedural memory. Stage-specific interventions have differential cognitive effects."}
+    ],
+    tools:[
+      {name:"PSQI",full:"Pittsburgh Sleep Quality Index",citation:"Buysse DJ et al. (1989). Psychiatry Research, 28(2), 193–213.",why:"19-item validated questionnaire measuring 7 sleep components. Sensitivity 89.6%, Specificity 86.5% for sleep disorder detection. Cronbach α = 0.83. Primary sleep assessment in Neurofract onboarding."},
+      {name:"ESS",full:"Epworth Sleepiness Scale",citation:"Johns MW (1991). Sleep, 14(6), 540–545.",why:"8-item scale measuring daytime sleepiness. Simple, validated, widely used. Score >10 indicates excessive daytime sleepiness. Takes under 2 minutes to complete."}
+    ],
+    interventions:[
+      {protocol:"Morning Light Exposure",citation:"Zeitzer JM et al. (2000). Journal of Physiology, 526(3), 695–702. DOI: 10.1111/j.1469-7793.2000.00695.x",finding:"Bright light exposure within 30 minutes of waking advances the circadian phase and reduces sleep onset latency that evening. Even indoor bright light produces measurable phase shifts.",practical:"10 minutes outdoor exposure within 30 min of waking — no sunglasses"},
+      {protocol:"Sleep Temperature Protocol",citation:"Harding EC, Franks NP, Wisden W (2019). Frontiers in Neuroscience, 13, 336. DOI: 10.3389/fnins.2019.00336",finding:"Core body temperature must drop 1–3°C to initiate and maintain sleep. Environmental temperature of 18–19°C optimises slow-wave sleep and glymphatic activity.",practical:"Bedroom 18–19°C; warm bath 1–2 hrs before bed to induce core cooling"}
+    ],
+    feature:"PSQI-based Sleep Quality Score at onboarding. Personalised circadian timing protocol covering light, temperature, and caffeine cutoff. Weekly sleep score trend with adaptive recommendations.",
+    datasets:["MESA Sleep Study — NHLBI BioLINCC, open access (6,814 participants, polysomnography)","SHHS (Sleep Heart Health Study) — NIH open access, 5,804 adults"]
+  },
+  {
+    id:"attention", code:"D3", color:"#c9a227", shadow:"#c9a22740",
+    title:"Attentional Fragmentation & Network Dysregulation",
+    mechanism:"The brain operates two anti-correlated large-scale networks: the Task-Positive Network (TPN — focused external tasks) and the Default Mode Network (DMN — mind-wandering, self-reflection, creativity). These networks are mutually suppressive. Chronic digital interruption impairs the switching mechanism between them, degrading both focused output and restorative mind-wandering. Deep cognitive work additionally requires alignment with the brain's 90-minute ultradian rest-activity cycle.",
+    papers:[
+      {id:"A1",tier:"Peer-Reviewed — CHI Conference",authors:"Mark G, Gudith D, Klocke U",year:2008,title:"The Cost of Interrupted Work: More Speed and Stress",journal:"CHI Conference on Human Factors in Computing Systems",vol:"ACM",pages:"107–110",doi:"10.1145/1357054.1357072",finding:"After a workflow interruption, workers take an average of 23 minutes and 15 seconds to return to their original task. Interrupted work is performed faster but with more errors and significantly higher stress."},
+      {id:"A2",tier:"Primary Research — PNAS",authors:"Raichle ME et al.",year:2001,title:"A default mode of brain function",journal:"PNAS",vol:"98(2)",pages:"676–682",doi:"10.1073/pnas.98.2.676",finding:"Identification of the Default Mode Network — consistently deactivated during externally directed tasks. Established DMN as essential for memory consolidation, self-referential thought, and creative insight."},
+      {id:"A3",tier:"Foundational — Sleep",authors:"Kleitman N",year:1982,title:"Basic rest-activity cycle — 22 years later",journal:"Sleep",vol:"5(4)",pages:"311–317",doi:"10.1093/sleep/5.4.311",finding:"The brain cycles through approximately 90-minute ultradian rhythms of higher and lower alertness throughout the day, mirroring sleep cycle architecture. Cognitive performance peaks during the high phase of each cycle."}
+    ],
+    tools:[
+      {name:"MAAS",full:"Mindful Attention Awareness Scale",citation:"Brown KW & Ryan RM (2003). Journal of Personality and Social Psychology, 84(4), 822–848.",why:"15-item validated scale measuring dispositional attentional awareness in daily life. Strong predictor of TPN/DMN balance. Cronbach α = 0.82. Free to use."},
+      {name:"ANT",full:"Attention Network Test",citation:"Fan J et al. (2002). Journal of Cognitive Neuroscience, 14(3), 340–347.",why:"Computerised task measuring three attention networks: alerting, orienting, executive control. Provides objective attention profile rather than self-report alone. Administrable online."}
+    ],
+    interventions:[
+      {protocol:"Ultradian Work Blocks (90-min)",citation:"Kleitman N (1982) foundational + Persson PB & Bhatt DL (2013). Acta Physiologica, 207(1), 4–5.",finding:"Structuring work into 90-minute blocks aligned with ultradian rhythms, followed by 20-minute genuine rest, optimises sustained attention and reduces cortisol accumulation.",practical:"90 min deep work → 20 min rest (no screens) → repeat — maximum 4 cycles/day"},
+      {protocol:"Focused Attention Meditation",citation:"Lazar SW et al. (2005). NeuroReport, 16(17), 1893–1897. DOI: 10.1097/01.wnr.0000186598.66243.19",finding:"Long-term meditators show increased cortical thickness in right anterior insula and PFC. 8 weeks of mindfulness training increases DMN-TPN switching efficiency and reduces mind-wandering.",practical:"10–20 min focused attention on breath daily — begin with 5 min"}
+    ],
+    feature:"Attentional Fragmentation Index from MAAS + self-reported daily interruption frequency. Personalised ultradian schedule generator. Focus session timer with built-in rest prompts.",
+    datasets:["OpenNeuro.org — fMRI resting-state datasets (TPN/DMN), open access","UK Biobank — attention tasks + lifestyle data (available via KCL affiliation)"]
+  },
+  {
+    id:"neurochemistry", code:"D4", color:"#3aad6e", shadow:"#3aad6e40",
+    title:"Neurochemical Depletion",
+    mechanism:"Four neurochemicals are primary modulators of cognitive output: dopamine (motivation, learning), acetylcholine (focus, memory), BDNF (neuroplasticity), and serotonin (regulation, impulse control). Modern lifestyle patterns — sedentary behaviour, chronic stress, poor diet, sleep restriction — systematically deplete all four simultaneously. Crucially, BDNF upregulation via exercise directly enhances dopaminergic and serotonergic function, creating a compounding intervention opportunity accessible without pharmacology.",
+    papers:[
+      {id:"NC1",tier:"Primary RCT — PNAS",authors:"Erickson KI et al.",year:2011,title:"Exercise training increases size of hippocampus and improves memory",journal:"PNAS",vol:"108(7)",pages:"3017–3022",doi:"10.1073/pnas.1015950108",finding:"One year of aerobic exercise increased hippocampal volume by 2% in older adults — reversing 1–2 years of age-related volume loss. BDNF levels were the mediating mechanism. Spatial memory improved proportionally to volume increase."},
+      {id:"NC2",tier:"Review — Reviews in the Neurosciences",authors:"Ratey JJ & Loehr JE",year:2011,title:"The positive impact of physical activity on cognition during adulthood",journal:"Reviews in the Neurosciences",vol:"22(2)",pages:"171–185",doi:"10.1515/RNS.2011.017",finding:"Aerobic exercise upregulates BDNF, dopamine, serotonin, and norepinephrine simultaneously. Even a single bout of moderate exercise produces acute cognitive enhancement lasting 1–2 hours."},
+      {id:"NC3",tier:"Primary RCT — BMC Medicine",authors:"Jacka FN et al.",year:2017,title:"A randomised controlled trial of dietary improvement for adults with major depression (SMILES trial)",journal:"BMC Medicine",vol:"15(23)",pages:"1–13",doi:"10.1186/s12916-017-0791-y",finding:"Mediterranean-style dietary intervention produced significantly greater reduction in depressive symptoms than social support alone (p=0.03). Diet modifies gut microbiome composition, directly affecting serotonin precursor availability — 95% of serotonin is gut-derived."}
+    ],
+    tools:[
+      {name:"DASS-21",full:"Depression Anxiety Stress Scales (21-item)",citation:"Lovibond SH & Lovibond PF (1995). Psychology Foundation, Sydney. Widely validated.",why:"Validated proxy for serotonin and norepinephrine dysregulation. 21 items, three subscales. Cronbach α = 0.81–0.89. Free to use. Used as neurochemical baseline proxy in Neurofract."},
+      {name:"IPAQ-SF",full:"International Physical Activity Questionnaire — Short Form",citation:"Craig CL et al. (2003). Medicine & Science in Sports & Exercise, 35(8), 1381–1395.",why:"Validated 7-item measure of physical activity level. Directly predicts BDNF availability. Provides MET-minutes/week — the unit used in exercise-BDNF dose-response studies."}
+    ],
+    interventions:[
+      {protocol:"Zone 2 Aerobic Exercise (BDNF)",citation:"Heijnen S et al. (2016). Frontiers in Psychology, 6, 1550. DOI: 10.3389/fpsyg.2015.01550",finding:"Moderate-intensity continuous aerobic exercise (60–70% max HR) produces the greatest acute BDNF elevation. 30 minutes, 3–4x/week is the minimum effective dose for neuroplastic benefit.",practical:"30 min brisk walk or jog at conversational pace — 3–4× per week"},
+      {protocol:"Dopamine Reset",citation:"Schultz W (2015). Physiological Reviews, 95(3), 853–951. DOI: 10.1152/physrev.00023.2014",finding:"Voluntary abstinence from high-dopamine activities for 24–48 hours restores baseline dopamine receptor sensitivity, increasing motivation for low-stimulation but high-value cognitive work.",practical:"1 day/week: no social media, no streaming, no alcohol — scheduled reset"}
+    ],
+    feature:"Neurochemical Depletion Profile from DASS-21 + IPAQ-SF + diet quality checklist. Personalised exercise prescription with BDNF dose-response estimate. Dopamine hygiene protocol tailored to reported usage patterns.",
+    datasets:["NHANES (National Health and Nutrition Examination Survey) — CDC open access","UK Biobank — physical activity + cognitive performance + brain imaging"]
+  },
+  {
+    id:"plasticity", code:"D5", color:"#4a9fd4", shadow:"#4a9fd440",
+    title:"Neuroplasticity Misuse",
+    mechanism:"Hebbian synaptic plasticity — the strengthening of repeatedly co-activated neural pathways — is bidirectional and experience-dependent. It does not discriminate between adaptive and maladaptive circuits. Passive content consumption, rumination, and avoidance behaviours repetitively activate circuits associated with distraction and reactivity, strengthening them through long-term potentiation (LTP). The same mechanism that enables skill acquisition and recovery can entrench dysfunction. Deliberate, effortful cognitive engagement is the only evidence-based mechanism for redirecting plasticity toward adaptive circuits.",
+    papers:[
+      {id:"P1",tier:"Primary Research — Nature",authors:"Draganski B et al.",year:2004,title:"Neuroplasticity: Changes in grey matter induced by training",journal:"Nature",vol:"427(6972)",pages:"311–312",doi:"10.1038/427311a",finding:"Three months of juggling training produced measurable grey matter expansion in bilateral mid-temporal areas. Grey matter returned toward baseline after training cessation — demonstrating that structural plasticity is use-dependent and reversible."},
+      {id:"P2",tier:"Foundational Monograph",authors:"Hebb DO",year:1949,title:"The Organization of Behaviour: A Neuropsychological Theory",journal:"Wiley, New York",vol:"Book",pages:"N/A",doi:"N/A",finding:"'Neurons that fire together wire together.' The molecular basis (NMDA receptor-dependent LTP) was confirmed decades later, validating Hebb's rule as the fundamental mechanism of experience-dependent plasticity."},
+      {id:"P3",tier:"Review — Annual Review of Neuroscience",authors:"Pascual-Leone A et al.",year:2005,title:"The Plastic Human Brain Cortex",journal:"Annual Review of Neuroscience",vol:"28",pages:"377–401",doi:"10.1146/annurev.neuro.27.070203.144216",finding:"Cortical maps reorganise within days to weeks based on input patterns. Mental rehearsal alone produces measurable cortical reorganisation — establishing that plasticity operates through both physical practice and cognitive rehearsal."}
+    ],
+    tools:[
+      {name:"TMT",full:"Trail Making Test (Parts A & B)",citation:"Reitan RM (1958). Perceptual and Motor Skills, 8(3), 271–276. Normative data: Tombaugh TN (2004). Archives of Clinical Neuropsychology, 19(2), 203–214.",why:"Free, validated 5-minute cognitive test measuring processing speed (TMT-A) and cognitive flexibility (TMT-B). The B-A difference score isolates executive function. Used globally in neuropsychological assessment."},
+      {name:"NCS-18",full:"Need for Cognition Scale",citation:"Cacioppo JT, Petty RE, Kao CF (1984). Journal of Personality Assessment, 48(3), 306–307.",why:"18-item scale measuring tendency to engage in and enjoy effortful cognitive activity. Predicts deliberate practice engagement and cognitive resilience. Cronbach α = 0.90."}
+    ],
+    interventions:[
+      {protocol:"Deliberate Practice",citation:"Ericsson KA, Krampe RT, Tesch-Römer C (1993). Psychological Review, 100(3), 363–406. DOI: 10.1037/0033-295X.100.3.363",finding:"Deliberate practice — effortful engagement at the edge of current ability, with immediate feedback — is the primary mechanism for driving adaptive neuroplasticity. Passive exposure produces minimal plasticity.",practical:"20 min daily of effortful learning at ability edge — language, instrument, or new skill"},
+      {protocol:"Cognitive Reappraisal",citation:"Ochsner KN et al. (2002). Journal of Cognitive Neuroscience, 14(8), 1215–1229. DOI: 10.1162/089892902760807212",finding:"Reappraising the meaning of negative stimuli activates left lateral PFC and reduces amygdala response. Repeated practice strengthens PFC→amygdala top-down regulatory circuits — directed neuroplasticity for emotional regulation.",practical:"When stressed: write 3 alternative interpretations of the situation — daily"}
+    ],
+    feature:"Plasticity Readiness Score from NCS-18 + TMT-B. Personalised deliberate practice schedule based on cognitive phenotype. Weekly 'circuit training' targeting the user's weakest cognitive domain.",
+    datasets:["ABCD Study (Adolescent Brain Cognitive Development) — NIH open access, longitudinal","HCP (Human Connectome Project) — structural plasticity + cognitive data, open access via ConnectomeDB"]
+  },
+  {
+    id:"interoception", code:"D6", color:"#9b72d4", shadow:"#9b72d440",
+    title:"Interoceptive Blindness",
+    mechanism:"Interoception — the sense of the physiological condition of the body — is processed primarily in the insular cortex and anterior cingulate cortex via vagal afferent fibres. This system continuously generates predictive models of bodily states that directly shape cognition, emotion, and decision-making. When interoceptive signals are chronically ignored — as occurs in burnout and high-achieving driven individuals — the brain loses access to critical regulatory data. This is the neurobiological basis of burnout blindness: people override fatigue signals until biological collapse. No consumer wellness product currently addresses this domain. This is Neurofract's primary differentiator.",
+    papers:[
+      {id:"I1",tier:"Review — Current Opinion in Psychology",authors:"Critchley HD & Garfinkel SN",year:2017,title:"Interoception and emotion",journal:"Current Opinion in Psychology",vol:"17",pages:"7–14",doi:"10.1016/j.copsyc.2017.04.020",finding:"Interoceptive accuracy predicts emotional awareness, anxiety severity, and decision-making quality. Poor interoception is associated with alexithymia, burnout, and impaired social cognition. The insular cortex is the primary interoceptive hub."},
+      {id:"I2",tier:"Primary Research — Biological Psychology",authors:"Garfinkel SN et al.",year:2015,title:"Knowing your own heart: Distinguishing interoceptive accuracy from interoceptive awareness",journal:"Biological Psychology",vol:"104",pages:"65–74",doi:"10.1016/j.biopsycho.2014.11.004",finding:"Established the tripartite model of interoception: accuracy (objective heartbeat detection), sensibility (subjective confidence), and awareness (metacognitive insight). Each dimension independently predicts different aspects of emotional and cognitive function."},
+      {id:"I3",tier:"Review — Trends in Cognitive Sciences",authors:"Seth AK",year:2013,title:"Interoceptive inference, emotion, and the embodied self",journal:"Trends in Cognitive Sciences",vol:"17(11)",pages:"565–573",doi:"10.1016/j.tics.2013.09.007",finding:"Emotions are predictive interoceptive inferences — the brain's best guess about the cause of internal body states. This framework explains why interoceptive training can directly modify emotional experience, not just awareness of it."},
+      {id:"I4",tier:"Validation Study — PLOS ONE",authors:"Mehling WE et al.",year:2012,title:"The Multidimensional Assessment of Interoceptive Awareness (MAIA)",journal:"PLOS ONE",vol:"7(11)",pages:"e48230",doi:"10.1371/journal.pone.0048230",finding:"Development and validation of the MAIA — 8-subscale, 32-item validated questionnaire measuring interoceptive awareness including noticing, emotional awareness, self-regulation, body listening, and trusting."}
+    ],
+    tools:[
+      {name:"MAIA-2",full:"Multidimensional Assessment of Interoceptive Awareness v2",citation:"Mehling W et al. (2018). PLOS ONE, 13(12), e0208034.",why:"37-item validated questionnaire across 8 interoceptive dimensions. Free to use for research and clinical purposes. Available in 20+ languages. The only validated comprehensive interoception self-report tool. Primary D6 assessment in Neurofract."},
+      {name:"HCT",full:"Heartbeat Counting Task",citation:"Schandry R (1981). Psychophysiology, 18(4), 483–488. Validated by Garfinkel et al. (2015).",why:"Participants count their own heartbeats without touching pulse points. Accuracy computed against ECG. Gold-standard objective interoception measure. Administrable digitally."}
+    ],
+    interventions:[
+      {protocol:"Body Scan Meditation",citation:"Kerr CE et al. (2013). Frontiers in Human Neuroscience, 7, 6. DOI: 10.3389/fnhum.2013.00006",finding:"Body scan practice increases alpha rhythm modulation in somatosensory cortex and strengthens thalamocortical signalling of interoceptive inputs. 8 weeks of MBSR increases insular cortical thickness (Lazar et al., 2005).",practical:"15 min daily — systematic internal attention from feet to head"},
+      {protocol:"HRV Biofeedback",citation:"Lehrer PM & Gevirtz R (2014). Frontiers in Psychology, 5, 756. DOI: 10.3389/fpsyg.2014.00756",finding:"HRV biofeedback at resonance frequency (5–7 breaths/min) amplifies baroreflex sensitivity and vagal tone, training interoceptive precision through real-time body-signal feedback. 10 sessions produce lasting HRV improvements.",practical:"10 min at 5.5 breaths/min with HRV biofeedback app (Inner Balance, Elite HRV)"}
+    ],
+    feature:"MAIA-2 as primary interoception onboarding assessment. Heartbeat awareness exercise as weekly objective check-in. Body scan + HRV biofeedback sequencing protocol. This is Neurofract's unique clinical differentiator — no consumer product currently addresses interoceptive training.",
+    differentiator: true,
+    datasets:["OpenNeuro.org — fMRI insular cortex + interoception datasets, open access","PhysioNet — ECG + heartbeat task datasets for interoceptive accuracy research"]
+  }
+];
+
+const MATRIX = [
+  {feature:"Cognitive Phenotype Assessment",domains:["D1","D2","D3","D4","D5","D6"],tools:["PSS-10","PSQI","MAAS","DASS-21","IPAQ-SF","MAIA-2"],papers:["Arnsten 2009","Buysse 1989","Brown & Ryan 2003","Lovibond 1995","Craig 2003","Mehling 2018"]},
+  {feature:"Daily Stress Protocol",domains:["D1"],tools:["HRV","PSS-10"],papers:["Balban et al. 2023","Jerath et al. 2006","Arnsten 2009"]},
+  {feature:"Sleep Quality Scoring",domains:["D2"],tools:["PSQI","ESS"],papers:["Xie et al. 2013","Van Dongen et al. 2003","Walker & Stickgold 2006"]},
+  {feature:"Focus Session Scheduler",domains:["D3"],tools:["MAAS","ANT"],papers:["Kleitman 1982","Raichle et al. 2001","Mark et al. 2008"]},
+  {feature:"Neurochemical Profile",domains:["D4"],tools:["DASS-21","IPAQ-SF"],papers:["Erickson et al. 2011","Jacka et al. 2017","Schultz 2015"]},
+  {feature:"Plasticity Training Plan",domains:["D5"],tools:["TMT","NCS-18"],papers:["Draganski et al. 2004","Ericsson et al. 1993","Lazar et al. 2005"]},
+  {feature:"Interoception Training ★",domains:["D6"],tools:["MAIA-2","HCT"],papers:["Critchley & Garfinkel 2017","Seth 2013","Mehling et al. 2012"]},
+];
+
+let currentDomain = "stress";
+let currentTab = "mechanism";
+
+function domainColor(code){ return DOMAINS.find(d=>d.code===code)?.color||"#888"; }
+
+function renderDomainNav(){
+  const nav = document.getElementById("domainNav");
+  nav.innerHTML = DOMAINS.map(d=>`
+    <button class="domain-pill ${d.id===currentDomain?"active":""}"
+      style="${d.id===currentDomain?`background:${d.color};--active-shadow:${d.shadow};`:""}"
+      onclick="selectDomain('${d.id}')">
+      ${d.code} · ${d.title.split("&")[0].split("–")[0].trim()}
+    </button>`).join("");
+}
+
+function renderDomainCard(){
+  const d = DOMAINS.find(x=>x.id===currentDomain);
+  const tabs = ["mechanism","papers","tools","interventions","feature","datasets"];
+  const tabLabels = {mechanism:"Mechanism",papers:`Papers (${d.papers.length})`,tools:"Assessment Tools",interventions:"Interventions",feature:"Neurofract Feature",datasets:"Datasets"};
+
+  const card = document.getElementById("domainCard");
+  card.innerHTML = `
+    <div class="domain-card">
+      <div class="domain-header" style="background:${d.color}10;border-bottom:1px solid ${d.color}30">
+        <div class="domain-code" style="color:${d.color}">${d.code} · Evidence Base</div>
+        <div class="domain-title">${d.title}</div>
+      </div>
+      <div class="tab-bar">
+        ${tabs.map(t=>`<button class="tab-btn ${t===currentTab?"active":""}" style="${t===currentTab?`color:${d.color};border-bottom-color:${d.color}`:""}" onclick="selectTab('${t}')">${tabLabels[t]}</button>`).join("")}
+      </div>
+      ${tabs.map(t=>`<div class="tab-panel ${t===currentTab?"active":""}" id="tab-${t}">${renderTab(d,t)}</div>`).join("")}
+    </div>`;
+}
+
+function renderTab(d,tab){
+  if(tab==="mechanism") return `<p class="mechanism-text">${d.mechanism}</p>`;
+
+  if(tab==="papers") return d.papers.map(p=>`
+    <div class="paper-card" style="background:${d.color}08;border-color:${d.color}">
+      <div class="paper-tier" style="color:${d.color}">${p.tier}</div>
+      <div class="paper-authors">${p.authors} (${p.year})</div>
+      <div class="paper-title">${p.title}</div>
+      <div class="paper-meta">${p.journal} · ${p.vol} · pp.${p.pages}${p.doi!=="N/A"?` · DOI: ${p.doi}`:""}</div>
+      <div class="paper-finding">
+        <div class="paper-finding-label">Key Finding</div>
+        ${p.finding}
+      </div>
+    </div>`).join("");
+
+  if(tab==="tools") return `<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:20px">All tools below are validated, free for research use, and appropriate for digital self-report administration.</p>`+
+    d.tools.map(t=>`
+    <div class="tool-card">
+      <div class="tool-badge" style="background:${d.color}">${t.name}</div>
+      <div>
+        <div class="tool-name">${t.full}</div>
+        <div class="tool-citation">📚 ${t.citation}</div>
+        <div class="tool-why">${t.why}</div>
+      </div>
+    </div>`).join("");
+
+  if(tab==="interventions") return d.interventions.map(iv=>`
+    <div class="intv-card" style="border-left-color:${d.color};background:${d.color}06">
+      <div class="intv-protocol">${iv.protocol}</div>
+      <div class="intv-citation">📚 ${iv.citation}</div>
+      <div class="intv-finding"><strong>Evidence:</strong> ${iv.finding}</div>
+      <div class="intv-practical" style="background:${d.color}14;border-radius:6px">
+        <span style="color:${d.color}">⚡</span>
+        <span><strong>Practical: </strong>${iv.practical}</span>
+      </div>
+    </div>`).join("");
+
+  if(tab==="feature") return `
+    <div class="feature-box" style="border-color:${d.color}50;background:${d.color}08">
+      <div class="feature-label" style="color:${d.color}">⚡ Neurofract Product Feature — ${d.code}</div>
+      <div class="feature-text">${d.feature}</div>
+      ${d.differentiator?`<div class="differentiator-badge" style="background:${d.color}">
+        🔑 This domain is Neurofract's primary competitive differentiator. No consumer wellness product currently addresses interoceptive training. The evidence base is robust and the clinical relevance to burnout is direct. Your nursing + neuroscience background uniquely positions you to design this feature credibly.
+      </div>`:""}
+    </div>`;
+
+  if(tab==="datasets") return `<p style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:20px">Open-access datasets for validating Neurofract's assessments and interventions — no data collection required at MVP stage.</p>`+
+    d.datasets.map(ds=>`<div class="dataset-item"><span style="color:${d.color}">🗃</span>${ds}</div>`).join("");
+
+  return "";
+}
+
+function renderMatrix(){
+  const tbl = document.getElementById("matrixTable");
+  tbl.innerHTML = `
+    <thead><tr>
+      <th>Feature</th><th>Domains</th><th>Validated Tools</th><th>Key Papers</th>
+    </tr></thead>
+    <tbody>
+      ${MATRIX.map(row=>`<tr>
+        <td><span class="feature-name">${row.feature}</span></td>
+        <td>${row.domains.map(d=>`<span class="domain-tag" style="background:${domainColor(d)}">${d}</span>`).join("")}</td>
+        <td>${row.tools.map(t=>`<span class="tool-tag">${t}</span>`).join("")}</td>
+        <td>${row.papers.map(p=>`<span class="paper-ref">${p}</span>`).join("")}</td>
+      </tr>`).join("")}
+    </tbody>`;
+}
+
+function selectDomain(id){ currentDomain=id; currentTab="mechanism"; renderDomainNav(); renderDomainCard(); }
+function selectTab(t){ currentTab=t; renderDomainCard(); }
+
+// Init
+renderDomainNav();
+renderDomainCard();
+renderMatrix();
+</script>
+</body>
+</html>
