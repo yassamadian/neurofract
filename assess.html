@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NeuroFract — Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8FAF7;--white:#FFF;--sage:#5B8C7E;--sage-l:#EDF5F1;--sage-d:#3D6B5E;--warm:#C49A6A;--warm-l:#FBF5EE;--navy:#1A2B3C;--slate:#3D5066;--dim:#6B8299;--muted:#A0B4C8;--border:#E2EAE6;--red:#D65D5D;--red-l:#FDF0F0;--amber:#D4943C;--amber-l:#FDF6EC;--green:#4A9B6E;--green-l:#EDF8F1;--r:16px;--rs:10px;--sh:0 2px 8px rgba(26,43,60,0.06);--sh2:0 8px 30px rgba(26,43,60,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--slate);min-height:100vh;-webkit-font-smoothing:antialiased}h1,h2,h3{font-family:'Lora',serif;color:var(--navy)}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem}
+.nav-in{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nb{font-family:'Lora',serif;font-size:1.3rem;font-weight:700;text-decoration:none}.nb .n{color:var(--navy)}.nb .f{color:var(--sage)}
+.nl{display:flex;gap:1.75rem;align-items:center}.nl a{font-size:0.88rem;font-weight:500;color:var(--dim);text-decoration:none;transition:color 0.2s}.nl a:hover{color:var(--sage)}.nl a.on{color:var(--sage);font-weight:600}
+.nt{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--navy)}
+@media(max-width:768px){.nl{display:none;position:absolute;top:60px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--border);flex-direction:column;padding:1rem 1.5rem;gap:1rem}.nl.open{display:flex}.nt{display:block}}
+
+.app{max-width:480px;margin:0 auto;min-height:calc(100vh - 60px);display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column}.screen.active{display:flex;animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:0.8}50%{transform:scale(1.08);opacity:1}}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:0.9rem 2rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;border:none;cursor:pointer;transition:all 0.25s;width:100%;max-width:340px}
+.bp{background:var(--sage);color:white}.bp:hover{background:var(--sage-d)}.bp:disabled{background:var(--muted);cursor:not-allowed}
+.bs{background:var(--white);color:var(--sage);border:2px solid var(--border)}.bs:hover{border-color:var(--sage)}
+.bsm{padding:0.6rem 1.2rem;font-size:0.85rem;width:auto}
+
+/* Welcome */
+.wel{padding:2rem 1.5rem;text-align:center;justify-content:center;align-items:center;gap:1.5rem}
+.wel-i{font-size:3rem;margin-bottom:0.5rem;animation:breathe 6s ease-in-out infinite}
+.wel h2{font-size:1.6rem;line-height:1.3;margin-bottom:0.25rem}
+.wel p{color:var(--dim);font-size:0.95rem;line-height:1.6;max-width:340px}
+.wl{display:flex;flex-direction:column;gap:0.75rem;width:100%;max-width:340px;margin-top:0.5rem}
+.wl div{display:flex;align-items:center;gap:0.75rem;text-align:left;background:var(--white);padding:0.85rem 1rem;border-radius:var(--rs);border:1px solid var(--border)}
+.wl span:first-child{font-size:1.2rem;flex-shrink:0}.wl .wt{font-size:0.85rem;color:var(--slate)}.wl strong{color:var(--navy);display:block;font-size:0.88rem}
+
+/* Onboard */
+.ob{padding:2rem 1.5rem;flex:1;display:flex;flex-direction:column}
+.ob-s{font-size:0.75rem;color:var(--muted);font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem}
+.ob h2{font-size:1.4rem;margin-bottom:0.5rem}.ob>p{color:var(--dim);font-size:0.9rem;margin-bottom:1.5rem}
+.ig{margin-bottom:1.25rem}.ig label{display:block;font-size:0.8rem;font-weight:600;color:var(--navy);margin-bottom:0.4rem}
+.ig input,.ig select{width:100%;padding:0.85rem 1rem;border:2px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:0.95rem;color:var(--navy);background:var(--white);outline:none;-webkit-appearance:none;appearance:none;transition:border-color 0.2s}
+.ig input:focus,.ig select:focus{border-color:var(--sage)}
+.ob-b{margin-top:auto;padding:1rem 0}
+
+/* Cards */
+.aw{padding:1rem 1.5rem;flex:1}
+.aw h2{font-size:1.3rem;margin-bottom:0.25rem}.aw>p{color:var(--dim);font-size:0.88rem;margin-bottom:1.25rem}
+.ac{background:var(--white);border:2px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:0.85rem;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+.ac:hover{border-color:var(--sage);transform:translateY(-2px);box-shadow:var(--sh2)}
+.ac::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.ac.c1::before{background:var(--sage)}.ac.c2::before{background:var(--warm)}.ac.c3::before{background:#6B7FBF}
+.ac-t{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.35rem}
+.ac h3{font-size:1.05rem}
+.ac-m{font-size:0.72rem;color:var(--muted);background:var(--bg);padding:3px 10px;border-radius:20px}
+.ac p{font-size:0.82rem;color:var(--dim);line-height:1.5}
+.ac-g{display:inline-block;font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:12px;margin-top:0.5rem}
+.ac.c1 .ac-g{background:var(--sage-l);color:var(--sage)}.ac.c2 .ac-g{background:var(--warm-l);color:var(--warm)}.ac.c3 .ac-g{background:#EEF0F8;color:#6B7FBF}
+
+/* Questions */
+.qw{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+.qp{height:4px;background:var(--border);border-radius:4px;margin-bottom:1.5rem;overflow:hidden}
+.qpb{height:100%;background:var(--sage);border-radius:4px;transition:width 0.5s ease}
+.qn{font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;font-weight:500}
+.qt{font-family:'Lora',serif;font-size:1.2rem;color:var(--navy);line-height:1.45;margin-bottom:0.35rem}
+.qs{font-size:0.82rem;color:var(--dim);margin-bottom:1.5rem;line-height:1.5}
+.qo{display:flex;flex-direction:column;gap:0.6rem;flex:1}
+.qopt{display:flex;align-items:center;gap:0.75rem;padding:1rem 1.15rem;background:var(--white);border:2px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all 0.2s;font-size:0.92rem;color:var(--slate)}
+.qopt:hover{border-color:var(--sage);background:var(--sage-l)}
+.qopt.sel{border-color:var(--sage);background:var(--sage-l);color:var(--sage-d);font-weight:600}
+.qr{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.qopt.sel .qr{border-color:var(--sage);background:var(--sage)}.qopt.sel .qr::after{content:'';width:8px;height:8px;border-radius:50%;background:white}
+.qnv{display:flex;gap:0.75rem;margin-top:auto;padding-top:1rem}.qnv .btn{flex:1}
+
+/* Results & Profile */
+.res{padding:1.5rem;flex:1;overflow-y:auto}
+.rh{text-align:center;padding:1rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}.rh h2{font-size:1.4rem;margin-bottom:0.25rem}.rh p{color:var(--dim);font-size:0.88rem}
+.rc{background:var(--white);border-radius:var(--r);padding:1.25rem;border:1px solid var(--border);margin-bottom:1rem;box-shadow:var(--sh)}
+.rc h3{font-size:0.95rem;margin-bottom:0.75rem}
+.rs2{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:var(--rs);margin-bottom:0.75rem}
+.rn{font-family:'Lora',serif;font-size:2.2rem;font-weight:700}.rm{font-size:0.85rem;color:var(--dim)}.rl{font-size:0.85rem;font-weight:600}
+.rbg{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;margin-bottom:0.5rem}.rb{height:100%;border-radius:5px;transition:width 1.5s ease}
+.ri{font-size:0.85rem;color:var(--dim);line-height:1.6;padding:0.75rem;background:var(--bg);border-radius:var(--rs)}.ri strong{color:var(--navy)}
+.prof{padding:1.5rem;flex:1;overflow-y:auto}
+.ph{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.pav{width:52px;height:52px;border-radius:50%;background:var(--sage-l);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--sage);font-weight:700;font-family:'Lora',serif}
+.pi h2{font-size:1.2rem}.pi p{font-size:0.82rem;color:var(--dim)}
+.ps{margin-bottom:1.25rem}.ps h3{font-size:0.9rem;color:var(--navy);margin-bottom:0.75rem}
+.hi{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:0.5rem}
+.hi-l{display:flex;flex-direction:column}.hin{font-weight:600;font-size:0.88rem;color:var(--navy)}.hid{font-size:0.75rem;color:var(--muted)}
+.his{font-family:'Lora',serif;font-size:1.1rem;font-weight:700}
+.his.lo{color:var(--green)}.his.md{color:var(--amber)}.his.hh{color:var(--red)}
+.tabs{display:flex;background:var(--white);border-top:1px solid var(--border);padding:0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0.5rem 0;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.68rem;color:var(--muted);font-weight:500;transition:color 0.2s}.tab.on{color:var(--sage)}.tab-i{font-size:1.2rem}
+@media(min-width:481px){.app{border-left:1px solid var(--border);border-right:1px solid var(--border)}}
+</style>
+</head>
+<body>
+<nav><div class="nav-in"><a href="/" class="nb"><span class="n">Neuro</span><span class="f">Fract</span></a><button class="nt" onclick="document.querySelector('.nl').classList.toggle('open')">☰</button><div class="nl"><a href="/">Home</a><a href="/#about">About</a><a href="/#evidence">Evidence</a><a href="/#team">Team</a><a href="/#contact">Contact</a><a class="on">Assessment</a></div></div></nav>
+
+<div class="app">
+<div class="screen active" id="s-welcome"><div class="wel">
+<div class="wel-i">🧠</div>
+<h2>Your recovery,<br>gently tracked</h2>
+<p>Answer a few questions about how you are feeling. It takes about 5 minutes.</p>
+<div class="wl">
+<div><span>📋</span><div class="wt"><strong>Quick assessments</strong>Clinically validated questions</div></div>
+<div><span>📊</span><div class="wt"><strong>See your trends</strong>Gentle feedback — no jargon</div></div>
+<div><span>🩺</span><div class="wt"><strong>Help your clinician</strong>Better data between visits</div></div>
+</div>
+<button class="btn bp" onclick="go('onboard')" style="margin-top:1rem">Get started</button>
+</div></div>
+
+<div class="screen" id="s-onboard"><div class="ob">
+<div class="ob-s">STEP 1 OF 2</div>
+<h2>Tell us about yourself</h2>
+<p>This helps personalise your experience. Your data stays on your device.</p>
+<div class="ig"><label>Your first name</label><input type="text" id="inp-name" placeholder="e.g. Sarah"></div>
+<div class="ig"><label>Your treatment type</label><select id="inp-device"><option value="">Select your treatment...</option><option value="DBS">DBS — Deep Brain Stimulation</option><option value="VNS">VNS — Vagus Nerve Stimulation</option><option value="TMS">TMS — Transcranial Magnetic Stimulation</option><option value="SCS">SCS — Spinal Cord Stimulation</option><option value="RNS">RNS — Responsive Neurostimulation</option><option value="tDCS">tDCS — transcranial Direct Current Stimulation</option><option value="Other">Other</option></select></div>
+<div class="ig"><label>Your primary condition</label><select id="inp-cond"><option value="">Select your condition...</option><option value="Epilepsy">Epilepsy</option><option value="Parkinsons">Parkinson's disease</option><option value="Chronic pain">Chronic pain</option><option value="Depression">Depression</option><option value="Essential tremor">Essential tremor</option><option value="OCD">OCD</option><option value="Other">Other</option></select></div>
+<div class="ob-b"><button class="btn bp" onclick="saveProfile()">Continue</button></div>
+</div></div>
+
+<div class="screen" id="s-assess"><div class="aw">
+<h2 id="greeting">Choose an assessment</h2>
+<p>Answer honestly — there are no right or wrong answers.</p>
+<div class="ac c1" onclick="beginTest()"><div class="ac-t"><h3>Side Effects Check</h3><span class="ac-m">~5 min</span></div><p>19 quick questions about symptoms you may be experiencing from your medication.</p><span class="ac-g">LAEP · Liverpool Adverse Events Profile</span></div>
+<div class="ac c2" style="opacity:0.5;cursor:default" onclick="alert('SSQ — coming in the next update.')"><div class="ac-t"><h3>Seizure Experience</h3><span class="ac-m">~8 min</span></div><p>How severe are your seizures? Questions about warnings, the event, and recovery.</p><span class="ac-g">SSQ · Coming soon</span></div>
+<div class="ac c3" style="opacity:0.5;cursor:default" onclick="alert('QOLIE-31 — coming in the next update.')"><div class="ac-t"><h3>Quality of Life</h3><span class="ac-m">~10 min</span></div><p>Covers worry, energy, memory, mood, social life, and medication effects.</p><span class="ac-g">QOLIE-31 · Coming soon</span></div>
+</div><div class="tabs"><button class="tab on" onclick="go('assess')"><span class="tab-i">📋</span>Assess</button><button class="tab" onclick="go('profile')"><span class="tab-i">👤</span>Profile</button></div></div>
+
+<div class="screen" id="s-question"><div class="qw">
+<div class="qp"><div class="qpb" id="progBar"></div></div>
+<div class="qn" id="qNum"></div>
+<div class="qt" id="qTxt"></div>
+<div class="qs" id="qSub"></div>
+<div class="qo" id="qOpts"></div>
+<div class="qnv"><button class="btn bs" id="btnBack" onclick="qBack()">Back</button><button class="btn bp" id="btnNext" onclick="qNext()" disabled>Next</button></div>
+</div></div>
+
+<div class="screen" id="s-results"><div class="res" id="resBox"></div><div class="tabs"><button class="tab" onclick="go('assess')"><span class="tab-i">📋</span>Assess</button><button class="tab" onclick="go('profile')"><span class="tab-i">👤</span>Profile</button></div></div>
+<div class="screen" id="s-profile"><div class="prof" id="profBox"></div><div class="tabs"><button class="tab" onclick="go('assess')"><span class="tab-i">📋</span>Assess</button><button class="tab on" onclick="go('profile')"><span class="tab-i">👤</span>Profile</button></div></div>
+</div>
+
+<script>
+var items=[
+{text:"Unsteadiness",sub:"Feeling unsteady on your feet or problems with balance"},
+{text:"Tiredness",sub:"Feeling unusually tired or lacking energy"},
+{text:"Restlessness",sub:"Feeling restless or unable to sit still"},
+{text:"Feelings of aggression",sub:"Feeling angry or aggressive towards other people"},
+{text:"Nervousness or agitation",sub:"Feeling nervous, anxious, or on edge"},
+{text:"Headache",sub:"Experiencing headaches"},
+{text:"Hair loss",sub:"Noticing hair thinning or hair loss"},
+{text:"Problems with skin",sub:"Skin problems such as acne, rash, or itching"},
+{text:"Double or blurred vision",sub:"Problems with your eyesight — blurring or seeing double"},
+{text:"Upset stomach",sub:"Nausea, stomach pain, or digestive problems"},
+{text:"Difficulty concentrating",sub:"Finding it hard to focus or pay attention"},
+{text:"Trouble with mouth or gums",sub:"Problems with your mouth, teeth, or gums"},
+{text:"Shaky hands",sub:"Trembling or shaking in your hands"},
+{text:"Weight gain",sub:"Noticeable increase in your body weight"},
+{text:"Dizziness",sub:"Feeling dizzy or lightheaded"},
+{text:"Sleepiness",sub:"Feeling drowsy or sleepy during the day"},
+{text:"Depression",sub:"Feeling sad, low, or depressed"},
+{text:"Memory problems",sub:"Difficulty remembering things"},
+{text:"Disturbed sleep",sub:"Problems falling asleep or staying asleep at night"}
+];
+var opts=[{value:1,label:"Never a problem"},{value:2,label:"Rarely a problem"},{value:3,label:"Sometimes a problem"},{value:4,label:"Always a problem"}];
+var patient=null,history=[],curQ=0,answers=[];
+
+function loadData(){try{var d=localStorage.getItem("nf_patient");if(d)patient=JSON.parse(d);var h=localStorage.getItem("nf_history");if(h)history=JSON.parse(h)}catch(e){}}
+function saveData(){localStorage.setItem("nf_patient",JSON.stringify(patient));localStorage.setItem("nf_history",JSON.stringify(history))}
+
+function go(id){var ss=document.querySelectorAll(".screen");for(var i=0;i<ss.length;i++)ss[i].classList.remove("active");var el=document.getElementById("s-"+id);if(el)el.classList.add("active");if(id==="assess")updateGreeting();if(id==="profile")renderProfile()}
+function saveProfile(){var name=document.getElementById("inp-name").value.trim();var dev=document.getElementById("inp-device").value;var cond=document.getElementById("inp-cond").value;if(!name){document.getElementById("inp-name").style.borderColor="var(--red)";return}if(!dev){document.getElementById("inp-device").style.borderColor="var(--red)";return}patient={name:name,device:dev,condition:cond,created:new Date().toISOString()};saveData();go("assess")}
+function updateGreeting(){if(!patient)return;var h=new Date().getHours();var g=h<12?"Good morning":h<18?"Good afternoon":"Good evening";document.getElementById("greeting").textContent=g+", "+patient.name}
+
+function beginTest(){curQ=0;answers=[];for(var i=0;i<items.length;i++)answers.push(null);go("question");renderQ()}
+function renderQ(){var total=items.length;var pct=((curQ+1)/total)*100;document.getElementById("progBar").style.width=pct+"%";document.getElementById("qNum").textContent="Question "+(curQ+1)+" of "+total;document.getElementById("qTxt").textContent=items[curQ].text;document.getElementById("qSub").textContent=items[curQ].sub;
+var html="";for(var i=0;i<opts.length;i++){var sel=answers[curQ]===opts[i].value;html+='<div class="qopt'+(sel?" sel":"")+'" onclick="pick('+opts[i].value+')"><div class="qr"></div><span>'+opts[i].label+"</span></div>"}
+document.getElementById("qOpts").innerHTML=html;document.getElementById("btnBack").style.visibility=curQ===0?"hidden":"visible";document.getElementById("btnNext").disabled=answers[curQ]===null;document.getElementById("btnNext").textContent=curQ===total-1?"See results":"Next"}
+function pick(val){answers[curQ]=val;renderQ();if(curQ<items.length-1)setTimeout(function(){qNext()},300)}
+function qNext(){if(answers[curQ]===null)return;if(curQ<items.length-1){curQ++;renderQ()}else{finishTest()}}
+function qBack(){if(curQ>0){curQ--;renderQ()}}
+
+function finishTest(){var score=0;for(var i=0;i<answers.length;i++)score+=answers[i];var result={type:"laep",date:new Date().toISOString(),score:score,answers:answers.slice()};history.push(result);saveData();showResults(result);go("results")}
+
+function showResults(r){var score=r.score;var pct=((score-19)/(76-19))*100;var level,lc,lbg,interp,icon;
+if(score<30){level="Low side-effect burden";lc="var(--green)";lbg="var(--green-l)";icon="✅";interp="Your symptom levels are low. Your body seems to be tolerating treatment well. Keep tracking monthly."}
+else if(score<36.5){level="Moderate side-effect burden";lc="var(--amber)";lbg="var(--amber-l)";icon="⚡";interp="You are experiencing some side effects. Consider discussing the most bothersome symptoms with your clinician."}
+else if(score<45){level="Elevated side-effect burden";lc="var(--red)";lbg="var(--red-l)";icon="⚠️";interp="Your score is above the level where patients find treatment difficult. <strong>We recommend speaking with your clinician soon.</strong>"}
+else{level="High side-effect burden";lc="var(--red)";lbg="var(--red-l)";icon="🔴";interp="Your side-effect score is high. <strong>Please contact your clinical team</strong> for a medication review."}
+var worst=[];for(var i=0;i<answers.length;i++){if(answers[i]>=3)worst.push({name:items[i].text,score:answers[i]})}worst.sort(function(a,b){return b.score-a.score});
+var wh="";if(worst.length>0){wh='<div class="rc"><h3>🔍 Most reported symptoms</h3>';for(var i=0;i<Math.min(worst.length,5);i++){var w=worst[i];wh+='<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border)"><span style="font-size:0.88rem;color:var(--navy)">'+w.name+'</span><span style="font-size:0.78rem;font-weight:600;color:'+(w.score===4?"var(--red)":"var(--amber)")+'">'+(w.score===4?"Always":"Sometimes")+"</span></div>"}wh+='<p style="font-size:0.8rem;color:var(--dim);margin-top:0.75rem">Share these with your clinician to help adjust your treatment.</p></div>'}
+var dateStr=new Date(r.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+var next=score>=36.5?"Contact your clinician before your next scheduled visit. You can show them this report.":"Take this assessment again in 2–4 weeks to track changes.";
+document.getElementById("resBox").innerHTML='<div class="rh"><div style="font-size:2rem;margin-bottom:0.5rem">'+icon+'</div><h2>Your results</h2><p>Side Effects Check · '+dateStr+'</p></div><div class="rc"><h3>📊 Overall Score</h3><div class="rs2" style="background:'+lbg+'"><div><div class="rn" style="color:'+lc+'">'+score+'</div><div class="rm">out of 76</div></div><div class="rl" style="color:'+lc+'">'+level+'</div></div><div class="rbg"><div class="rb" style="width:'+pct+'%;background:'+lc+'"></div></div><div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);margin-bottom:0.75rem"><span>19 — Low</span><span style="color:var(--amber)">36.5</span><span style="color:var(--red)">45</span><span>76 — High</span></div><div class="ri">'+interp+'</div></div>'+wh+'<div class="rc" style="background:var(--sage-l);border-color:var(--sage)"><h3 style="color:var(--sage-d)">💡 What to do next</h3><p style="font-size:0.85rem;color:var(--sage-d);line-height:1.6">'+next+'</p></div><div style="text-align:center;padding:1rem"><button class="btn bp bsm" onclick="go(\'assess\')">Back to home</button></div><p style="text-align:center;font-size:0.7rem;color:var(--muted);padding:0.5rem;line-height:1.5">LAEP: Liverpool Adverse Events Profile · Baker et al. 1994<br>Threshold 36.5: Romoli et al. 2018 · 85% prediction accuracy<br>This is not a medical diagnosis. Always consult your clinical team.</p>'}
+
+function renderProfile(){var el=document.getElementById("profBox");if(!patient){el.innerHTML='<div style="text-align:center;padding:3rem;color:var(--muted)">Complete setup first.</div>';return}
+var ini=patient.name.charAt(0).toUpperCase();var sorted=history.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+var trend="";if(sorted.length>=2){var d=sorted[0].score-sorted[1].score;if(d<-2)trend=' <span style="color:var(--green);font-weight:600">↓ Improving</span>';else if(d>2)trend=' <span style="color:var(--red);font-weight:600">↑ Rising</span>';else trend=' <span style="color:var(--dim);font-weight:600">→ Stable</span>'}
+var lat="";if(sorted.length>0){var s=sorted[0];var sc=s.score>=36.5?"var(--red)":s.score>=30?"var(--amber)":"var(--green)";lat='<div class="ps"><h3>📊 Latest'+trend+'</h3><div class="rc"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-family:Lora,serif;font-size:2rem;font-weight:700;color:'+sc+'">'+s.score+'</div><div style="font-size:0.8rem;color:var(--dim)">LAEP · out of 76</div></div><div style="font-size:0.82rem;color:var(--dim)">'+new Date(s.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"})+"</div></div></div></div>"}
+var hh="";if(sorted.length>0){for(var i=0;i<sorted.length;i++){var h=sorted[i];var cls=h.score>=36.5?"hh":h.score>=30?"md":"lo";hh+='<div class="hi"><div class="hi-l"><span class="hin">Side Effects (LAEP)</span><span class="hid">'+new Date(h.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+'</span></div><span class="his '+cls+'">'+h.score+"</span></div>"}}else{hh='<div style="text-align:center;padding:2rem;color:var(--muted)">No assessments yet.</div>'}
+el.innerHTML='<div class="ph"><div class="pav">'+ini+'</div><div class="pi"><h2>'+patient.name+'</h2><p>'+patient.device+" · "+patient.condition+"</p></div></div>"+lat+'<div class="ps"><h3>📋 History</h3>'+hh+'</div><div class="ps"><h3>⚙️ Settings</h3><div style="padding:0.5rem 0"><button class="btn bs bsm" onclick="doExport()" style="margin-bottom:0.5rem;width:100%">Export data (CSV)</button><button class="btn bs bsm" style="width:100%;color:var(--red);border-color:var(--red)" onclick="if(confirm(\'Delete all data?\')){localStorage.removeItem(\'nf_patient\');localStorage.removeItem(\'nf_history\');location.reload()}">Reset</button></div></div><p style="text-align:center;font-size:0.7rem;color:var(--muted);padding:1rem 0">Data stored on this device only · NeuroFract · neurofract.com</p>'}
+function doExport(){if(history.length===0){alert("No data yet.");return}var csv="Date,Assessment,Score\n";for(var i=0;i<history.length;i++)csv+='"'+new Date(history[i].date).toISOString()+'","LAEP",'+history[i].score+"\n";var b=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="neurofract-"+patient.name.toLowerCase()+"-"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a)}
+
+loadData();if(patient){go("assess")}else{go("welcome")}
+</script>
+</body>
+</html>
