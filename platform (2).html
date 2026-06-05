@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>NeuroFract Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#F7F9FC;--w:#FFF;--b:#4A6FA5;--bl:#EBF0F7;--bd:#37577F;--nv:#1A2B3C;--sl:#3D5066;--dm:#6B8299;--mt:#A0B4C8;--br:#DDE4ED;--r:14px;--rs:8px;--sh:0 2px 8px rgba(26,43,60,0.06)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--sl);min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Lora',serif;color:var(--nv)}
+.hide{display:none!important}
+.topnav{background:#1A2B3C;padding:0 1.5rem;position:sticky;top:0;z-index:100}
+.topnav-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.topnav .logo{font-family:'Lora',serif;font-size:1.2rem;font-weight:700;color:white}
+.topnav .logo span{color:#7EB3E0}
+.topnav .rbadge{font-size:0.7rem;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1);padding:3px 12px;border-radius:20px;margin-left:0.75rem}
+.topnav .nbtn{background:none;border:1px solid rgba(255,255,255,0.3);color:white;padding:5px 14px;border-radius:20px;font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer}
+.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.lb{max-width:440px;width:100%;text-align:center}
+.lb h1{font-size:2rem;margin-bottom:0.25rem}.lb h1 span{color:#4A6FA5}
+.lb .sub{color:#6B8299;font-size:0.95rem;margin-bottom:2rem}
+.rc2{background:white;border:2px solid #DDE4ED;border-radius:14px;padding:1.25rem;cursor:pointer;transition:all 0.25s;text-align:left;display:flex;gap:1rem;align-items:center;margin-bottom:0.75rem}
+.rc2:hover{border-color:#4A6FA5;transform:translateY(-2px);box-shadow:0 8px 30px rgba(26,43,60,0.08)}
+.rc2 .ri{font-size:2rem;flex-shrink:0}.rc2 h3{font-size:1rem;margin-bottom:0.15rem}.rc2 p{font-size:0.82rem;color:#6B8299;line-height:1.4}
+.lf{margin-top:2rem;font-size:0.72rem;color:#A0B4C8;line-height:1.6}
+.lay{max-width:1100px;margin:0 auto;padding:1.5rem}
+.pt{font-size:1.5rem;margin-bottom:0.25rem}.ps2{color:#6B8299;font-size:0.9rem;margin-bottom:1.5rem}
+.card{background:white;border:1px solid #DDE4ED;border-radius:14px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(26,43,60,0.06)}
+.card h3{font-size:0.95rem;margin-bottom:0.5rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.5rem}
+.stat{background:white;border:1px solid #DDE4ED;border-radius:14px;padding:1rem;text-align:center;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat.c1::before{background:#4A6FA5}.stat.c2::before{background:#4A9B6E}.stat.c3::before{background:#D4943C}.stat.c4::before{background:#D65D5D}
+.stv{font-family:'Lora',serif;font-size:1.5rem;font-weight:700;color:#1A2B3C}.stl{font-size:0.72rem;color:#A0B4C8;margin-top:2px}
+.ac{background:white;border:2px solid #DDE4ED;border-radius:14px;padding:1.25rem;margin-bottom:0.85rem;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+.ac:hover{border-color:#4A6FA5;transform:translateY(-2px);box-shadow:0 8px 30px rgba(26,43,60,0.08)}
+.ac::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.ac.c1::before{background:#4A6FA5}.ac.c2::before{background:#D4943C}.ac.c3::before{background:#7B6FA6}
+.act{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.35rem}
+.ac h3{font-size:1.05rem}.actm{font-size:0.72rem;color:#A0B4C8;background:#F7F9FC;padding:3px 10px;border-radius:20px}
+.ac p{font-size:0.82rem;color:#6B8299;line-height:1.5}
+.acg{display:inline-block;font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:12px;margin-top:0.5rem}
+.ac.c1 .acg{background:#EBF0F7;color:#4A6FA5}.ac.c2 .acg{background:#FDF6EC;color:#D4943C}.ac.c3 .acg{background:#F0EEF8;color:#7B6FA6}
+.qw{max-width:480px;margin:0 auto;padding:1.5rem;min-height:calc(100vh - 56px);display:flex;flex-direction:column}
+.qprog{height:4px;background:#DDE4ED;border-radius:4px;margin-bottom:1.5rem;overflow:hidden}
+.qpb{height:100%;background:#4A6FA5;border-radius:4px;transition:width 0.5s ease}
+.qnum{font-size:0.78rem;color:#A0B4C8;margin-bottom:0.75rem}
+.qtxt{font-family:'Lora',serif;font-size:1.15rem;color:#1A2B3C;line-height:1.45;margin-bottom:0.35rem}
+.qsub{font-size:0.82rem;color:#6B8299;margin-bottom:1.5rem;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:0.5rem;flex:1}
+.qopt{display:flex;align-items:center;gap:0.75rem;padding:0.9rem 1rem;background:white;border:2px solid #DDE4ED;border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:0.9rem;color:#3D5066}
+.qopt:hover{border-color:#4A6FA5;background:#EBF0F7}
+.qopt.sel{border-color:#4A6FA5;background:#EBF0F7;color:#37577F;font-weight:600}
+.qopt .qr{width:20px;height:20px;border-radius:50%;border:2px solid #DDE4ED;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qopt.sel .qr{border-color:#4A6FA5;background:#4A6FA5}
+.qopt.sel .qr::after{content:'';width:7px;height:7px;border-radius:50%;background:white}
+.qnav{display:flex;gap:0.75rem;margin-top:auto;padding-top:1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:0.75rem 1.5rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;border:none;cursor:pointer;transition:all 0.2s}
+.btn-p{background:#4A6FA5;color:white}.btn-p:hover{background:#37577F}.btn-p:disabled{background:#A0B4C8;cursor:not-allowed}
+.btn-s{background:white;color:#4A6FA5;border:2px solid #DDE4ED}.btn-s:hover{border-color:#4A6FA5}
+.qnav .btn{flex:1}
+.alert{padding:0.85rem 1rem;border-radius:8px;margin-bottom:0.75rem;font-size:0.85rem;line-height:1.5}
+.alert.red{background:#FDF0F0;color:#8B3A3A;border-left:4px solid #D65D5D}
+.alert.amber{background:#FDF6EC;color:#7A5C1F;border-left:4px solid #D4943C}
+.alert.green{background:#EDF8F1;color:#2D6B42;border-left:4px solid #4A9B6E}
+.alert.blue{background:#EBF0F7;color:#37577F;border-left:4px solid #4A6FA5}
+.ptrow{display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1rem;border-bottom:1px solid #DDE4ED;cursor:pointer;transition:background 0.15s}
+.ptrow:hover{background:#EBF0F7}.ptrow:last-child{border-bottom:none}
+.ptn{font-weight:600;font-size:0.9rem;color:#1A2B3C}.ptm{font-size:0.78rem;color:#6B8299}
+.pts{font-family:'Lora',serif;font-size:1.1rem;font-weight:700}
+.chbox{height:220px;position:relative;margin:0.5rem 0}
+.tbl{width:100%;border-collapse:collapse;font-size:0.82rem}
+.tbl th{background:#EBF0F7;color:#37577F;font-weight:600;text-align:left;padding:0.6rem 0.75rem;border-bottom:2px solid #DDE4ED}
+.tbl td{padding:0.6rem 0.75rem;border-bottom:1px solid #DDE4ED}
+.tbr{display:flex;gap:0;border-bottom:2px solid #DDE4ED;margin-bottom:1.25rem}
+.tbb{padding:0.6rem 1.25rem;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#6B8299;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tbb.on{color:#4A6FA5;border-bottom-color:#4A6FA5;font-weight:600}
+.badge{display:inline-block;font-size:0.68rem;font-weight:600;padding:2px 8px;border-radius:12px}
+.badge.red{background:#FDF0F0;color:#D65D5D}.badge.green{background:#EDF8F1;color:#4A9B6E}
+.badge.amber{background:#FDF6EC;color:#D4943C}.badge.blue{background:#EBF0F7;color:#4A6FA5}
+.resw{max-width:480px;margin:0 auto;padding:1.5rem}
+.pav{width:48px;height:48px;border-radius:50%;background:#EBF0F7;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#4A6FA5;font-weight:700;font-family:'Lora',serif}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="loginPage" class="lp"><div class="lb">
+<h1>Neuro<span>Fract</span></h1>
+<div class="sub">The Virtual Neuromodulation Clinic</div>
+<div class="rc2" onclick="doLogin('patient')"><div class="ri">&#129489;</div><div><h3>Patient</h3><p>Take assessments, view results, track recovery.</p></div></div>
+<div class="rc2" onclick="doLogin('clinician')"><div class="ri">&#129658;</div><div><h3>Clinician</h3><p>Patient data, alerts, pattern recognition, care plans.</p></div></div>
+<div class="rc2" onclick="doLogin('researcher')"><div class="ri">&#128300;</div><div><h3>Researcher</h3><p>Anonymised cohort data, statistics, data export.</p></div></div>
+<div class="lf">NeuroFract v1.0 Demo &middot; In production: authenticated login, UK GDPR compliant</div>
+</div></div>
+
+<div id="topNav" class="topnav hide"><div class="topnav-in"><div style="display:flex;align-items:center"><span class="logo">Neuro<span>Fract</span></span><span class="rbadge" id="roleBadge"></span></div><div><button class="nbtn" onclick="doLogout()">Log out</button></div></div></div>
+
+<div id="patientView" class="hide"><div class="lay" style="max-width:520px">
+<h2 class="pt" id="pGreet">Welcome</h2><p class="ps2">Your recovery, gently tracked.</p>
+<div id="pStats"></div>
+<div class="ac c1" onclick="startTest('laep')"><div class="act"><h3>Side Effects Check</h3><span class="actm">~5 min</span></div><p>19 questions about medication side effects.</p><span class="acg">LAEP &middot; Baker 1994</span></div>
+<div class="ac c2" onclick="startTest('ssq')"><div class="act"><h3>Seizure Experience</h3><span class="actm">~8 min</span></div><p>24 questions: warnings, during, and recovery.</p><span class="acg">SSQ &middot; Cramer 2002</span></div>
+<div class="ac c3" onclick="startTest('qolie')"><div class="act"><h3>Quality of Life</h3><span class="actm">~10 min</span></div><p>31 questions: worry, mood, energy, memory, social life.</p><span class="acg">QOLIE-31 &middot; Cramer 1998</span></div>
+<div class="card" id="pHist"><h3>Assessment History</h3><p style="color:#A0B4C8;font-size:0.85rem">No assessments yet.</p></div>
+</div></div>
+
+<div id="questionView" class="hide"><div class="qw">
+<div class="qprog"><div class="qpb" id="progBar"></div></div>
+<div class="qnum" id="qNum"></div><div class="qtxt" id="qTxt"></div><div class="qsub" id="qSub"></div>
+<div class="qopts" id="qOpts"></div>
+<div class="qnav"><button class="btn btn-s" id="btnBack" onclick="qBack()">Back</button><button class="btn btn-p" id="btnNext" onclick="qNext()" disabled>Next</button></div>
+</div></div>
+
+<div id="resultsView" class="hide"><div class="resw" id="resBox"></div></div>
+
+<div id="clinView" class="hide"><div class="lay">
+<h2 class="pt">Clinician Dashboard</h2><p class="ps2">Patient monitoring and clinical alerts</p>
+<div id="cStats"></div><div id="cAlerts"></div>
+<div class="tbr"><button class="tbb on" onclick="cTab('patients',this)">Patients</button><button class="tbb" onclick="cTab('trends',this)">Trends</button><button class="tbb" onclick="cTab('care',this)">Care Plans</button></div>
+<div id="cContent"></div>
+</div></div>
+
+<div id="resView" class="hide"><div class="lay">
+<h2 class="pt">Research Dashboard</h2><p class="ps2">Anonymised cohort data</p>
+<div id="rStats"></div>
+<div class="tbr"><button class="tbb on" onclick="rTab('overview',this)">Overview</button><button class="tbb" onclick="rTab('data',this)">Data Export</button></div>
+<div id="rContent"></div>
+</div></div>
+
+<script>
+var allItems = {"laep":[{"text":"Unsteadiness","sub":"Feeling unsteady on your feet"},{"text":"Tiredness","sub":"Feeling unusually tired or lacking energy"},{"text":"Restlessness","sub":"Feeling restless or unable to sit still"},{"text":"Feelings of aggression","sub":"Feeling angry or aggressive"},{"text":"Nervousness or agitation","sub":"Feeling nervous, anxious, or on edge"},{"text":"Headache","sub":"Experiencing headaches"},{"text":"Hair loss","sub":"Noticing hair thinning or loss"},{"text":"Problems with skin","sub":"Skin problems such as acne, rash, or itching"},{"text":"Double or blurred vision","sub":"Problems with your eyesight"},{"text":"Upset stomach","sub":"Nausea, stomach pain, or digestive problems"},{"text":"Difficulty concentrating","sub":"Finding it hard to focus or pay attention"},{"text":"Trouble with mouth or gums","sub":"Problems with your mouth, teeth, or gums"},{"text":"Shaky hands","sub":"Trembling or shaking in your hands"},{"text":"Weight gain","sub":"Noticeable increase in your body weight"},{"text":"Dizziness","sub":"Feeling dizzy or lightheaded"},{"text":"Sleepiness","sub":"Feeling drowsy or sleepy during the day"},{"text":"Depression","sub":"Feeling sad, low, or depressed"},{"text":"Memory problems","sub":"Difficulty remembering things"},{"text":"Disturbed sleep","sub":"Problems falling asleep or staying asleep"}],"ssq":[{"text":"Warning before seizure","sub":"Did you have any warning?","s":"w"},{"text":"Fear or anxiety before","sub":"Did you feel fear before the seizure?","s":"w"},{"text":"Physical sensation","sub":"Any unusual physical sensations before?","s":"w"},{"text":"Visual disturbance","sub":"Any visual disturbances before?","s":"w"},{"text":"Strange taste or smell","sub":"Any unusual taste or smell?","s":"w"},{"text":"Deja vu feelings","sub":"Did you experience deja vu or strange feelings?","s":"w"},{"text":"Stomach rising sensation","sub":"A rising sensation in your stomach?","s":"w"},{"text":"Ability to prepare","sub":"Were you able to prepare yourself?","s":"w"},{"text":"Loss of awareness","sub":"Did you lose awareness during the seizure?","s":"i"},{"text":"Falling","sub":"Did you fall during the seizure?","s":"i"},{"text":"Injury during seizure","sub":"Were you injured?","s":"i"},{"text":"Tongue biting","sub":"Did you bite your tongue?","s":"i"},{"text":"Incontinence","sub":"Did you experience incontinence?","s":"i"},{"text":"Convulsions or shaking","sub":"Did your body shake or convulse?","s":"i"},{"text":"Duration of seizure","sub":"How long did the seizure last?","s":"i"},{"text":"Severity of movements","sub":"How severe were physical movements?","s":"i"},{"text":"Confusion after","sub":"Were you confused after the seizure?","s":"r"},{"text":"Headache after","sub":"Did you have a headache after?","s":"r"},{"text":"Sleepiness after","sub":"Did you feel sleepy after?","s":"r"},{"text":"Difficulty speaking after","sub":"Difficulty speaking afterwards?","s":"r"},{"text":"Muscle soreness after","sub":"Were your muscles sore after?","s":"r"},{"text":"Time to recover","sub":"How long to feel normal again?","s":"r"},{"text":"Embarrassment","sub":"Did you feel embarrassed?","s":"r"},{"text":"Impact on daily activities","sub":"Did it disrupt your daily activities?","s":"r"}],"qolie":[{"text":"Fear of having a seizure","sub":"How much do you fear having a seizure?","sc":"sw"},{"text":"Worry about injury","sub":"Worry about hurting yourself during a seizure?","sc":"sw"},{"text":"Worry about embarrassment","sub":"Worry about being embarrassed?","sc":"sw"},{"text":"Worry about side effects","sub":"Worried about medication side effects?","sc":"sw"},{"text":"Worry limiting your life","sub":"Does worry about seizures limit your life?","sc":"sw"},{"text":"Overall quality of life","sub":"How would you rate your overall quality of life?","sc":"oq"},{"text":"Life satisfaction","sub":"How satisfied are you with your life?","sc":"oq"},{"text":"Felt calm and peaceful","sub":"How often have you felt calm and peaceful?","sc":"ew"},{"text":"Felt downhearted","sub":"How often have you felt downhearted?","sc":"ew"},{"text":"Felt happy","sub":"How often have you been happy?","sc":"ew"},{"text":"Felt full of energy","sub":"How often did you feel full of life?","sc":"ew"},{"text":"Felt worn out","sub":"How often have you felt worn out?","sc":"ew"},{"text":"Energy level","sub":"How much energy have you had?","sc":"ef"},{"text":"Felt tired","sub":"How often have you felt tired?","sc":"ef"},{"text":"Enough energy","sub":"Enough energy for daily activities?","sc":"ef"},{"text":"Fatigue limiting activities","sub":"Has fatigue limited your activities?","sc":"ef"},{"text":"Difficulty concentrating","sub":"Difficulty concentrating?","sc":"cf"},{"text":"Difficulty with reasoning","sub":"Difficulty reasoning and solving problems?","sc":"cf"},{"text":"Memory difficulties","sub":"How often have you had memory problems?","sc":"cf"},{"text":"Difficulty finding words","sub":"Trouble finding the right words?","sc":"cf"},{"text":"Mental slowness","sub":"How often have you felt mentally slow?","sc":"cf"},{"text":"Attention problems","sub":"Difficulty keeping attention on an activity?","sc":"cf"},{"text":"Medication limiting activities","sub":"Do medications limit your activities?","sc":"me"},{"text":"Medication making you foggy","sub":"Do medications make you feel foggy?","sc":"me"},{"text":"Medication schedule difficulty","sub":"How difficult is following your schedule?","sc":"me"},{"text":"Driving limitations","sub":"Has epilepsy limited your ability to drive?","sc":"sf"},{"text":"Social life limitations","sub":"Has epilepsy limited your social life?","sc":"sf"},{"text":"Work limitations","sub":"Has epilepsy limited your work?","sc":"sf"},{"text":"Leisure limitations","sub":"Has epilepsy limited leisure activities?","sc":"sf"},{"text":"Feeling isolated","sub":"How often have you felt isolated?","sc":"sf"},{"text":"Relationship difficulties","sub":"Has epilepsy affected your relationships?","sc":"sf"}]};
+var laepOpts = [{v:1,l:"Never a problem"},{v:2,l:"Rarely a problem"},{v:3,l:"Sometimes a problem"},{v:4,l:"Always a problem"}];
+var ssqOpts = [{v:1,l:"1 - Not at all"},{v:2,l:"2"},{v:3,l:"3"},{v:4,l:"4 - Moderate"},{v:5,l:"5"},{v:6,l:"6"},{v:7,l:"7 - Worst possible"}];
+var qolieOpts = [{v:1,l:"None of the time"},{v:2,l:"A little of the time"},{v:3,l:"Some of the time"},{v:4,l:"Most of the time"},{v:5,l:"All of the time"}];
+
+var demoP = [
+  {id:"p1",name:"Sarah M.",dev:"VNS",cond:"Epilepsy",sid:"NF-001",sc:[{d:"2026-04-01",t:"laep",s:24},{d:"2026-04-15",t:"laep",s:26},{d:"2026-04-29",t:"laep",s:28},{d:"2026-05-13",t:"laep",s:31},{d:"2026-05-20",t:"laep",s:35},{d:"2026-04-01",t:"ssq",s:4.8},{d:"2026-04-15",t:"ssq",s:4.5},{d:"2026-04-29",t:"ssq",s:4.2},{d:"2026-05-13",t:"ssq",s:3.9},{d:"2026-05-20",t:"ssq",s:3.6}]},
+  {id:"p2",name:"James K.",dev:"DBS",cond:"Epilepsy",sid:"NF-002",sc:[{d:"2026-04-01",t:"laep",s:22},{d:"2026-04-15",t:"laep",s:24},{d:"2026-04-29",t:"laep",s:27},{d:"2026-05-13",t:"laep",s:25}]},
+  {id:"p3",name:"Priya D.",dev:"VNS",cond:"Epilepsy",sid:"NF-003",sc:[{d:"2026-04-01",t:"laep",s:30},{d:"2026-04-15",t:"laep",s:32},{d:"2026-04-29",t:"laep",s:29},{d:"2026-05-13",t:"laep",s:31}]},
+  {id:"p4",name:"Tom R.",dev:"TMS",cond:"Depression",sid:"NF-004",sc:[{d:"2026-04-01",t:"laep",s:20},{d:"2026-04-29",t:"laep",s:22}]},
+  {id:"p5",name:"Aisha N.",dev:"SCS",cond:"Chronic Pain",sid:"NF-005",sc:[{d:"2026-04-15",t:"laep",s:26},{d:"2026-05-13",t:"laep",s:24}]},
+  {id:"p6",name:"Michael B.",dev:"DBS",cond:"Parkinsons",sid:"NF-006",sc:[{d:"2026-04-01",t:"laep",s:28},{d:"2026-05-01",t:"laep",s:26}]}
+];
+
+var role=null,hist=[],curTest=null,curItems=[],curOpts=[],curQ=0,answers=[];
+function load(){try{var h=localStorage.getItem("nfh3");if(h)hist=JSON.parse(h)}catch(e){}}
+function sav(){localStorage.setItem("nfh3",JSON.stringify(hist))}
+
+function doLogin(r){
+  role=r;
+  document.getElementById("loginPage").classList.add("hide");
+  document.getElementById("topNav").classList.remove("hide");
+  document.getElementById("roleBadge").textContent=r==="patient"?"Patient":r==="clinician"?"Clinician":"Researcher";
+  if(r==="patient")showPat();
+  else if(r==="clinician")showClin();
+  else showRes();
+}
+
+function doLogout(){
+  role=null;
+  ["patientView","questionView","resultsView","clinView","resView","topNav"].forEach(function(x){document.getElementById(x).classList.add("hide")});
+  document.getElementById("loginPage").classList.remove("hide");
+}
+
+function showPat(){
+  load();
+  document.getElementById("patientView").classList.remove("hide");
+  var h=new Date().getHours();
+  document.getElementById("pGreet").textContent=(h<12?"Good morning":h<18?"Good afternoon":"Good evening")+", Sarah";
+  var ll="--",cnt=hist.length,trend="--";
+  var lh=hist.filter(function(x){return x.t==="laep"});
+  if(lh.length>0)ll=lh[lh.length-1].s;
+  if(lh.length>=2){var d=lh[lh.length-1].s-lh[lh.length-2].s;trend=d<-2?"Improving":d>2?"Rising":"Stable"}
+  document.getElementById("pStats").innerHTML='<div class="stats"><div class="stat c1"><div class="stv">'+ll+'</div><div class="stl">Latest LAEP</div></div><div class="stat c2"><div class="stv">'+cnt+'</div><div class="stl">Assessments</div></div><div class="stat c3"><div class="stv">'+trend+'</div><div class="stl">Trend</div></div></div>';
+  var hh="<h3>Assessment History</h3>";
+  if(hist.length===0){hh+='<p style="color:#A0B4C8;font-size:0.85rem">No assessments yet. Take your first one above.</p>'}
+  else{var sr=hist.slice().reverse();for(var i=0;i<sr.length;i++){var x=sr[i];var tn=x.t==="laep"?"Side Effects (LAEP)":x.t==="ssq"?"Seizure Severity (SSQ)":"Quality of Life (QOLIE-31)";var sc=x.t==="laep"?(x.s>=37?"#D65D5D":x.s>=30?"#D4943C":"#4A9B6E"):"#4A6FA5";hh+='<div style="display:flex;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #DDE4ED"><div><div style="font-weight:600;font-size:0.85rem;color:#1A2B3C">'+tn+'</div><div style="font-size:0.72rem;color:#A0B4C8">'+new Date(x.d).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+'</div></div><div style="font-family:Lora,serif;font-size:1.1rem;font-weight:700;color:'+sc+'">'+x.s+'</div></div>'}}
+  document.getElementById("pHist").innerHTML=hh;
+}
+
+function startTest(type){
+  curTest=type;curQ=0;answers=[];
+  curItems=allItems[type];
+  curOpts=type==="laep"?laepOpts:type==="ssq"?ssqOpts:qolieOpts;
+  for(var i=0;i<curItems.length;i++)answers.push(null);
+  document.getElementById("patientView").classList.add("hide");
+  document.getElementById("questionView").classList.remove("hide");
+  renderQ();
+}
+
+function renderQ(){
+  var total=curItems.length;
+  document.getElementById("progBar").style.width=((curQ+1)/total*100)+"%";
+  document.getElementById("qNum").textContent="Question "+(curQ+1)+" of "+total;
+  document.getElementById("qTxt").textContent=curItems[curQ].text;
+  document.getElementById("qSub").textContent=curItems[curQ].sub;
+  var h="";
+  for(var i=0;i<curOpts.length;i++){var s=answers[curQ]===curOpts[i].v;h+='<div class="qopt'+(s?" sel":"")+'" onclick="pickOpt('+curOpts[i].v+')"><div class="qr"></div><span>'+curOpts[i].l+'</span></div>'}
+  document.getElementById("qOpts").innerHTML=h;
+  document.getElementById("btnBack").style.visibility=curQ===0?"hidden":"visible";
+  document.getElementById("btnNext").disabled=answers[curQ]===null;
+  document.getElementById("btnNext").textContent=curQ===total-1?"See results":"Next";
+}
+
+function pickOpt(v){answers[curQ]=v;renderQ();if(curQ<curItems.length-1)setTimeout(function(){qNext()},250)}
+function qNext(){if(answers[curQ]===null)return;if(curQ<curItems.length-1){curQ++;renderQ()}else finishTest()}
+function qBack(){if(curQ>0){curQ--;renderQ()}}
+
+function finishTest(){
+  var score=0;for(var i=0;i<answers.length;i++)score+=answers[i];
+  if(curTest==="ssq")score=Math.round((score/answers.length)*10)/10;
+  if(curTest==="qolie")score=Math.round(((answers.length*5-score)/(answers.length*4))*100);
+  hist.push({t:curTest,d:new Date().toISOString(),s:score});sav();
+  showResults(score);
+}
+
+function showResults(score){
+  document.getElementById("questionView").classList.add("hide");
+  document.getElementById("resultsView").classList.remove("hide");
+  var type=curTest,lv,co,bg,interp,icon,mx;
+  if(type==="laep"){mx="out of 76";if(score<30){lv="Low side-effect burden";co="#4A9B6E";bg="#EDF8F1";icon="&#9989;";interp="Your symptom levels are low. Your body is tolerating treatment well."}else if(score<37){lv="Moderate side-effect burden";co="#D4943C";bg="#FDF6EC";icon="&#9889;";interp="Some side effects present. Consider discussing with your clinician."}else if(score<45){lv="Elevated side-effect burden";co="#D65D5D";bg="#FDF0F0";icon="&#9888;&#65039;";interp="<strong>We recommend speaking with your clinician soon.</strong>"}else{lv="High side-effect burden";co="#D65D5D";bg="#FDF0F0";icon="&#128308;";interp="<strong>Please contact your clinical team</strong> for a review."}}
+  else if(type==="ssq"){mx="out of 7.0";if(score<3){lv="Mild seizure severity";co="#4A9B6E";bg="#EDF8F1";icon="&#9989;";interp="Your seizures are relatively mild. Continue tracking."}else if(score<5){lv="Moderate seizure severity";co="#D4943C";bg="#FDF6EC";icon="&#9889;";interp="Moderate impact. Discuss any changes with your clinician."}else{lv="Severe seizure impact";co="#D65D5D";bg="#FDF0F0";icon="&#9888;&#65039;";interp="<strong>Please discuss this with your clinician.</strong>"}}
+  else{mx="out of 100";if(score>=70){lv="Good quality of life";co="#4A9B6E";bg="#EDF8F1";icon="&#9989;";interp="Your quality of life is in a good range."}else if(score>=50){lv="Moderate quality of life";co="#D4943C";bg="#FDF6EC";icon="&#9889;";interp="Some areas affected. Consider discussing with your clinician."}else{lv="Quality of life impacted";co="#D65D5D";bg="#FDF0F0";icon="&#9888;&#65039;";interp="<strong>Please talk to your clinical team about support.</strong>"}}
+  var pct=type==="laep"?Math.round(((score-19)/(76-19))*100):type==="ssq"?Math.round((score/7)*100):score;
+  var tn=type==="laep"?"Side Effects (LAEP)":type==="ssq"?"Seizure Severity (SSQ)":"Quality of Life (QOLIE-31)";
+  var ref=type==="laep"?"LAEP: Baker et al. 1994 &middot; Threshold 36.5: Romoli et al. 2018":type==="ssq"?"SSQ: Cramer et al. 2002 &middot; Scale 1-7":"QOLIE-31: Cramer et al. 1998 &middot; RAND public domain";
+  var ds=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  document.getElementById("resBox").innerHTML='<div style="text-align:center;padding:1rem 0 1.5rem;border-bottom:1px solid #DDE4ED;margin-bottom:1.25rem"><div style="font-size:2rem;margin-bottom:0.5rem">'+icon+'</div><h2 style="font-family:Lora,serif;font-size:1.4rem;color:#1A2B3C">Your results</h2><p style="color:#6B8299;font-size:0.88rem">'+tn+' &middot; '+ds+'</p></div><div class="card"><h3>Overall Score</h3><div style="display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;background:'+bg+';margin-bottom:0.75rem"><div><div style="font-family:Lora,serif;font-size:2.2rem;font-weight:700;color:'+co+'">'+score+'</div><div style="font-size:0.85rem;color:#6B8299">'+mx+'</div></div><div style="font-size:0.85rem;font-weight:600;color:'+co+'">'+lv+'</div></div><div style="height:10px;background:#F7F9FC;border-radius:5px;overflow:hidden;margin-bottom:0.75rem"><div style="height:100%;width:'+pct+'%;background:'+co+';border-radius:5px"></div></div><div style="font-size:0.85rem;color:#6B8299;line-height:1.6;padding:0.75rem;background:#F7F9FC;border-radius:10px">'+interp+'</div></div><div class="card" style="background:#EBF0F7;border-color:#4A6FA5"><h3 style="color:#37577F">What to do next</h3><p style="font-size:0.85rem;color:#37577F;line-height:1.6">Results saved. Take this again in 2-4 weeks to track changes.</p></div><div style="text-align:center;padding:1rem"><button class="btn btn-p" onclick="backPat()">Back to home</button></div><p style="text-align:center;font-size:0.7rem;color:#A0B4C8;padding:0.5rem;line-height:1.5">'+ref+'<br>Not a medical diagnosis. Always consult your clinical team.</p>';
+}
+
+function backPat(){document.getElementById("resultsView").classList.add("hide");showPat();document.getElementById("patientView").classList.remove("hide")}
+
+function showClin(){
+  document.getElementById("clinView").classList.remove("hide");
+  document.getElementById("cStats").innerHTML='<div class="stats"><div class="stat c1"><div class="stv">'+demoP.length+'</div><div class="stl">Patients</div></div><div class="stat c4"><div class="stv">2</div><div class="stl">Alerts</div></div><div class="stat c2"><div class="stv">73%</div><div class="stl">Completion</div></div><div class="stat c3"><div class="stv">28.5</div><div class="stl">Mean LAEP</div></div></div>';
+  document.getElementById("cAlerts").innerHTML='<div class="alert red"><strong>Sarah M.</strong> &mdash; LAEP 35 and rising. Approaching dropout threshold (36.5). Divergence: seizures improving, side effects worsening. <em>Romoli 2018</em></div><div class="alert amber"><strong>Priya D.</strong> &mdash; LAEP fluctuating around 30. Monitor closely.</div>';
+  cTab("patients",document.querySelector("#clinView .tbb"));
+}
+
+function cTab(tab,el){
+  document.querySelectorAll("#clinView .tbb").forEach(function(b){b.classList.remove("on")});if(el)el.classList.add("on");
+  var h="";
+  if(tab==="patients"){
+    h='<div class="card" style="padding:0;overflow:hidden"><div style="padding:1rem 1.25rem;border-bottom:1px solid #DDE4ED"><h3 style="margin:0">My Patients</h3></div>';
+    for(var i=0;i<demoP.length;i++){var p=demoP[i];var ls=p.sc.filter(function(x){return x.t==="laep"});var lv=ls.length>0?ls[ls.length-1].s:"--";var sc=lv>=37?"#D65D5D":lv>=30?"#D4943C":lv==="--"?"#A0B4C8":"#4A9B6E";var bd=lv>=35?' <span class="badge red">ALERT</span>':"";
+    h+='<div class="ptrow" onclick="showPD('+i+')"><div><div class="ptn">'+p.name+bd+'</div><div class="ptm">'+p.dev+' &middot; '+p.cond+'</div></div><div class="pts" style="color:'+sc+'">'+lv+'</div></div>'}
+    h+='</div>';
+  }else if(tab==="trends"){
+    h='<div class="card"><h3>LAEP Trajectory &mdash; Sarah M.</h3><div class="chbox"><canvas id="ch1"></canvas></div></div><div class="card"><h3>SSQ vs LAEP Divergence &mdash; Sarah M.</h3><div class="chbox"><canvas id="ch2"></canvas></div></div>';
+    setTimeout(renderCh,100);
+  }else{
+    h='<div class="card"><h3>Care Plan &mdash; Sarah M.</h3><div class="alert red"><strong>1. Medication review.</strong> LAEP 35, rising. Divergence detected. <em>(Romoli 2018)</em></div><div class="alert amber"><strong>2. Assess mood.</strong> Depression item elevated. Consider PHQ-9. <em>(Kwon 2018)</em></div><div class="alert blue"><strong>3. Early review.</strong> Do not wait 6 months. Intervene within 2 weeks.</div></div>';
+  }
+  document.getElementById("cContent").innerHTML=h;
+}
+
+function showPD(i){
+  var p=demoP[i];var ls=p.sc.filter(function(x){return x.t==="laep"});
+  var h='<div class="card"><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem"><div class="pav">'+p.name.charAt(0)+'</div><div><h3 style="margin:0">'+p.name+'</h3><div style="font-size:0.82rem;color:#6B8299">'+p.dev+' &middot; '+p.cond+' &middot; '+p.sid+'</div></div></div><table class="tbl"><thead><tr><th>Date</th><th>Test</th><th>Score</th></tr></thead><tbody>';
+  for(var j=0;j<p.sc.length;j++){var s=p.sc[j];h+='<tr><td>'+new Date(s.d).toLocaleDateString("en-GB",{day:"numeric",month:"short"})+'</td><td>'+s.t.toUpperCase()+'</td><td style="font-weight:700">'+s.s+'</td></tr>'}
+  h+='</tbody></table></div>';
+  if(ls.length>=2){h+='<div class="card"><h3>LAEP Trend</h3><div class="chbox"><canvas id="chD"></canvas></div></div>';
+  setTimeout(function(){new Chart(document.getElementById("chD"),{type:"line",data:{labels:ls.map(function(x){return new Date(x.d).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}),datasets:[{label:"LAEP",data:ls.map(function(x){return x.s}),borderColor:"#4A6FA5",backgroundColor:"rgba(74,111,165,0.1)",fill:true,tension:0.3,pointRadius:5},{label:"Threshold",data:ls.map(function(){return 36.5}),borderColor:"#D65D5D",borderDash:[4,4],borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{font:{size:10}}}},scales:{y:{min:15,max:50}}}})},100)}
+  document.getElementById("cContent").innerHTML=h;
+}
+
+function renderCh(){
+  var s=demoP[0];var ls=s.sc.filter(function(x){return x.t==="laep"});var ss=s.sc.filter(function(x){return x.t==="ssq"});
+  if(document.getElementById("ch1")){new Chart(document.getElementById("ch1"),{type:"line",data:{labels:ls.map(function(x){return new Date(x.d).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}),datasets:[{label:"LAEP",data:ls.map(function(x){return x.s}),borderColor:"#4A6FA5",backgroundColor:"rgba(74,111,165,0.1)",fill:true,tension:0.3,pointRadius:5},{label:"Threshold (36.5)",data:ls.map(function(){return 36.5}),borderColor:"#D65D5D",borderDash:[4,4],borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:{y:{min:15,max:50}}}})}
+  if(document.getElementById("ch2")&&ss.length>0){var cm=[];for(var i=0;i<Math.min(ls.length,ss.length);i++)cm.push({d:ls[i].d,l:ls[i].s/10,s:ss[i].s});
+  new Chart(document.getElementById("ch2"),{type:"line",data:{labels:cm.map(function(x){return new Date(x.d).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}),datasets:[{label:"SSQ (seizures)",data:cm.map(function(x){return x.s}),borderColor:"#4A9B6E",backgroundColor:"rgba(74,155,110,0.1)",fill:true,tension:0.3},{label:"LAEP/10 (side effects)",data:cm.map(function(x){return x.l}),borderColor:"#D65D5D",backgroundColor:"rgba(214,93,93,0.1)",fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:{y:{min:0,max:7}}}})}
+}
+
+function showRes(){
+  document.getElementById("resView").classList.remove("hide");
+  document.getElementById("rStats").innerHTML='<div class="stats"><div class="stat c1"><div class="stv">'+demoP.length+'</div><div class="stl">Participants</div></div><div class="stat c2"><div class="stv">'+demoP.reduce(function(a,p){return a+p.sc.length},0)+'</div><div class="stl">Assessments</div></div><div class="stat c3"><div class="stv">73%</div><div class="stl">Completion</div></div><div class="stat c4"><div class="stv">28.5</div><div class="stl">Mean LAEP</div></div></div>';
+  rTab("overview",document.querySelector("#resView .tbb"));
+}
+
+function rTab(tab,el){
+  document.querySelectorAll("#resView .tbb").forEach(function(b){b.classList.remove("on")});if(el)el.classList.add("on");
+  var h="";
+  if(tab==="overview"){
+    h='<div class="card"><h3>Anonymised Cohort Data</h3><table class="tbl"><thead><tr><th>Study ID</th><th>Device</th><th>Condition</th><th>N</th><th>Latest LAEP</th></tr></thead><tbody>';
+    for(var i=0;i<demoP.length;i++){var p=demoP[i];var ls=p.sc.filter(function(x){return x.t==="laep"});var lv=ls.length>0?ls[ls.length-1].s:"--";var sc=lv>=37?"#D65D5D":lv>=30?"#D4943C":lv==="--"?"#A0B4C8":"#4A9B6E";
+    h+='<tr><td><strong>'+p.sid+'</strong></td><td>'+p.dev+'</td><td>'+p.cond+'</td><td>'+p.sc.length+'</td><td style="font-weight:700;color:'+sc+'">'+lv+'</td></tr>'}
+    h+='</tbody></table><p style="font-size:0.72rem;color:#A0B4C8;margin-top:0.75rem">No patient names visible. Anonymised study IDs only.</p></div>';
+  }else{
+    h='<div class="card"><h3>Data Export</h3><p style="font-size:0.85rem;color:#6B8299;margin-bottom:1rem">Anonymised datasets. UK GDPR compliant.</p><div style="display:flex;flex-wrap:wrap;gap:0.5rem"><button class="btn btn-p" style="padding:0.5rem 1rem;font-size:0.82rem" onclick="expCSV(\'laep\')">LAEP (CSV)</button><button class="btn btn-p" style="padding:0.5rem 1rem;font-size:0.82rem" onclick="expCSV(\'ssq\')">SSQ (CSV)</button><button class="btn btn-p" style="padding:0.5rem 1rem;font-size:0.82rem" onclick="expCSV(\'all\')">Full Dataset</button></div></div>';
+    h+='<div class="card"><h3>Data Dictionary</h3><table class="tbl"><thead><tr><th>Variable</th><th>Type</th><th>Range</th><th>Source</th></tr></thead><tbody><tr><td>study_id</td><td>String</td><td>NF-001+</td><td>Auto</td></tr><tr><td>laep_total</td><td>Integer</td><td>19-76</td><td>Baker 1994</td></tr><tr><td>ssq_mean</td><td>Float</td><td>1-7</td><td>Cramer 2002</td></tr><tr><td>qolie_global</td><td>Float</td><td>0-100</td><td>Cramer 1998</td></tr><tr><td>device</td><td>Cat.</td><td>DBS/VNS/TMS/SCS</td><td>Record</td></tr></tbody></table></div>';
+  }
+  document.getElementById("rContent").innerHTML=h;
+}
+
+function expCSV(type){
+  var csv="study_id,device,condition,date,test,score\n";
+  for(var i=0;i<demoP.length;i++){var p=demoP[i];var sc=type==="all"?p.sc:p.sc.filter(function(x){return x.t===type});
+  for(var j=0;j<sc.length;j++)csv+=p.sid+","+p.dev+","+p.cond+","+sc[j].d+","+sc[j].t.toUpperCase()+","+sc[j].s+"\n"}
+  var b=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="neurofract-"+type+"-export.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+load();
+</script>
+</body>
+</html>
