@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can read/write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Patients can read/write their own patient document
+    // Clinicians can read patients assigned to them
+    match /patients/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician' &&
+        resource.data.clinicianId == request.auth.uid;
+    }
+
+    // Assessments: patients write their own, clinicians read their patients'
+    // Researchers read anonymised fields only (enforced in app logic)
+    match /assessments/{assessmentId} {
+      allow create: if request.auth != null && request.resource.data.patientId == request.auth.uid;
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'researcher'
+      );
+      // No updates or deletes — data integrity for research
+      allow update, delete: if false;
+    }
+
+    // Seizures: same rules as assessments
+    match /seizures/{seizureId} {
+      allow create: if request.auth != null && request.resource.data.patientId == request.auth.uid;
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'researcher'
+      );
+      allow update, delete: if false;
+    }
+
+    // Alerts: clinicians create and read, patients read their own
+    match /alerts/{alertId} {
+      allow read: if request.auth != null && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.clinicianId == request.auth.uid
+      );
+      allow create, update: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician';
+      allow delete: if false;
+    }
+  }
+}

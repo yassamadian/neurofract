@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroFract — Patient Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #EBF0F7;
+      color: #1A2B3C;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #d1dae8;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo h1 { font-family: 'Lora', serif; font-size: 22px; font-weight: 700; }
+    .logo h1 span.neuro { color: #1A2B3C; }
+    .logo h1 span.fract { color: #4A6FA5; }
+
+    .user-info { display: flex; align-items: center; gap: 16px; }
+    .user-info span { font-size: 14px; color: #6b7280; }
+    .sign-out-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+    .sign-out-btn:hover { border-color: #4A6FA5; color: #4A6FA5; }
+
+    main { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+
+    .welcome {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      border-left: 4px solid #4A6FA5;
+    }
+
+    .welcome h2 { font-family: 'Lora', serif; font-size: 22px; margin-bottom: 6px; }
+    .welcome p { color: #6b7280; font-size: 15px; line-height: 1.5; }
+
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1A2B3C;
+    }
+
+    .assessments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .assessment-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+    }
+
+    .assessment-card:hover {
+      border-color: #4A6FA5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74,111,165,0.15);
+    }
+
+    .assessment-card .icon {
+      width: 44px; height: 44px;
+      background: #EBF0F7;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+      font-size: 22px;
+    }
+
+    .assessment-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .assessment-card p { font-size: 13px; color: #6b7280; line-height: 1.4; }
+    .assessment-card .badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 10px;
+      background: #EBF0F7;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #4A6FA5;
+      font-weight: 500;
+    }
+
+    /* History */
+    .history-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .history-item:last-child { border-bottom: none; }
+
+    .history-item .type { font-weight: 600; font-size: 14px; }
+    .history-item .date { font-size: 13px; color: #6b7280; }
+    .history-item .result {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .result.good { background: #d1fae5; color: #065f46; }
+    .result.warning { background: #fef3c7; color: #92400e; }
+    .result.alert { background: #fee2e2; color: #991b1b; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6b7280;
+    }
+    .empty-state p { font-size: 15px; }
+
+    /* QUESTIONNAIRE OVERLAY */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,43,60,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+
+    .questionnaire-modal {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 560px;
+      width: 100%;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .q-header { margin-bottom: 28px; }
+    .q-header h2 { font-family: 'Lora', serif; font-size: 22px; margin-bottom: 6px; }
+    .q-header p { font-size: 14px; color: #6b7280; }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #EBF0F7;
+      border-radius: 3px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #4A6FA5;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 28px;
+      color: #1A2B3C;
+    }
+
+    .question-number {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 12px; }
+
+    .option-btn {
+      padding: 14px 18px;
+      border: 2px solid #d1dae8;
+      border-radius: 10px;
+      background: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: #1A2B3C;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .option-btn:hover { border-color: #4A6FA5; background: #EBF0F7; }
+    .option-btn.selected { border-color: #4A6FA5; background: #4A6FA5; color: #fff; }
+
+    .q-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 28px;
+    }
+    .btn-back {
+      padding: 10px 20px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      background: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+    .btn-next {
+      padding: 10px 24px;
+      background: #4A6FA5;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+    }
+    .btn-next:disabled { background: #9bb2ce; cursor: not-allowed; }
+
+    /* Results screen */
+    .result-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .result-icon { font-size: 56px; margin-bottom: 16px; }
+    .result-screen h2 { font-family: 'Lora', serif; font-size: 26px; margin-bottom: 12px; }
+    .result-screen p { color: #6b7280; font-size: 16px; line-height: 1.6; margin-bottom: 8px; }
+    .result-score {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 16px 0;
+    }
+    .score-good { background: #d1fae5; color: #065f46; }
+    .score-warning { background: #fef3c7; color: #92400e; }
+    .score-alert { background: #fee2e2; color: #991b1b; }
+    .btn-done {
+      margin-top: 24px;
+      padding: 13px 32px;
+      background: #4A6FA5;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <h1><span class="neuro">Neuro</span><span class="fract">Fract</span></h1>
+  </div>
+  <div class="user-info">
+    <span id="user-name-display">Loading...</span>
+    <button class="sign-out-btn" onclick="handleSignOut()">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <div class="welcome">
+    <h2 id="welcome-msg">Welcome back</h2>
+    <p>Your assessments help your clinical team monitor your wellbeing between appointments. Each one takes about 5 minutes.</p>
+  </div>
+
+  <div class="section-title">Your Assessments</div>
+
+  <div class="assessments-grid">
+    <div class="assessment-card" onclick="startAssessment('laep')">
+      <div class="icon">📋</div>
+      <h3>LAEP</h3>
+      <p>Liverpool Adverse Events Profile — how your treatment is affecting you day to day</p>
+      <span class="badge">19 questions · ~5 min</span>
+    </div>
+    <div class="assessment-card" onclick="startAssessment('ssq')">
+      <div class="icon">🧠</div>
+      <h3>SSQ</h3>
+      <p>Seizure Severity Questionnaire — understanding your recent seizure experiences</p>
+      <span class="badge">24 questions · ~7 min</span>
+    </div>
+    <div class="assessment-card" onclick="startAssessment('qolie')">
+      <div class="icon">🌟</div>
+      <h3>QOLIE-31</h3>
+      <p>Quality of Life in Epilepsy — how epilepsy affects your daily life and wellbeing</p>
+      <span class="badge">31 questions · ~10 min</span>
+    </div>
+  </div>
+
+  <div class="section-title">Recent Results</div>
+  <div class="history-card">
+    <div id="history-list">
+      <div class="empty-state"><p>No assessments completed yet. Start one above.</p></div>
+    </div>
+  </div>
+</main>
+
+<!-- QUESTIONNAIRE OVERLAY -->
+<div class="overlay" id="q-overlay">
+  <div class="questionnaire-modal" id="q-modal">
+    <!-- Injected by JS -->
+  </div>
+</div>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  doc, getDoc, collection, addDoc, query, where, orderBy, getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ── INSTRUMENT DEFINITIONS ──────────────────────────────────────────
+
+const LAEP_ITEMS = [
+  "Unsteadiness","Tiredness","Restlessness","Feelings of aggression",
+  "Nervousness or agitation","Headache","Hair loss","Problems with skin",
+  "Double or blurred vision","Upset stomach","Difficulty concentrating",
+  "Trouble with mouth or gums","Shaky hands","Weight gain","Dizziness",
+  "Sleepiness","Depression","Memory problems","Disturbed sleep"
+];
+const LAEP_OPTIONS = ["Never","Rarely","Sometimes","Always"];
+
+const SSQ_ITEMS = [
+  "How often do you have a warning (aura) before your seizures?",
+  "How afraid are you when you get a warning that a seizure is coming?",
+  "How severe are the physical sensations during a warning?",
+  "How much do visual disturbances occur during your seizures?",
+  "How often do you experience unusual tastes or smells?",
+  "How often do you experience déjà vu before or during seizures?",
+  "How severe is any stomach sensation during seizures?",
+  "How able are you to prepare for a seizure when you get a warning?",
+  "How often do you lose awareness during seizures?",
+  "How often do you fall during seizures?",
+  "How often are you injured during seizures?",
+  "How often do you bite your tongue during seizures?",
+  "How often do you lose bladder or bowel control?",
+  "How severe are the convulsions (shaking) during seizures?",
+  "How long do your seizures usually last?",
+  "How severe are your seizures overall?",
+  "How confused are you after a seizure?",
+  "How often do you get a headache after seizures?",
+  "How sleepy are you after seizures?",
+  "How much difficulty do you have speaking after seizures?",
+  "How much muscle soreness do you experience after seizures?",
+  "How long does it take you to fully recover after a seizure?",
+  "How embarrassed do you feel about having seizures in public?",
+  "How much do seizures affect your daily activities?"
+];
+const SSQ_OPTIONS = [
+  ["Not at all","Barely","A little","Somewhat","Moderately","Very much","Extremely"],
+];
+
+const QOLIE_ITEMS = [
+  // Seizure Worry (items 1-5)
+  "How often did you worry about having a seizure?",
+  "How often did you worry about hurting yourself during a seizure?",
+  "How often were you afraid of having a seizure?",
+  "How often did you feel limited by your epilepsy?",
+  "How often did you worry about side effects from medicines?",
+  // Overall QOL (6-7)
+  "How would you rate your quality of life?",
+  "How satisfied are you with your life?",
+  // Emotional Wellbeing (8-12)
+  "How often did you feel nervous or anxious?",
+  "How often did you feel down or sad?",
+  "How often were you a happy person?",
+  "How often did you feel calm and peaceful?",
+  "How often did you feel depressed?",
+  // Energy/Fatigue (13-16)
+  "How much energy did you have?",
+  "How often did you feel tired?",
+  "How often did you feel worn out?",
+  "How often did you have enough energy for daily activities?",
+  // Cognitive Function (17-22)
+  "How often did you have memory problems?",
+  "How often did you have difficulty concentrating?",
+  "How often did you have trouble finding words?",
+  "How often did you have trouble with mental tasks?",
+  "How often did you feel mentally slow?",
+  "How often did you have difficulty thinking clearly?",
+  // Medication Effects (23-25)
+  "How much did medications affect your memory?",
+  "How much did medications affect your concentration?",
+  "How much did medications affect your physical coordination?",
+  // Social Function (26-31)
+  "How often did epilepsy limit your social activities?",
+  "How often did you feel isolated because of epilepsy?",
+  "How often did you feel supported by family and friends?",
+  "How often did you have difficulty maintaining relationships?",
+  "How often did epilepsy affect your ability to work?",
+  "How often did you feel embarrassed by your epilepsy?"
+];
+const QOLIE_OPTIONS = [
+  ["All of the time","Most of the time","A good bit of the time","Some of the time","A little of the time","None of the time"],
+];
+
+// ── STATE ──────────────────────────────────────────────────────────
+
+let currentUser = null;
+let currentUserData = null;
+let activeAssessment = null; // { type, items, options, answers, currentQ }
+
+// ── AUTH ────────────────────────────────────────────────────────────
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (snap.exists()) {
+    currentUserData = snap.data();
+    document.getElementById('user-name-display').textContent = currentUserData.name;
+    document.getElementById('welcome-msg').textContent = `Welcome back, ${currentUserData.name.split(' ')[0]}`;
+  }
+  loadHistory();
+});
+
+window.handleSignOut = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+};
+
+// ── HISTORY ─────────────────────────────────────────────────────────
+
+async function loadHistory() {
+  if (!currentUser) return;
+  const q = query(
+    collection(db, 'assessments'),
+    where('patientId', '==', currentUser.uid),
+    orderBy('date', 'desc')
+  );
+  const snap = await getDocs(q);
+  const list = document.getElementById('history-list');
+
+  if (snap.empty) {
+    list.innerHTML = '<div class="empty-state"><p>No assessments completed yet. Start one above.</p></div>';
+    return;
+  }
+
+  list.innerHTML = snap.docs.map(d => {
+    const data = d.data();
+    const date = data.date?.toDate ? data.date.toDate().toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const label = interpretScore(data.type, data.score);
+    return `<div class="history-item">
+      <div>
+        <div class="type">${data.type.toUpperCase()}</div>
+        <div class="date">${date}</div>
+      </div>
+      <div class="result ${label.cls}">${label.text}</div>
+    </div>`;
+  }).join('');
+}
+
+function interpretScore(type, score) {
+  if (type === 'laep') {
+    if (score < 36.5) return { text: 'Within range ↓', cls: 'good' };
+    if (score < 45) return { text: 'Elevated — review', cls: 'warning' };
+    return { text: 'High — contact clinic', cls: 'alert' };
+  }
+  if (type === 'ssq') {
+    if (score < 3) return { text: 'Mild', cls: 'good' };
+    if (score < 5) return { text: 'Moderate', cls: 'warning' };
+    return { text: 'Severe', cls: 'alert' };
+  }
+  if (type === 'qolie') {
+    if (score >= 60) return { text: 'Good quality of life', cls: 'good' };
+    if (score >= 40) return { text: 'Some impact', cls: 'warning' };
+    return { text: 'Significant impact', cls: 'alert' };
+  }
+  return { text: score, cls: 'good' };
+}
+
+// ── QUESTIONNAIRE ENGINE ────────────────────────────────────────────
+
+window.startAssessment = function(type) {
+  let items, options;
+  if (type === 'laep') { items = LAEP_ITEMS; options = LAEP_OPTIONS; }
+  else if (type === 'ssq') { items = SSQ_ITEMS; options = SSQ_OPTIONS; }
+  else { items = QOLIE_ITEMS; options = QOLIE_OPTIONS; }
+
+  activeAssessment = { type, items, options, answers: [], currentQ: 0 };
+  document.getElementById('q-overlay').classList.add('open');
+  renderQuestion();
+};
+
+function renderQuestion() {
+  const { type, items, options, answers, currentQ } = activeAssessment;
+  const total = items.length;
+  const opts = Array.isArray(options[0]) ? options[0] : options;
+  const progress = ((currentQ) / total * 100).toFixed(0);
+
+  const typeName = type === 'laep' ? 'LAEP' : type === 'ssq' ? 'SSQ' : 'QOLIE-31';
+  const prefix = type === 'laep'
+    ? 'Over the past month, how often have you experienced...'
+    : type === 'ssq' ? '' : '';
+
+  const modal = document.getElementById('q-modal');
+  modal.innerHTML = `
+    <div class="q-header">
+      <h2>${typeName}</h2>
+      <p>${prefix}</p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+    <div class="question-number">Question ${currentQ + 1} of ${total}</div>
+    <div class="question-text">${items[currentQ]}</div>
+    <div class="options" id="options-container"></div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="prevQuestion()" ${currentQ === 0 ? 'style="visibility:hidden"' : ''}>← Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>
+        ${currentQ === total - 1 ? 'Finish' : 'Next →'}
+      </button>
+    </div>
+  `;
+
+  const container = document.getElementById('options-container');
+  opts.forEach((label, i) => {
+    const val = i + 1;
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (answers[currentQ] === val ? ' selected' : '');
+    btn.textContent = label;
+    btn.onclick = () => selectAnswer(val);
+    container.appendChild(btn);
+  });
+
+  if (answers[currentQ] !== undefined) {
+    document.getElementById('btn-next').disabled = false;
+  }
+}
+
+function selectAnswer(val) {
+  activeAssessment.answers[activeAssessment.currentQ] = val;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i + 1 === val);
+  });
+  document.getElementById('btn-next').disabled = false;
+
+  // Auto-advance after short delay
+  setTimeout(() => {
+    if (activeAssessment.currentQ < activeAssessment.items.length - 1) {
+      activeAssessment.currentQ++;
+      renderQuestion();
+    }
+  }, 400);
+}
+
+window.nextQuestion = function() {
+  const { items, currentQ } = activeAssessment;
+  if (currentQ < items.length - 1) {
+    activeAssessment.currentQ++;
+    renderQuestion();
+  } else {
+    finishAssessment();
+  }
+};
+
+window.prevQuestion = function() {
+  if (activeAssessment.currentQ > 0) {
+    activeAssessment.currentQ--;
+    renderQuestion();
+  }
+};
+
+async function finishAssessment() {
+  const { type, answers } = activeAssessment;
+
+  // Calculate score
+  let score;
+  if (type === 'laep') {
+    score = answers.reduce((a, b) => a + b, 0); // sum 19-76
+  } else if (type === 'ssq') {
+    score = answers.reduce((a, b) => a + b, 0) / answers.length; // mean 1-7
+    score = Math.round(score * 100) / 100;
+  } else {
+    // QOLIE-31: transform raw to 0-100
+    // Simplified: mean of all items mapped to 0-100 scale
+    const rawMean = answers.reduce((a, b) => a + b, 0) / answers.length;
+    score = Math.round(((6 - rawMean) / 5) * 100); // reverse and scale
+  }
+
+  const flagged = (type === 'laep' && score >= 36.5) ||
+                  (type === 'ssq' && score >= 5) ||
+                  (type === 'qolie' && score < 40);
+
+  try {
+    await addDoc(collection(db, 'assessments'), {
+      patientId: currentUser.uid,
+      clinicianId: currentUserData?.clinicianId || null,
+      studyId: (await getDoc(doc(db, 'patients', currentUser.uid))).data()?.studyId || null,
+      type,
+      date: serverTimestamp(),
+      score,
+      answers,
+      flagged
+    });
+  } catch (e) {
+    console.error('Error saving assessment:', e);
+  }
+
+  showResult(type, score, flagged);
+}
+
+function showResult(type, score, flagged) {
+  const interp = interpretScore(type, score);
+  const typeName = type === 'laep' ? 'LAEP' : type === 'ssq' ? 'SSQ' : 'QOLIE-31';
+
+  let message = '';
+  if (type === 'laep') {
+    if (score < 36.5) message = "Your score is within the normal range. Keep taking your assessments regularly so your clinical team can track your wellbeing.";
+    else if (score < 45) message = "Your score suggests you may be experiencing some side effects. Your clinical team will be notified to discuss this at your next appointment.";
+    else message = "Your score is high, which may indicate significant side effects. We recommend contacting your clinical team soon.";
+  } else if (type === 'ssq') {
+    if (score < 3) message = "Your seizures appear to be relatively mild. Continue monitoring and complete your next assessment in a week.";
+    else if (score < 5) message = "You're experiencing moderate seizure severity. Your clinical team can see these results.";
+    else message = "Your seizures are significantly affecting you. Please contact your clinical team if you haven't recently.";
+  } else {
+    if (score >= 60) message = "Your quality of life score is above the global average for people with epilepsy. Keep it up.";
+    else if (score >= 40) message = "Epilepsy is having some impact on your quality of life. Your clinical team will review this.";
+    else message = "Epilepsy appears to be having a significant impact on your quality of life. Your clinical team will be in touch.";
+  }
+
+  const scoreDisplay = type === 'ssq' ? score.toFixed(1) : Math.round(score);
+  const scoreCls = interp.cls === 'good' ? 'score-good' : interp.cls === 'warning' ? 'score-warning' : 'score-alert';
+
+  document.getElementById('q-modal').innerHTML = `
+    <div class="result-screen">
+      <div class="result-icon">${interp.cls === 'good' ? '✅' : interp.cls === 'warning' ? '⚠️' : '🔴'}</div>
+      <h2>${typeName} Complete</h2>
+      <div class="result-score ${scoreCls}">${interp.text}</div>
+      <p>${message}</p>
+      <p style="font-size:13px;margin-top:12px;color:#9ca3af;">Score: ${scoreDisplay} · Saved to your record</p>
+      <button class="btn-done" onclick="closeAssessment()">Done</button>
+    </div>
+  `;
+
+  loadHistory();
+}
+
+window.closeAssessment = function() {
+  document.getElementById('q-overlay').classList.remove('open');
+  activeAssessment = null;
+};
+</script>
+</body>
+</html>
