@@ -5,7 +5,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebas
 
 const firebaseConfig = {
   apiKey: "AIzaSyAxSLTUyg5yrTzX3_IXoaDvNrG3lXki_Ic",
-  authDomain: "neurofract-ef9e9.firebaseapp.com",
+  authDomain: "neurofract.com",
   projectId: "neurofract-ef9e9",
   storageBucket: "neurofract-ef9e9.firebasestorage.app",
   messagingSenderId: "776562772320",

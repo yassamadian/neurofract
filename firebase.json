@@ -1,15 +1,57 @@
 {
   "hosting": {
+    "site": "neurofract-ef9e9",
     "public": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "CLAUDE.md",
+      "CLAUDE_CODE_BRIEFING.md",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "README.md"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "headers": [
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000" }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/platform",
+        "destination": "/login.html",
+        "type": 301
+      },
+      {
+        "source": "/assess",
+        "destination": "/login.html",
+        "type": 301
+      }
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/dashboard",
+        "destination": "/patient-dashboard.html"
+      },
+      {
+        "source": "/clinician",
+        "destination": "/clinician-dashboard.html"
+      },
+      {
+        "source": "/login",
+        "destination": "/login.html"
       }
     ]
   },
