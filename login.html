@@ -21,39 +21,31 @@
 
     .card {
       background: #fff;
-      border-radius: 16px;
-      padding: 48px 40px;
+      border-radius: 20px;
+      padding: 44px 36px;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 4px 24px rgba(74,111,165,0.10);
+      box-shadow: 0 4px 32px rgba(74,111,165,0.12);
     }
 
     .logo {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
-
     .logo h1 {
       font-family: 'Lora', serif;
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 700;
     }
-
-    .logo h1 span.neuro { color: #1A2B3C; }
-    .logo h1 span.fract { color: #4A6FA5; }
-
-    .logo p {
-      color: #6b7280;
-      font-size: 14px;
-      margin-top: 4px;
-    }
+    .logo h1 .neuro { color: #1A2B3C; }
+    .logo h1 .fract { color: #4A6FA5; }
+    .logo p { color: #6b7280; font-size: 14px; margin-top: 6px; }
 
     .tabs {
       display: flex;
       border-bottom: 2px solid #EBF0F7;
       margin-bottom: 28px;
     }
-
     .tab {
       flex: 1;
       padding: 10px;
@@ -65,17 +57,18 @@
       border-bottom: 2px solid transparent;
       margin-bottom: -2px;
       transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: 'DM Sans', sans-serif;
     }
+    .tab.active { color: #4A6FA5; border-bottom-color: #4A6FA5; }
 
-    .tab.active {
-      color: #4A6FA5;
-      border-bottom-color: #4A6FA5;
-    }
+    .panel { display: none; }
+    .panel.active { display: block; }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
-
+    .form-group { margin-bottom: 18px; }
     label {
       display: block;
       font-size: 14px;
@@ -83,31 +76,27 @@
       color: #1A2B3C;
       margin-bottom: 6px;
     }
-
     input, select {
       width: 100%;
-      padding: 12px 14px;
+      padding: 13px 14px;
       border: 1.5px solid #d1d5db;
-      border-radius: 8px;
+      border-radius: 10px;
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       color: #1A2B3C;
       background: #fff;
-      transition: border-color 0.2s;
       outline: none;
+      transition: border-color 0.2s;
     }
+    input:focus, select:focus { border-color: #4A6FA5; }
 
-    input:focus, select:focus {
-      border-color: #4A6FA5;
-    }
-
-    .btn {
+    .btn-primary {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       background: #4A6FA5;
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-family: 'DM Sans', sans-serif;
       font-size: 16px;
       font-weight: 600;
@@ -115,36 +104,30 @@
       margin-top: 8px;
       transition: background 0.2s;
     }
+    .btn-primary:hover { background: #37577F; }
+    .btn-primary:disabled { background: #a0b4cc; cursor: not-allowed; }
 
-    .btn:hover { background: #37577F; }
-    .btn:disabled { background: #9bb2ce; cursor: not-allowed; }
-
-    .error {
+    .error-msg {
       background: #fef2f2;
       color: #dc2626;
+      border-radius: 10px;
       padding: 12px 14px;
-      border-radius: 8px;
       font-size: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       display: none;
     }
-
-    .error.show { display: block; }
-
-    .panel { display: none; }
-    .panel.active { display: block; }
+    .error-msg.show { display: block; }
 
     .role-note {
       font-size: 13px;
-      color: #6b7280;
-      margin-top: 16px;
+      color: #9ca3af;
       text-align: center;
+      margin-top: 16px;
       line-height: 1.5;
     }
   </style>
 </head>
 <body>
-
 <div class="card">
   <div class="logo">
     <h1><span class="neuro">Neuro</span><span class="fract">Fract</span></h1>
@@ -152,182 +135,152 @@
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('login')">Sign In</div>
-    <div class="tab" onclick="switchTab('register')">Register</div>
+    <button class="tab active" onclick="switchTab('login')">Sign in</button>
+    <button class="tab" onclick="switchTab('register')">Register</button>
   </div>
 
-  <div id="error-msg" class="error"></div>
+  <div id="error-msg" class="error-msg"></div>
 
-  <!-- LOGIN PANEL -->
+  <!-- SIGN IN -->
   <div id="panel-login" class="panel active">
     <div class="form-group">
-      <label>Email address</label>
-      <input type="email" id="login-email" placeholder="you@example.com" />
+      <label for="login-email">Email address</label>
+      <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
     </div>
     <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="login-password" placeholder="••••••••" />
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
     </div>
-    <button class="btn" id="login-btn" onclick="handleLogin()">Sign In</button>
+    <button class="btn-primary" id="btn-login" onclick="doLogin()">Sign in</button>
   </div>
 
-  <!-- REGISTER PANEL -->
+  <!-- REGISTER -->
   <div id="panel-register" class="panel">
     <div class="form-group">
-      <label>Full name</label>
-      <input type="text" id="reg-name" placeholder="Dr Jane Smith" />
+      <label for="reg-name">Full name</label>
+      <input type="text" id="reg-name" placeholder="Your name" autocomplete="name" />
     </div>
     <div class="form-group">
-      <label>Email address</label>
-      <input type="email" id="reg-email" placeholder="you@example.com" />
+      <label for="reg-email">Email address</label>
+      <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" />
     </div>
     <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="reg-password" placeholder="Min. 8 characters" />
+      <label for="reg-password">Password</label>
+      <input type="password" id="reg-password" placeholder="Min. 8 characters" autocomplete="new-password" />
     </div>
     <div class="form-group">
-      <label>I am a...</label>
+      <label for="reg-role">I am a…</label>
       <select id="reg-role">
         <option value="patient">Patient</option>
         <option value="clinician">Clinician</option>
         <option value="researcher">Researcher</option>
       </select>
     </div>
-    <button class="btn" id="reg-btn" onclick="handleRegister()">Create Account</button>
-    <p class="role-note">Clinician and researcher accounts require verification before full access is granted.</p>
+    <button class="btn-primary" id="btn-register" onclick="doRegister()">Create account</button>
+    <p class="role-note">Clinician and researcher accounts are reviewed before full access is granted.</p>
   </div>
 </div>
 
 <script type="module">
-  import { auth, db } from './firebase-config.js';
-  import {
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    doc, setDoc, getDoc, serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { auth, db } from './firebase-config.js';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  doc, getDoc, setDoc, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-  // Redirect if already logged in
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (userDoc.exists()) {
-        redirectByRole(userDoc.data().role);
-      }
-    }
+// Redirect if already logged in
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) redirectByRole(snap.data().role);
+  }
+});
+
+function redirectByRole(role) {
+  if (role === 'patient') location.href = 'patient.html';
+  else if (role === 'clinician') location.href = 'clinician.html';
+  else if (role === 'researcher') location.href = 'researcher.html';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearError() {
+  document.getElementById('error-msg').classList.remove('show');
+}
+
+window.switchTab = function(tab) {
+  clearError();
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
   });
+  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+  document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+};
 
-  function redirectByRole(role) {
-    if (role === 'patient') window.location.href = 'patient-dashboard.html';
-    else if (role === 'clinician') window.location.href = 'clinician-dashboard.html';
-    else if (role === 'researcher') window.location.href = 'researcher-dashboard.html';
+window.doLogin = async function() {
+  clearError();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) { showError('Please enter your email and password.'); return; }
+
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    const snap = await getDoc(doc(db, 'users', cred.user.uid));
+    if (snap.exists()) redirectByRole(snap.data().role);
+    else showError('Account not found. Please contact support.');
+  } catch(e) {
+    showError(friendlyError(e.code));
+    btn.disabled = false; btn.textContent = 'Sign in';
   }
+};
 
-  function showError(msg) {
-    const el = document.getElementById('error-msg');
-    el.textContent = msg;
-    el.classList.add('show');
-  }
+window.doRegister = async function() {
+  clearError();
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const role = document.getElementById('reg-role').value;
 
-  function hideError() {
-    document.getElementById('error-msg').classList.remove('show');
-  }
+  if (!name || !email || !password) { showError('Please fill in all fields.'); return; }
+  if (password.length < 8) { showError('Password must be at least 8 characters.'); return; }
 
-  window.switchTab = function(tab) {
-    hideError();
-    document.querySelectorAll('.tab').forEach((t, i) => {
-      t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+  const btn = document.getElementById('btn-register');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email, role, createdAt: serverTimestamp()
     });
-    document.getElementById('panel-login').classList.toggle('active', tab === 'login');
-    document.getElementById('panel-register').classList.toggle('active', tab === 'register');
-  };
-
-  window.handleLogin = async function() {
-    hideError();
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-    const btn = document.getElementById('login-btn');
-
-    if (!email || !password) { showError('Please enter your email and password.'); return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Signing in...';
-
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
-      if (userDoc.exists()) {
-        redirectByRole(userDoc.data().role);
-      } else {
-        showError('Account setup incomplete. Please contact support.');
-      }
-    } catch (e) {
-      showError(friendlyError(e.code));
-      btn.disabled = false;
-      btn.textContent = 'Sign In';
-    }
-  };
-
-  window.handleRegister = async function() {
-    hideError();
-    const name = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const password = document.getElementById('reg-password').value;
-    const role = document.getElementById('reg-role').value;
-    const btn = document.getElementById('reg-btn');
-
-    if (!name || !email || !password) { showError('Please fill in all fields.'); return; }
-    if (password.length < 8) { showError('Password must be at least 8 characters.'); return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Creating account...';
-
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = cred.user.uid;
-
-      // Save user profile to Firestore
-      await setDoc(doc(db, 'users', uid), {
-        name,
-        email,
-        role,
-        createdAt: serverTimestamp()
-      });
-
-      // If patient, create patient record too
-      if (role === 'patient') {
-        await setDoc(doc(db, 'patients', uid), {
-          name,
-          email,
-          studyId: 'NF-' + String(Math.floor(Math.random() * 9000) + 1000),
-          consentGiven: false,
-          createdAt: serverTimestamp()
-        });
-        window.location.href = 'patient-dashboard.html';
-      } else {
-        redirectByRole(role);
-      }
-    } catch (e) {
-      showError(friendlyError(e.code));
-      btn.disabled = false;
-      btn.textContent = 'Create Account';
-    }
-  };
-
-  function friendlyError(code) {
-    switch (code) {
-      case 'auth/invalid-credential':
-      case 'auth/wrong-password':
-      case 'auth/user-not-found': return 'Incorrect email or password.';
-      case 'auth/email-already-in-use': return 'An account with this email already exists.';
-      case 'auth/weak-password': return 'Password must be at least 8 characters.';
-      case 'auth/invalid-email': return 'Please enter a valid email address.';
-      case 'auth/too-many-requests': return 'Too many attempts. Please try again in a few minutes.';
-      default: return 'Something went wrong. Please try again.';
-    }
+    redirectByRole(role);
+  } catch(e) {
+    showError(friendlyError(e.code));
+    btn.disabled = false; btn.textContent = 'Create account';
   }
+};
+
+function friendlyError(code) {
+  switch(code) {
+    case 'auth/invalid-credential':
+    case 'auth/wrong-password':
+    case 'auth/user-not-found': return 'Incorrect email or password.';
+    case 'auth/email-already-in-use': return 'An account with this email already exists.';
+    case 'auth/weak-password': return 'Password must be at least 8 characters.';
+    case 'auth/invalid-email': return 'Please enter a valid email address.';
+    case 'auth/too-many-requests': return 'Too many attempts. Please try again in a few minutes.';
+    default: return 'Something went wrong. Please try again.';
+  }
+}
 </script>
 </body>
 </html>

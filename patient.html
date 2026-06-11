@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroFract — Patient</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #4A6FA5;
+      --navy: #1A2B3C;
+      --blue-dark: #37577F;
+      --bg: #EBF0F7;
+      --white: #ffffff;
+      --border: #d1dae8;
+      --text-muted: #6b7280;
+      --green: #4A9B6E;
+      --amber: #D4943C;
+      --red: #D65D5D;
+      --red-dark: #9B1C1C;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    #app-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-text { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
+    .logo-text .neuro { color: #1A2B3C; }
+    .logo-text .fract { color: #4A6FA5; }
+    .header-user { display: flex; align-items: center; gap: 12px; }
+    .header-user span { font-size: 13px; color: #6b7280; }
+    .btn-signout {
+      padding: 6px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #6b7280;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-signout:hover { border-color: #4A6FA5; color: #4A6FA5; }
+
+    /* ── VIEWS ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+    }
+
+    /* ── ONBOARDING ── */
+    .onboarding-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .onboarding-header h2 {
+      font-family: 'Lora', serif;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .onboarding-header p { font-size: 15px; color: #6b7280; line-height: 1.6; }
+
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1A2B3C;
+      margin-bottom: 7px;
+    }
+    input, select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: #1A2B3C;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, select:focus { border-color: #4A6FA5; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      background: #4A6FA5;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { background: #37577F; }
+    .btn-primary:disabled { background: #a0b4cc; cursor: not-allowed; }
+
+    /* ── DASHBOARD ── */
+    .greeting {
+      margin-bottom: 24px;
+    }
+    .greeting h2 {
+      font-family: 'Lora', serif;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+    .greeting p { font-size: 14px; color: #6b7280; }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4A6FA5;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 11px; color: #6b7280; line-height: 1.3; }
+
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #1A2B3C;
+    }
+
+    .assessment-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+
+    .assess-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
+      transition: all 0.2s;
+      text-align: left;
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .assess-card:hover { border-color: #4A6FA5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,111,165,0.15); }
+    .assess-card-left { display: flex; align-items: center; gap: 14px; }
+    .assess-icon {
+      width: 42px; height: 42px;
+      background: #EBF0F7;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .assess-card h3 { font-size: 15px; font-weight: 600; color: #1A2B3C; margin-bottom: 2px; }
+    .assess-card p { font-size: 12px; color: #6b7280; }
+    .assess-arrow { font-size: 18px; color: #4A6FA5; }
+
+    .history-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
+      margin-bottom: 28px;
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-type { font-weight: 600; font-size: 14px; }
+    .history-date { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .history-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+
+    .chart-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
+      margin-bottom: 28px;
+    }
+    .chart-wrap { position: relative; height: 180px; }
+
+    .empty-note { text-align: center; padding: 32px 0; color: #9ca3af; font-size: 14px; }
+
+    /* ── QUESTIONNAIRE ── */
+    #view-questionnaire .container { padding-top: 20px; }
+
+    .progress-bar {
+      width: 100%;
+      height: 5px;
+      background: #EBF0F7;
+      border-radius: 3px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #4A6FA5;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .q-meta { font-size: 13px; color: #6b7280; margin-bottom: 10px; }
+    .q-section { font-size: 12px; color: #4A6FA5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+
+    .q-text {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #1A2B3C;
+      margin-bottom: 32px;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
+
+    .option-btn {
+      padding: 15px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: #1A2B3C;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+    }
+    .option-btn:hover { border-color: #4A6FA5; background: #EBF0F7; }
+    .option-btn.selected { border-color: #4A6FA5; background: #4A6FA5; color: #fff; }
+
+    .q-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-back {
+      padding: 10px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+    .btn-back:hover { border-color: #4A6FA5; color: #4A6FA5; }
+    .btn-back.hidden { visibility: hidden; }
+
+    /* ── RESULTS ── */
+    #view-results .container { text-align: center; padding-top: 40px; }
+
+    .result-emoji { font-size: 60px; margin-bottom: 16px; }
+    .result-title { font-family: 'Lora', serif; font-size: 26px; margin-bottom: 16px; }
+
+    .result-score-badge {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .result-message {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #374151;
+      margin-bottom: 8px;
+      text-align: left;
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .result-score-detail {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 32px;
+    }
+    .btn-done {
+      width: 100%;
+      padding: 15px;
+      background: #4A6FA5;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-done:hover { background: #37577F; }
+
+    /* ── LOADING ── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #EBF0F7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
+    .loading-logo .neuro { color: #1A2B3C; }
+    .loading-logo .fract { color: #4A6FA5; }
+  </style>
+</head>
+<body>
+
+<!-- Loading screen -->
+<div id="loading-screen">
+  <div class="loading-logo"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
+</div>
+
+<!-- App header (hidden until logged in) -->
+<header id="app-header" style="display:none;">
+  <div class="header-inner">
+    <div class="logo-text"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
+    <div class="header-user">
+      <span id="header-name"></span>
+      <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<!-- ── VIEW: ONBOARDING ── -->
+<div id="view-onboarding" class="view">
+  <div class="container">
+    <div class="onboarding-header">
+      <h2>Welcome to NeuroFract</h2>
+      <p>Let's set up your profile so your clinical team can see your results.</p>
+    </div>
+    <div class="form-group">
+      <label for="ob-name">Your full name</label>
+      <input type="text" id="ob-name" placeholder="e.g. Jane Smith" autocomplete="name" />
+    </div>
+    <div class="form-group">
+      <label for="ob-device">Neuromodulation device</label>
+      <select id="ob-device">
+        <option value="">Select device…</option>
+        <option value="DBS">DBS — Deep Brain Stimulation</option>
+        <option value="VNS">VNS — Vagus Nerve Stimulation</option>
+        <option value="TMS">TMS — Transcranial Magnetic Stimulation</option>
+        <option value="SCS">SCS — Spinal Cord Stimulation</option>
+        <option value="RNS">RNS — Responsive Neurostimulation</option>
+        <option value="tDCS">tDCS — Transcranial Direct Current Stimulation</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="ob-condition">Condition being treated</label>
+      <select id="ob-condition">
+        <option value="">Select condition…</option>
+        <option value="Epilepsy">Epilepsy</option>
+        <option value="Parkinsons">Parkinson's disease</option>
+        <option value="Chronic pain">Chronic pain</option>
+        <option value="Depression">Depression</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="ob-clinician">Clinician's email address</label>
+      <input type="email" id="ob-clinician" placeholder="your.doctor@hospital.nhs.uk" />
+      <p style="font-size:12px;color:#9ca3af;margin-top:6px;">We'll link you to your clinical team. Leave blank if unknown.</p>
+    </div>
+    <button class="btn-primary" id="btn-save-onboarding" onclick="saveOnboarding()">Save and continue →</button>
+  </div>
+</div>
+
+<!-- ── VIEW: DASHBOARD ── -->
+<div id="view-dashboard" class="view">
+  <div class="container">
+    <div class="greeting">
+      <h2 id="greeting-text">Good morning</h2>
+      <p id="greeting-sub">Here's how you're doing</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-laep">—</div>
+        <div class="stat-label">Latest LAEP score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-label">Assessments completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-trend">—</div>
+        <div class="stat-label">LAEP trend</div>
+      </div>
+    </div>
+
+    <div class="section-title">Start an assessment</div>
+    <div class="assessment-cards">
+      <button class="assess-card" onclick="startQuestionnaire('laep')">
+        <div class="assess-card-left">
+          <div class="assess-icon">📋</div>
+          <div>
+            <h3>LAEP</h3>
+            <p>Side effect profile · 19 questions · ~5 min</p>
+          </div>
+        </div>
+        <span class="assess-arrow">›</span>
+      </button>
+      <button class="assess-card" onclick="startQuestionnaire('ssq')">
+        <div class="assess-card-left">
+          <div class="assess-icon">🧠</div>
+          <div>
+            <h3>SSQ</h3>
+            <p>Seizure severity · 24 questions · ~7 min</p>
+          </div>
+        </div>
+        <span class="assess-arrow">›</span>
+      </button>
+      <button class="assess-card" onclick="startQuestionnaire('qolie')">
+        <div class="assess-card-left">
+          <div class="assess-icon">🌟</div>
+          <div>
+            <h3>QOLIE-31</h3>
+            <p>Quality of life · 31 questions · ~10 min</p>
+          </div>
+        </div>
+        <span class="assess-arrow">›</span>
+      </button>
+    </div>
+
+    <div class="section-title">Your recent results</div>
+    <div class="history-card" id="history-list">
+      <div class="empty-note">No assessments yet — start one above.</div>
+    </div>
+
+    <div id="chart-section" style="display:none;">
+      <div class="section-title">LAEP over time</div>
+      <div class="chart-card">
+        <div class="chart-wrap">
+          <canvas id="laep-chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── VIEW: QUESTIONNAIRE ── -->
+<div id="view-questionnaire" class="view">
+  <div class="container">
+    <div class="progress-bar"><div class="progress-fill" id="q-progress"></div></div>
+    <div class="q-section" id="q-section-label"></div>
+    <div class="q-meta" id="q-meta"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="q-options"></div>
+    <div class="q-nav">
+      <button class="btn-back" id="btn-back" onclick="goBack()">← Back</button>
+      <span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ── VIEW: RESULTS ── -->
+<div id="view-results" class="view">
+  <div class="container">
+    <div class="result-emoji" id="result-emoji"></div>
+    <div class="result-title" id="result-title"></div>
+    <div class="result-score-badge" id="result-badge"></div>
+    <div class="result-message" id="result-message"></div>
+    <div class="result-score-detail" id="result-detail"></div>
+    <button class="btn-done" onclick="showDashboard()">Back to dashboard</button>
+  </div>
+</div>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  doc, getDoc, setDoc, addDoc, collection,
+  query, where, orderBy, getDocs, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// ── INSTRUMENT DATA ──────────────────────────────────────────────────
+
+const LAEP = {
+  name: 'LAEP',
+  fullName: 'Liverpool Adverse Events Profile',
+  items: [
+    'Unsteadiness','Tiredness','Restlessness','Feelings of aggression',
+    'Nervousness or agitation','Headache','Hair loss','Problems with skin',
+    'Double or blurred vision','Upset stomach','Difficulty concentrating',
+    'Trouble with mouth or gums','Shaky hands','Weight gain','Dizziness',
+    'Sleepiness','Depression','Memory problems','Disturbed sleep'
+  ],
+  options: ['Never','Rarely','Sometimes','Always'],
+  section: () => null
+};
+
+const SSQ = {
+  name: 'SSQ',
+  fullName: 'Seizure Severity Questionnaire',
+  items: [
+    // Section 1 — Warning
+    'How often do you have a warning before a seizure?',
+    'How afraid are you when you feel a warning coming on?',
+    'How severe are the physical sensations during a warning?',
+    'How much do visual disturbances bother you during seizures?',
+    'How severe are any unusual tastes or smells during seizures?',
+    'How often do you experience déjà vu before or during seizures?',
+    'How severe is any stomach sensation during your seizures?',
+    'How well can you prepare yourself when you feel a seizure coming?',
+    // Section 2 — Ictal
+    'How often do you lose awareness during seizures?',
+    'How often do you fall down during seizures?',
+    'How often are you injured during seizures?',
+    'How often do you bite your tongue during seizures?',
+    'How often do you lose bladder or bowel control during seizures?',
+    'How severe are the convulsions (shaking) during seizures?',
+    'How long do your seizures typically last?',
+    'How severe are your seizures overall?',
+    // Section 3 — Recovery
+    'How confused do you feel after a seizure?',
+    'How often do you get a headache after a seizure?',
+    'How sleepy do you feel after a seizure?',
+    'How much difficulty do you have speaking after a seizure?',
+    'How much muscle soreness do you have after a seizure?',
+    'How long does it take you to fully recover after a seizure?',
+    'How embarrassed do you feel after having a seizure in public?',
+    'How much do seizures affect your daily activities overall?'
+  ],
+  options: ['Not at all','Barely','A little','Somewhat','Quite a bit','Very much','Extremely'],
+  section: (i) => i < 8 ? 'Warning & perception' : i < 16 ? 'During the seizure' : 'Recovery'
+};
+
+// QOLIE-31: reverse-scored items (0-indexed) — negative wording means higher = worse
+const QOLIE_REVERSE = new Set([0,1,2,3,4,7,9,11,12,13,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]);
+const QOLIE_SUBSCALES = [
+  { name: 'seizureWorry',      label: 'Seizure worry',      items: [0,1,2,3,4],          weight: 0.08 },
+  { name: 'overallQol',        label: 'Overall quality of life', items: [5,6],            weight: 0.14 },
+  { name: 'emotionalWellbeing',label: 'Emotional wellbeing', items: [7,8,9,10,11],        weight: 0.14 },
+  { name: 'energyFatigue',     label: 'Energy & fatigue',   items: [12,13,14,15],         weight: 0.12 },
+  { name: 'cognitiveFunction', label: 'Cognitive function',  items: [16,17,18,19,20,21],  weight: 0.27 },
+  { name: 'medicationEffects', label: 'Medication effects',  items: [22,23,24],           weight: 0.03 },
+  { name: 'socialFunction',    label: 'Social function',     items: [25,26,27,28,29,30],  weight: 0.17 },
+];
+const QOLIE = {
+  name: 'QOLIE-31',
+  fullName: 'Quality of Life in Epilepsy',
+  items: [
+    // Seizure Worry (1-5)
+    'How often did you worry about having another seizure?',
+    'How often did you worry about being injured during a seizure?',
+    'How often did you avoid activities because of seizure risk?',
+    'How often did seizure worries limit what you could do?',
+    'How often did you feel frightened about your seizures?',
+    // Overall QOL (6-7)
+    'How would you rate your overall quality of life?',
+    'How satisfied are you with your life overall?',
+    // Emotional Wellbeing (8-12)
+    'How often did you feel nervous or anxious?',
+    'How often did you feel calm and peaceful?',
+    'How often did you feel downhearted or low?',
+    'How often were you a happy person?',
+    'How often did you feel so low that nothing could cheer you up?',
+    // Energy/Fatigue (13-16)
+    'How much energy did you have?',
+    'How often did you feel worn out?',
+    'How often did you feel tired?',
+    'How often did you feel full of energy?',
+    // Cognitive Function (17-22)
+    'How often did you have problems with memory?',
+    'How often did you have difficulty concentrating?',
+    'How often did you have trouble finding the right word?',
+    'How often did you have trouble with mental tasks (e.g. calculations)?',
+    'How often did you feel mentally slow?',
+    'How often did you have trouble thinking clearly?',
+    // Medication Effects (23-25)
+    'How much did your medication affect your memory?',
+    'How much did your medication affect your concentration?',
+    'How much did your medication affect your physical coordination?',
+    // Social Function (26-31)
+    'How often did epilepsy limit your social activities?',
+    'How often did epilepsy affect your ability to travel or use transport?',
+    'How often did epilepsy cause problems in your relationships?',
+    'How often did epilepsy prevent you from working or studying?',
+    'How often did epilepsy make you feel isolated from others?',
+    'How often did epilepsy affect your leisure or hobbies?'
+  ],
+  options: ['All of the time','Most of the time','A good bit of the time','Some of the time','A little of the time','None of the time'],
+  section: (i) => {
+    const s = QOLIE_SUBSCALES.find(s => s.items.includes(i));
+    return s ? s.label : '';
+  }
+};
+
+// ── STATE ───────────────────────────────────────────────────────────
+
+let currentUser = null;
+let patientData = null;
+let assessmentHistory = [];
+let laepChart = null;
+
+// Questionnaire state
+let qState = {
+  instrument: null,    // LAEP | SSQ | QOLIE
+  currentIndex: 0,
+  answers: [],         // array of 1-based values
+};
+
+// ── AUTH ─────────────────────────────────────────────────────────────
+
+onAuthStateChanged(auth, async user => {
+  if (!user) { location.href = 'login.html'; return; }
+  currentUser = user;
+
+  // Check role
+  const userSnap = await getDoc(doc(db, 'users', user.uid));
+  if (!userSnap.exists() || userSnap.data().role !== 'patient') {
+    location.href = 'login.html'; return;
+  }
+
+  document.getElementById('header-name').textContent = userSnap.data().name || '';
+  document.getElementById('app-header').style.display = '';
+  document.getElementById('loading-screen').style.display = 'none';
+
+  // Check if onboarding done
+  const patientSnap = await getDoc(doc(db, 'patients', user.uid));
+  if (!patientSnap.exists()) {
+    // Pre-fill name from user doc
+    document.getElementById('ob-name').value = userSnap.data().name || '';
+    showView('onboarding');
+  } else {
+    patientData = patientSnap.data();
+    await loadDashboard();
+    showView('dashboard');
+  }
+});
+
+window.handleSignOut = async function() {
+  await signOut(auth);
+  location.href = 'login.html';
+};
+
+// ── VIEWS ─────────────────────────────────────────────────────────────
+
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── ONBOARDING ────────────────────────────────────────────────────────
+
+window.saveOnboarding = async function() {
+  const name      = document.getElementById('ob-name').value.trim();
+  const device    = document.getElementById('ob-device').value;
+  const condition = document.getElementById('ob-condition').value;
+  const clinician = document.getElementById('ob-clinician').value.trim();
+
+  if (!name || !device || !condition) {
+    alert('Please fill in your name, device, and condition.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-save-onboarding');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const studyId = 'NF-' + String(Math.floor(Math.random() * 9000) + 1000);
+
+  await setDoc(doc(db, 'patients', currentUser.uid), {
+    name,
+    device,
+    condition,
+    clinicianEmail: clinician || null,
+    studyId,
+    consentGiven: true,
+    consentDate: serverTimestamp(),
+    createdAt: serverTimestamp()
+  });
+
+  // Update user display name
+  await setDoc(doc(db, 'users', currentUser.uid), { name }, { merge: true });
+  document.getElementById('header-name').textContent = name;
+
+  patientData = { name, device, condition, studyId };
+  await loadDashboard();
+  showView('dashboard');
+};
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────
+
+async function loadDashboard() {
+  // Greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const firstName = (patientData?.name || '').split(' ')[0];
+  document.getElementById('greeting-text').textContent = greeting + (firstName ? ', ' + firstName : '');
+  document.getElementById('greeting-sub').textContent = 'Here\'s how you\'re doing';
+
+  // Load history
+  const q = query(
+    collection(db, 'assessments'),
+    where('patientId', '==', currentUser.uid),
+    orderBy('date', 'desc')
+  );
+  const snap = await getDocs(q);
+  assessmentHistory = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // Stats
+  const laepScores = assessmentHistory.filter(a => a.type === 'laep');
+  const lastLaep = laepScores[0];
+  document.getElementById('stat-total').textContent = assessmentHistory.length;
+  document.getElementById('stat-laep').textContent = lastLaep ? Math.round(lastLaep.score) : '—';
+
+  if (laepScores.length >= 2) {
+    const diff = laepScores[0].score - laepScores[1].score;
+    document.getElementById('stat-trend').textContent = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+  } else {
+    document.getElementById('stat-trend').textContent = '—';
+  }
+
+  // History list
+  renderHistory();
+
+  // Chart
+  if (laepScores.length >= 2) {
+    document.getElementById('chart-section').style.display = '';
+    renderLaepChart(laepScores.slice().reverse());
+  }
+}
+
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if (!assessmentHistory.length) {
+    el.innerHTML = '<div class="empty-note">No assessments yet — start one above.</div>';
+    return;
+  }
+  el.innerHTML = assessmentHistory.slice(0, 10).map(a => {
+    const date = a.date?.toDate ? a.date.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+    const interp = interpretScore(a.type, a.score);
+    return `<div class="history-item">
+      <div>
+        <div class="history-type">${a.type.toUpperCase()}</div>
+        <div class="history-date">${date}</div>
+      </div>
+      <span class="history-badge ${interp.badgeClass}">${interp.label}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderLaepChart(scores) {
+  if (laepChart) laepChart.destroy();
+  const ctx = document.getElementById('laep-chart').getContext('2d');
+  const labels = scores.map(a => {
+    const d = a.date?.toDate ? a.date.toDate() : new Date();
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  });
+  laepChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'LAEP Score',
+        data: scores.map(a => a.score),
+        borderColor: '#4A6FA5',
+        backgroundColor: 'rgba(74,111,165,0.08)',
+        borderWidth: 2.5,
+        pointRadius: 5,
+        pointBackgroundColor: '#4A6FA5',
+        fill: true,
+        tension: 0.35
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            afterLabel: ctx => {
+              const v = ctx.raw;
+              if (v >= 45) return 'High — contact clinic';
+              if (v >= 36.5) return 'Elevated';
+              if (v >= 30) return 'Some side effects';
+              return 'Within range';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 19, max: 76,
+          grid: { color: '#f3f4f6' },
+          ticks: { stepSize: 10 }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── QUESTIONNAIRE ─────────────────────────────────────────────────────
+
+window.startQuestionnaire = function(type) {
+  const instrument = type === 'laep' ? LAEP : type === 'ssq' ? SSQ : QOLIE;
+  qState = { instrument, currentIndex: 0, answers: [] };
+  showView('questionnaire');
+  renderQuestion();
+};
+
+function renderQuestion() {
+  const { instrument, currentIndex, answers } = qState;
+  const total = instrument.items.length;
+  const pct = (currentIndex / total * 100).toFixed(1);
+
+  document.getElementById('q-progress').style.width = pct + '%';
+  document.getElementById('q-meta').textContent = `Question ${currentIndex + 1} of ${total}`;
+  document.getElementById('q-text').textContent = instrument.items[currentIndex];
+
+  const sectionLabel = instrument.section(currentIndex);
+  const secEl = document.getElementById('q-section-label');
+  secEl.textContent = sectionLabel || '';
+  secEl.style.display = sectionLabel ? '' : 'none';
+
+  // Back button
+  document.getElementById('btn-back').classList.toggle('hidden', currentIndex === 0);
+
+  // Options
+  const optEl = document.getElementById('q-options');
+  optEl.innerHTML = '';
+  instrument.options.forEach((label, i) => {
+    const val = i + 1;
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (answers[currentIndex] === val ? ' selected' : '');
+    btn.textContent = label;
+    btn.onclick = () => selectAnswer(val);
+    optEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(val) {
+  qState.answers[qState.currentIndex] = val;
+
+  // Highlight selected
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i + 1 === val);
+  });
+
+  // Auto-advance after 250ms
+  setTimeout(() => {
+    if (qState.currentIndex < qState.instrument.items.length - 1) {
+      qState.currentIndex++;
+      renderQuestion();
+    } else {
+      finishQuestionnaire();
+    }
+  }, 250);
+}
+
+window.goBack = function() {
+  if (qState.currentIndex > 0) {
+    qState.currentIndex--;
+    renderQuestion();
+  }
+};
+
+// ── SCORING ──────────────────────────────────────────────────────────
+
+async function finishQuestionnaire() {
+  const { instrument, answers } = qState;
+  const type = instrument.name.toLowerCase().replace('-','');
+
+  let score, subscales = null, flagged = false;
+
+  if (instrument === LAEP) {
+    score = answers.reduce((a, b) => a + b, 0); // sum 19-76
+    flagged = score >= 36.5;
+
+  } else if (instrument === SSQ) {
+    score = Math.round((answers.reduce((a, b) => a + b, 0) / answers.length) * 100) / 100;
+    subscales = {
+      warning: meanOf(answers.slice(0, 8)),
+      ictal:   meanOf(answers.slice(8, 16)),
+      recovery: meanOf(answers.slice(16, 24))
+    };
+    flagged = score >= 5;
+
+  } else {
+    // QOLIE-31 — transform each item to 0-100, then weighted subscale scores
+    const transformed = answers.map((raw, i) => {
+      const maxScale = 6; // 6-point options (1-6)
+      const val = QOLIE_REVERSE.has(i) ? (maxScale + 1 - raw) : raw;
+      return ((val - 1) / (maxScale - 1)) * 100;
+    });
+
+    const weightSum = QOLIE_SUBSCALES.reduce((s, sub) => s + sub.weight, 0);
+    subscales = {};
+    let weightedTotal = 0;
+
+    QOLIE_SUBSCALES.forEach(sub => {
+      const subScore = meanOf(sub.items.map(idx => transformed[idx]));
+      subscales[sub.name] = Math.round(subScore * 10) / 10;
+      weightedTotal += (sub.weight / weightSum) * subScore;
+    });
+
+    score = Math.round(weightedTotal);
+    flagged = score < 40;
+  }
+
+  // Save to Firestore
+  try {
+    await addDoc(collection(db, 'assessments'), {
+      patientId: currentUser.uid,
+      studyId: patientData?.studyId || null,
+      type: type === 'laep' ? 'laep' : type === 'ssq' ? 'ssq' : 'qolie',
+      date: serverTimestamp(),
+      score,
+      answers,
+      subscales,
+      flagged
+    });
+  } catch(e) {
+    console.error('Error saving assessment:', e);
+  }
+
+  showResults(instrument, score, subscales);
+  loadDashboard(); // refresh stats in background
+}
+
+function meanOf(arr) {
+  return Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 100) / 100;
+}
+
+// ── RESULTS ──────────────────────────────────────────────────────────
+
+function showResults(instrument, score, subscales) {
+  const type = instrument === LAEP ? 'laep' : instrument === SSQ ? 'ssq' : 'qolie';
+  const interp = interpretScore(type, score);
+
+  document.getElementById('result-emoji').textContent = interp.emoji;
+  document.getElementById('result-title').textContent = instrument.fullName + ' complete';
+  document.getElementById('result-badge').textContent = interp.label;
+  document.getElementById('result-badge').style.background = interp.bgColor;
+  document.getElementById('result-badge').style.color = interp.textColor;
+  document.getElementById('result-message').textContent = interp.message;
+
+  let detail = `Score: ${typeof score === 'number' && !Number.isInteger(score) ? score.toFixed(2) : score}`;
+  if (type === 'laep') detail += ' (range 19–76)';
+  else if (type === 'ssq') detail += ' (range 1.0–7.0)';
+  else detail += ' out of 100';
+  detail += ' · Saved to your record';
+  document.getElementById('result-detail').textContent = detail;
+
+  showView('results');
+}
+
+window.showDashboard = function() {
+  showView('dashboard');
+};
+
+// ── SCORE INTERPRETATION ──────────────────────────────────────────────
+
+function interpretScore(type, score) {
+  if (type === 'laep') {
+    if (score >= 45) return {
+      label: 'Significant side effects',
+      badgeClass: 'badge-red',
+      emoji: '🔴',
+      bgColor: '#fde8e8',
+      textColor: '#9B1C1C',
+      message: 'You\'re reporting high levels of side effects. Please contact your epilepsy nurse or clinical team as soon as you can — they\'re here to help adjust your treatment.'
+    };
+    if (score >= 36.5) return {
+      label: 'Elevated side effects',
+      badgeClass: 'badge-red',
+      emoji: '🟠',
+      bgColor: '#fee2e2',
+      textColor: '#D65D5D',
+      message: 'You seem to be experiencing some significant side effects from your treatment. Your clinical team can see these results and will take them into account at your next appointment.'
+    };
+    if (score >= 30) return {
+      label: 'Some side effects',
+      badgeClass: 'badge-amber',
+      emoji: '🟡',
+      bgColor: '#fef3c7',
+      textColor: '#D4943C',
+      message: 'You\'re experiencing some side effects. This is something your clinical team will monitor over time. Keep completing your assessments regularly.'
+    };
+    return {
+      label: 'Side effects well managed',
+      badgeClass: 'badge-green',
+      emoji: '✅',
+      bgColor: '#d1fae5',
+      textColor: '#4A9B6E',
+      message: 'Your side effect profile looks good. Keep completing your assessments regularly so your clinical team can continue to track your progress.'
+    };
+  }
+
+  if (type === 'ssq') {
+    if (score >= 5) return {
+      label: 'Severe seizures',
+      badgeClass: 'badge-red',
+      emoji: '🔴',
+      bgColor: '#fee2e2', textColor: '#D65D5D',
+      message: 'Your seizures are significantly affecting you. Please make sure your clinical team is aware of how things are going — don\'t wait until your next appointment if you\'re struggling.'
+    };
+    if (score >= 3) return {
+      label: 'Moderate seizures',
+      badgeClass: 'badge-amber',
+      emoji: '🟡',
+      bgColor: '#fef3c7', textColor: '#D4943C',
+      message: 'You\'re experiencing moderate seizure severity. Your clinical team can see these results and will review them at your next appointment.'
+    };
+    return {
+      label: 'Mild seizures',
+      badgeClass: 'badge-green',
+      emoji: '✅',
+      bgColor: '#d1fae5', textColor: '#4A9B6E',
+      message: 'Your seizure severity appears to be relatively mild. Keep monitoring and complete your next assessment in a week or two.'
+    };
+  }
+
+  // QOLIE
+  if (score >= 60) return {
+    label: 'Good quality of life',
+    badgeClass: 'badge-green',
+    emoji: '✅',
+    bgColor: '#d1fae5', textColor: '#4A9B6E',
+    message: 'Your quality of life score is above the global average for people with epilepsy (59.8). This is positive — keep taking your assessments so your team can track your progress.'
+  };
+  if (score >= 40) return {
+    label: 'Some impact on daily life',
+    badgeClass: 'badge-amber',
+    emoji: '🟡',
+    bgColor: '#fef3c7', textColor: '#D4943C',
+    message: 'Epilepsy is having some impact on your quality of life. Your clinical team will be able to see these results and can discuss ways to support you at your next appointment.'
+  };
+  return {
+    label: 'Significant impact on daily life',
+    badgeClass: 'badge-red',
+    emoji: '🔴',
+    bgColor: '#fee2e2', textColor: '#D65D5D',
+    message: 'Epilepsy appears to be having a significant impact on your quality of life. Your clinical team will review this — please reach out to them if you\'d like to talk sooner.'
+  };
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroFract — Clinician Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #EBF0F7; color: #1A2B3C; min-height: 100vh; }
+
+    #loading-screen {
+      position: fixed; inset: 0; background: #EBF0F7;
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
+    .loading-logo .neuro { color: #1A2B3C; }
+    .loading-logo .fract { color: #4A6FA5; }
+
+    header {
+      background: #1A2B3C;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo h1 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
+    .logo h1 .neuro { color: #EBF0F7; }
+    .logo h1 .fract { color: #4A6FA5; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .clinician-name { font-size: 13px; color: #9bb2ce; }
+    .btn-signout {
+      padding: 7px 14px;
+      border: 1.5px solid #4A6FA5;
+      border-radius: 8px;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #9bb2ce;
+      cursor: pointer;
+    }
+    .btn-signout:hover { background: rgba(74,111,165,0.15); }
+
+    .layout { display: flex; min-height: calc(100vh - 52px); }
+
+    aside {
+      width: 260px;
+      background: #fff;
+      border-right: 1px solid #d1dae8;
+      padding: 24px 0;
+      flex-shrink: 0;
+    }
+    .sidebar-label {
+      padding: 0 20px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+    .patient-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .patient-item:hover { background: #EBF0F7; }
+    .patient-item.active { background: #EBF0F7; border-left-color: #4A6FA5; }
+    .patient-name { font-size: 14px; font-weight: 600; }
+    .patient-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .alert-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    main { flex: 1; padding: 28px; overflow-y: auto; }
+
+    .empty-state { text-align: center; padding: 80px 20px; color: #6b7280; }
+    .empty-state h3 { font-family: 'Lora', serif; color: #1A2B3C; margin-bottom: 8px; font-size: 20px; }
+
+    /* Patient view */
+    .patient-header {
+      background: #fff;
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .patient-header h2 { font-family: 'Lora', serif; font-size: 20px; margin-bottom: 8px; }
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #EBF0F7;
+      color: #4A6FA5;
+    }
+    .tag.alert-tag { background: #fee2e2; color: #dc2626; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .card h3 {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .score-row:last-child { border-bottom: none; }
+    .score-label { font-size: 13px; color: #6b7280; }
+    .score-pill {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 20px;
+    }
+    .pill-green { background: #d1fae5; color: #065f46; }
+    .pill-amber { background: #fef3c7; color: #92400e; }
+    .pill-red   { background: #fee2e2; color: #991b1b; }
+    .pill-grey  { background: #f3f4f6; color: #6b7280; }
+
+    .alert-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .alert-title { font-weight: 700; font-size: 14px; color: #dc2626; margin-bottom: 4px; }
+    .alert-body  { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .alert-cite  { font-size: 11px; color: #9ca3af; margin-top: 4px; font-style: italic; }
+
+    .chart-wrap { position: relative; height: 190px; }
+    .threshold-note { font-size: 11px; color: #9ca3af; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<div id="loading-screen">
+  <div class="loading-logo"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
+</div>
+
+<header id="app-header" style="display:none;">
+  <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span> <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;">— Clinician</span></h1></div>
+  <div class="header-right">
+    <span class="clinician-name" id="clinician-name"></span>
+    <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
+  </div>
+</header>
+
+<div class="layout" id="app-layout" style="display:none;">
+  <aside>
+    <div class="sidebar-label">Patients</div>
+    <div id="patient-list"><div style="padding:20px;font-size:13px;color:#9ca3af;">Loading…</div></div>
+  </aside>
+  <main id="main-panel">
+    <div class="empty-state">
+      <h3>Select a patient</h3>
+      <p>Choose a patient from the panel to view their results and alerts.</p>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  doc, getDoc, collection, query, where, orderBy, getDocs
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+let clinicianUid = null;
+let chartInstances = {};
+
+onAuthStateChanged(auth, async user => {
+  if (!user) { location.href = 'login.html'; return; }
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (!snap.exists() || snap.data().role !== 'clinician') { location.href = 'login.html'; return; }
+
+  clinicianUid = user.uid;
+  document.getElementById('clinician-name').textContent = snap.data().name || '';
+  document.getElementById('app-header').style.display = '';
+  document.getElementById('app-layout').style.display = 'flex';
+  document.getElementById('loading-screen').style.display = 'none';
+  loadPatients();
+});
+
+window.handleSignOut = async () => { await signOut(auth); location.href = 'login.html'; };
+
+async function loadPatients() {
+  // Find patients whose clinicianEmail matches this clinician
+  const meSnap = await getDoc(doc(db, 'users', clinicianUid));
+  const myEmail = meSnap.data().email;
+
+  const pSnap = await getDocs(query(collection(db, 'patients'), where('clinicianEmail', '==', myEmail)));
+  const patients = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  const listEl = document.getElementById('patient-list');
+  if (!patients.length) {
+    listEl.innerHTML = '<div style="padding:20px;font-size:13px;color:#9ca3af;">No patients assigned yet.<br><br>Patients enter your email during registration.</div>';
+    return;
+  }
+
+  listEl.innerHTML = patients.map(p => `
+    <div class="patient-item" id="pi-${p.id}" onclick="selectPatient('${p.id}','${p.name}','${p.studyId||''}','${p.condition||''}','${p.device||''}')">
+      <div class="patient-name">${p.name}</div>
+      <div class="patient-meta">${p.studyId || ''} · ${p.condition || ''}</div>
+    </div>
+  `).join('');
+}
+
+window.selectPatient = async function(uid, name, studyId, condition, device) {
+  document.querySelectorAll('.patient-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('pi-' + uid)?.classList.add('active');
+
+  const q = query(collection(db, 'assessments'), where('patientId', '==', uid), orderBy('date', 'asc'));
+  const snap = await getDocs(q);
+  const assessments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  const patient = { id: uid, name, studyId, condition, device };
+  renderPatientView(patient, assessments);
+};
+
+function renderPatientView(patient, assessments) {
+  const laep  = assessments.filter(a => a.type === 'laep');
+  const ssq   = assessments.filter(a => a.type === 'ssq');
+  const qolie = assessments.filter(a => a.type === 'qolie');
+  const lastL = laep.at(-1), lastS = ssq.at(-1), lastQ = qolie.at(-1);
+
+  const alerts = runAlerts(patient, laep, ssq, qolie);
+  Object.values(chartInstances).forEach(c => c.destroy());
+  chartInstances = {};
+
+  document.getElementById('main-panel').innerHTML = `
+    <div class="patient-header">
+      <div>
+        <h2>${patient.name}</h2>
+        <div class="tags">
+          <span class="tag">${patient.studyId || '—'}</span>
+          <span class="tag">${patient.condition || '—'}</span>
+          <span class="tag">${patient.device || '—'}</span>
+          ${alerts.length ? `<span class="tag alert-tag">⚠ ${alerts.length} alert${alerts.length > 1 ? 's' : ''}</span>` : ''}
+        </div>
+      </div>
+      <div style="font-size:13px;color:#6b7280;">${assessments.length} assessment${assessments.length !== 1 ? 's' : ''} total</div>
+    </div>
+
+    ${alerts.length ? `
+      <div class="card" style="margin-bottom:20px;border-left:4px solid #ef4444;">
+        <h3 style="color:#dc2626;">⚠ Clinical Alerts</h3>
+        ${alerts.map(a => `
+          <div class="alert-box">
+            <div class="alert-title">${a.title}</div>
+            <div class="alert-body">${a.body}</div>
+            ${a.cite ? `<div class="alert-cite">${a.cite}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>` : ''}
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Latest scores</h3>
+        ${scoreRow('LAEP', lastL?.score, scorePill_laep(lastL?.score))}
+        ${scoreRow('SSQ', lastL ? lastS?.score?.toFixed(2) : undefined, scorePill_ssq(lastS?.score))}
+        ${scoreRow('QOLIE-31', lastQ?.score, scorePill_qolie(lastQ?.score))}
+        <p class="threshold-note">LAEP ≥36.5 (Romoli 2018) · SSQ ≥5 · QOLIE &lt;40</p>
+      </div>
+      <div class="card">
+        <h3>LAEP trend</h3>
+        <div class="chart-wrap"><canvas id="chart-laep"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>SSQ trend</h3>
+        <div class="chart-wrap"><canvas id="chart-ssq"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>QOLIE-31 trend</h3>
+        <div class="chart-wrap"><canvas id="chart-qolie"></canvas></div>
+      </div>
+    </div>
+  `;
+
+  renderTrendChart('chart-laep', laep, '#4A6FA5', 19, 76, [{v:36.5,c:'#D4943C'},{v:45,c:'#D65D5D'}]);
+  renderTrendChart('chart-ssq',  ssq,  '#37577F', 1, 7,   [{v:5,c:'#D65D5D'}]);
+  renderTrendChart('chart-qolie',qolie,'#4A6FA5', 0, 100, [{v:59.8,c:'#4A9B6E'},{v:40,c:'#D4943C'}]);
+}
+
+function scoreRow(label, val, pill) {
+  const display = val !== undefined && val !== null ? val : '—';
+  return `<div class="score-row">
+    <span class="score-label">${label}</span>
+    <span class="score-pill ${pill.cls}">${display}${val !== undefined && val !== null ? '' : ''}</span>
+  </div>`;
+}
+function scorePill_laep(v) {
+  if (v === undefined || v === null) return { cls: 'pill-grey' };
+  if (v >= 45)   return { cls: 'pill-red' };
+  if (v >= 36.5) return { cls: 'pill-red' };
+  if (v >= 30)   return { cls: 'pill-amber' };
+  return { cls: 'pill-green' };
+}
+function scorePill_ssq(v) {
+  if (v === undefined || v === null) return { cls: 'pill-grey' };
+  if (v >= 5) return { cls: 'pill-red' };
+  if (v >= 3) return { cls: 'pill-amber' };
+  return { cls: 'pill-green' };
+}
+function scorePill_qolie(v) {
+  if (v === undefined || v === null) return { cls: 'pill-grey' };
+  if (v >= 60) return { cls: 'pill-green' };
+  if (v >= 40) return { cls: 'pill-amber' };
+  return { cls: 'pill-red' };
+}
+
+function renderTrendChart(id, data, color, yMin, yMax, thresholds) {
+  const ctx = document.getElementById(id)?.getContext('2d');
+  if (!ctx) return;
+  const labels = data.map(d => {
+    const dt = d.date?.toDate ? d.date.toDate() : new Date();
+    return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+  });
+  chartInstances[id] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels.length ? labels : ['No data'],
+      datasets: [{
+        data: data.map(d => d.score),
+        borderColor: color,
+        backgroundColor: color + '18',
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: color,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: yMin, max: yMax, grid: { color: '#f3f4f6' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── 5 PATTERN RECOGNITION ALGORITHMS ─────────────────────────────────
+
+function runAlerts(patient, laep, ssq, qolie) {
+  const alerts = [];
+  const lastL = laep.at(-1);
+
+  // 1. LAEP threshold
+  if (lastL?.score >= 45) alerts.push({
+    title: 'LAEP ≥45 — Toxicity & Suicidality Risk',
+    body: `${patient.name}'s latest LAEP score is ${lastL.score}. Scores ≥45 are associated with suicidality risk. Urgent medication review recommended.`,
+    cite: 'Kwon et al. 2019, Seizure'
+  });
+  else if (lastL?.score >= 36.5) alerts.push({
+    title: 'LAEP ≥36.5 — Discontinuation Risk',
+    body: `Score of ${Math.round(lastL.score)} predicts treatment dropout with 85% accuracy. Consider medication adjustment at next appointment.`,
+    cite: 'Romoli et al. 2018, Epilepsy & Behavior'
+  });
+
+  // 2. LAEP trajectory
+  if (laep.length >= 3) {
+    const recent = laep.slice(-3).map(a => a.score);
+    const slope = (recent[2] - recent[0]) / 2;
+    if (slope > 0.5 && lastL.score < 45) {
+      const weeksTo = lastL.score < 36.5 ? Math.round((36.5 - lastL.score) / slope) : null;
+      alerts.push({
+        title: 'Rising LAEP Trajectory',
+        body: `LAEP increasing ~${slope.toFixed(1)} pts/assessment. ${weeksTo ? `Projected to cross dropout threshold in ~${weeksTo} more assessments.` : 'Already above dropout threshold.'}`,
+        cite: 'Algorithm 1 — linear regression on last 3 scores'
+      });
+    }
+  }
+
+  // 3. SSQ-LAEP divergence
+  if (laep.length >= 2 && ssq.length >= 2) {
+    const laepUp = laep.at(-1).score > laep.at(-2).score;
+    const ssqDown = ssq.at(-1).score < ssq.at(-2).score;
+    if (laepUp && ssqDown) alerts.push({
+      title: 'SSQ↓ LAEP↑ Divergence',
+      body: 'Seizure severity improving while side effects worsening. Treatment is working but medication burden may drive discontinuation. Consider dose optimisation.',
+      cite: 'Algorithm 2 — SSQ-LAEP divergence detection'
+    });
+  }
+
+  // 4. Cognitive subscale decline
+  if (qolie.length >= 2) {
+    const curr = qolie.at(-1), prev = qolie.at(-2);
+    const overallChange = curr.score - prev.score;
+    const cogCurr = curr.subscales?.cognitiveFunction;
+    const cogPrev = prev.subscales?.cognitiveFunction;
+    if (overallChange > -8 && cogCurr !== undefined && cogPrev !== undefined && (cogPrev - cogCurr) >= 10) {
+      alerts.push({
+        title: 'Isolated Cognitive Decline',
+        body: 'QOLIE-31 cognitive subscale dropped ≥10 points while overall score stable. May indicate subclinical seizures or medication toxicity (topiramate/levetiracetam). Consider neuropsychology referral.',
+        cite: 'Algorithm 3 — cognitive subscale monitoring'
+      });
+    }
+  }
+
+  // 5. Completion gap
+  if (laep.length > 0) {
+    const lastDate = laep.at(-1).date?.toDate ? laep.at(-1).date.toDate() : new Date();
+    const weeks = Math.floor((Date.now() - lastDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
+    if (weeks >= 2) alerts.push({
+      title: `${weeks}-Week Assessment Gap`,
+      body: `${patient.name} has not completed a LAEP in ${weeks} weeks. Non-completion correlates with depression, deterioration, and treatment abandonment.`,
+      cite: 'Algorithm 4 — completion pattern analysis'
+    });
+  }
+
+  return alerts;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroFract — Researcher Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #EBF0F7; color: #1A2B3C; min-height: 100vh; }
+
+    #loading-screen {
+      position: fixed; inset: 0; background: #EBF0F7;
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
+    .loading-logo .neuro { color: #1A2B3C; }
+    .loading-logo .fract { color: #4A6FA5; }
+
+    header {
+      background: #1A2B3C;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo h1 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
+    .logo h1 .neuro { color: #EBF0F7; }
+    .logo h1 .fract { color: #4A6FA5; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .researcher-name { font-size: 13px; color: #9bb2ce; }
+    .btn-signout {
+      padding: 7px 14px;
+      border: 1.5px solid #4A6FA5;
+      border-radius: 8px;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #9bb2ce;
+      cursor: pointer;
+    }
+
+    main { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+    h2.page-title { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 6px; }
+    .page-sub { font-size: 14px; color: #6b7280; margin-bottom: 28px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
+    }
+    .stat-value { font-size: 28px; font-weight: 700; color: #4A6FA5; margin-bottom: 4px; }
+    .stat-label { font-size: 12px; color: #6b7280; }
+
+    .section-title { font-family: 'Lora', serif; font-size: 17px; margin-bottom: 14px; }
+
+    .table-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
+      margin-bottom: 28px;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      background: #EBF0F7;
+      color: #4A6FA5;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td { padding: 11px 12px; border-bottom: 1px solid #f3f4f6; color: #1A2B3C; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-red   { background: #fee2e2; color: #991b1b; }
+
+    .btn-export {
+      padding: 10px 20px;
+      background: #4A6FA5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-export:hover { background: #37577F; }
+
+    .anon-notice {
+      background: #EBF0F7;
+      border-left: 4px solid #4A6FA5;
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4A6FA5;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loading-screen">
+  <div class="loading-logo"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
+</div>
+
+<header id="app-header" style="display:none;">
+  <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span> <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;">— Researcher</span></h1></div>
+  <div class="header-right">
+    <span class="researcher-name" id="researcher-name"></span>
+    <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
+  </div>
+</header>
+
+<main id="main-content" style="display:none;">
+  <h2 class="page-title">Cohort Data</h2>
+  <p class="page-sub">Anonymised data — no names, emails, or dates of birth are shown.</p>
+
+  <div class="anon-notice">
+    🔒 All records shown by Study ID only. Patient identities are protected under NeuroFract data governance policy.
+  </div>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Total patients</div></div>
+    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Total assessments</div></div>
+    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Mean LAEP score</div></div>
+    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Flagged records</div></div>
+  </div>
+
+  <div class="section-title">Assessment records</div>
+  <div class="table-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span style="font-size:13px;color:#6b7280;" id="record-count">Loading…</span>
+      <button class="btn-export" onclick="exportCSV()">Export CSV</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Study ID</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Score</th>
+          <th>Flagged</th>
+          <th>Condition</th>
+          <th>Device</th>
+        </tr>
+      </thead>
+      <tbody id="records-tbody">
+        <tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:32px;">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script type="module">
+import { auth, db } from './firebase-config.js';
+import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  doc, getDoc, collection, getDocs, query, orderBy
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+let allRecords = [];
+
+onAuthStateChanged(auth, async user => {
+  if (!user) { location.href = 'login.html'; return; }
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (!snap.exists() || snap.data().role !== 'researcher') { location.href = 'login.html'; return; }
+
+  document.getElementById('researcher-name').textContent = snap.data().name || '';
+  document.getElementById('app-header').style.display = '';
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = '';
+  loadData();
+});
+
+window.handleSignOut = async () => { await signOut(auth); location.href = 'login.html'; };
+
+async function loadData() {
+  // Load all patients (for condition/device info)
+  const pSnap = await getDocs(collection(db, 'patients'));
+  const patientMap = {};
+  pSnap.docs.forEach(d => { patientMap[d.id] = d.data(); });
+
+  // Load all assessments
+  const aSnap = await getDocs(query(collection(db, 'assessments'), orderBy('date', 'desc')));
+  allRecords = aSnap.docs.map(d => {
+    const data = d.data();
+    const p = patientMap[data.patientId] || {};
+    return {
+      studyId: p.studyId || 'NF-???',
+      type: data.type?.toUpperCase() || '—',
+      date: data.date?.toDate ? data.date.toDate().toLocaleDateString('en-GB') : '—',
+      score: data.score,
+      flagged: data.flagged,
+      condition: p.condition || '—',
+      device: p.device || '—'
+    };
+  });
+
+  // Stats
+  const laepRecs = allRecords.filter(r => r.type === 'LAEP');
+  const meanLaep = laepRecs.length ? (laepRecs.reduce((s,r) => s + r.score, 0) / laepRecs.length).toFixed(1) : '—';
+  const flagged = allRecords.filter(r => r.flagged).length;
+  const uniquePatients = new Set(aSnap.docs.map(d => d.data().patientId)).size;
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><div class="stat-value">${uniquePatients}</div><div class="stat-label">Total patients</div></div>
+    <div class="stat-card"><div class="stat-value">${allRecords.length}</div><div class="stat-label">Total assessments</div></div>
+    <div class="stat-card"><div class="stat-value">${meanLaep}</div><div class="stat-label">Mean LAEP score</div></div>
+    <div class="stat-card"><div class="stat-value">${flagged}</div><div class="stat-label">Flagged records</div></div>
+  `;
+
+  document.getElementById('record-count').textContent = `${allRecords.length} records`;
+  document.getElementById('records-tbody').innerHTML = allRecords.map(r => {
+    const scoreDisplay = typeof r.score === 'number' ? (Number.isInteger(r.score) ? r.score : r.score.toFixed(2)) : '—';
+    const flagClass = r.flagged ? 'badge-red' : 'badge-green';
+    const flagText = r.flagged ? 'Yes' : 'No';
+    return `<tr>
+      <td><strong>${r.studyId}</strong></td>
+      <td>${r.type}</td>
+      <td>${r.date}</td>
+      <td>${scoreDisplay}</td>
+      <td><span class="badge ${flagClass}">${flagText}</span></td>
+      <td>${r.condition}</td>
+      <td>${r.device}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:32px;">No data yet.</td></tr>';
+}
+
+window.exportCSV = function() {
+  const headers = ['study_id','type','date','score','flagged','condition','device'];
+  const rows = allRecords.map(r => [
+    r.studyId, r.type, r.date,
+    typeof r.score === 'number' ? (Number.isInteger(r.score) ? r.score : r.score.toFixed(2)) : '',
+    r.flagged ? 'true' : 'false',
+    r.condition, r.device
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `neurofract-data-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+</script>
+</body>
+</html>
