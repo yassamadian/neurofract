@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -407,6 +408,22 @@
     /* ── COLLAPSED SECTION ── */
     .collapsible-body { display: none; }
     .collapsible-body.open { display: block; }
+
+    /* ── SHARE BUTTON ── */
+    .btn-share {
+      width: 100%; padding: 14px; margin-bottom: 10px;
+      background: #ffffff; color: #4A6FA5;
+      border: 2px solid #4A6FA5; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background 0.18s, color 0.18s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-share:hover { background: #4A6FA5; color: #fff; }
+    .btn-share:disabled { opacity: 0.6; cursor: not-allowed; }
+    .share-note {
+      font-size: 12px; color: #9ca3af; text-align: center;
+      margin-bottom: 20px; line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -565,6 +582,14 @@
       </div>
     </div>
 
+    <!-- Share with clinician -->
+    <div id="share-section" style="display:none;margin-top:8px;">
+      <button class="btn-share" id="btn-share-dashboard" onclick="generatePDF()">
+        📄 Share with clinician
+      </button>
+      <p class="share-note">Downloads a one-page PDF summary you can bring to your appointment.<br>Your clinician will also see this data automatically on their dashboard.</p>
+    </div>
+
   </div>
 </div>
 
@@ -594,6 +619,10 @@
     <div class="result-raw-score" id="result-raw-score"></div>
     <div class="result-badge" id="result-badge"></div>
     <div class="result-message" id="result-message"></div>
+    <button class="btn-share" id="btn-share-results" onclick="generatePDF()">
+      📄 Share with clinician
+    </button>
+    <p class="share-note">Your clinician will also see this data automatically on their dashboard.</p>
     <button class="btn-done" onclick="showDashboard()">Back to dashboard</button>
   </div>
 </div>
@@ -851,6 +880,11 @@ async function loadDashboard() {
   if (laepScores.length >= 2) {
     document.getElementById('chart-section').style.display = '';
     renderLaepChart(laepScores.slice().reverse());
+  }
+
+  // Show share button once patient has at least one assessment
+  if (assessmentHistory.length > 0) {
+    document.getElementById('share-section').style.display = '';
   }
 
   // Greeting sub
@@ -1239,6 +1273,225 @@ function showResults(instrument, score, type) {
 }
 
 window.showDashboard = function() { showView('dashboard'); };
+
+// ── PDF GENERATION ───────────────────────────────────────────────
+
+window.generatePDF = async function() {
+  // Disable both share buttons while generating
+  ['btn-share-results','btn-share-dashboard'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.disabled = true; el.textContent = 'Generating PDF…'; }
+  });
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210; // A4 width mm
+    const margin = 18;
+    const contentW = W - margin * 2;
+    let y = 20;
+
+    // ── Colours (RGB)
+    const navyR = 26,  navyG = 43,  navyB = 60;
+    const blueR = 74,  blueG = 111, blueB = 165;
+    const greyR = 107, greyG = 114, greyB = 128;
+    const lineR = 209, lineG = 218, lineB = 232;
+
+    // ── Header bar
+    doc.setFillColor(navyR, navyG, navyB);
+    doc.rect(0, 0, W, 28, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(235, 240, 247);
+    doc.text('Neuro', margin, 17);
+    const neuroW = doc.getTextWidth('Neuro');
+    doc.setTextColor(blueR, blueG, blueB);
+    doc.text('Fract', margin + neuroW, 17);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(155, 178, 206);
+    doc.text('Patient Assessment Report', margin + neuroW + doc.getTextWidth('Fract') + 5, 17);
+
+    const genDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    doc.setFontSize(8);
+    doc.text('Generated ' + genDate, W - margin, 17, { align: 'right' });
+
+    y = 40;
+
+    // ── Patient info
+    const name    = patientData?.name    || '—';
+    const studyId = patientData?.studyId || '—';
+    const device  = patientData?.device  || '—';
+    const condition = patientData?.condition || '—';
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(navyR, navyG, navyB);
+    doc.text(name, margin, y);
+    y += 7;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(greyR, greyG, greyB);
+    doc.text(`Study ID: ${studyId}   ·   Device: ${device}   ·   Condition: ${condition}`, margin, y);
+    y += 6;
+
+    // Date range
+    const allDates = assessmentHistory.map(a => a.date?.toDate ? a.date.toDate() : null).filter(Boolean);
+    if (allDates.length) {
+      const earliest = new Date(Math.min(...allDates.map(d => d.getTime())));
+      const latest   = new Date(Math.max(...allDates.map(d => d.getTime())));
+      const fmt = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const weeks = Math.max(1, Math.round((latest - earliest) / (7 * 24 * 60 * 60 * 1000)));
+      doc.text(`Assessment period: ${fmt(earliest)} — ${fmt(latest)}  (${weeks} week${weeks !== 1 ? 's' : ''})`, margin, y);
+      y += 5;
+    }
+
+    // Divider
+    y += 2;
+    doc.setDrawColor(lineR, lineG, lineB);
+    doc.setLineWidth(0.4);
+    doc.line(margin, y, W - margin, y);
+    y += 8;
+
+    // ── Text summary
+    const laepScores = assessmentHistory.filter(a => a.type === 'laep').slice().reverse(); // asc
+    let summaryText = '';
+    if (laepScores.length >= 2) {
+      const oldest = laepScores[0], newest = laepScores.at(-1);
+      const diff = newest.score - oldest.score;
+      const allDatesLaep = laepScores.map(a => a.date?.toDate ? a.date.toDate() : new Date());
+      const spanWeeks = Math.max(1, Math.round((allDatesLaep.at(-1) - allDatesLaep[0]) / (7 * 24 * 60 * 60 * 1000)));
+      const trend = diff < -2 ? 'improved' : diff > 2 ? 'increased' : 'remained stable';
+      summaryText = `Over the past ${spanWeeks} week${spanWeeks !== 1 ? 's' : ''}, ${name}'s LAEP scores have ${trend} (from ${Math.round(oldest.score)} to ${Math.round(newest.score)}).`;
+    } else if (laepScores.length === 1) {
+      summaryText = `${name} completed their first LAEP assessment with a score of ${Math.round(laepScores[0].score)}.`;
+    } else {
+      summaryText = `${name} has not yet completed a LAEP assessment.`;
+    }
+    if (laepScores.length && laepScores.at(-1).score >= 36.5) {
+      summaryText += ` The most recent score of ${Math.round(laepScores.at(-1).score)} exceeds the clinical threshold of 36.5, which predicts treatment discontinuation with 85% accuracy (Romoli et al. 2018).`;
+    }
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(navyR, navyG, navyB);
+    const summaryLines = doc.splitTextToSize(summaryText, contentW);
+    doc.text(summaryLines, margin, y);
+    y += summaryLines.length * 5 + 8;
+
+    // ── Score tables
+    const types = [
+      { key: 'laep',  label: 'LAEP — Liverpool Adverse Events Profile', range: '19–76 · threshold ≥36.5 (Romoli et al. 2018)' },
+      { key: 'ssq',   label: 'SSQ — Seizure Severity Questionnaire',    range: '1.0–7.0 mean · threshold ≥5 (Cramer et al. 2002)' },
+      { key: 'qolie', label: 'QOLIE-31 — Quality of Life in Epilepsy',  range: '0–100 (higher = better) · benchmark 59.8 (Gao et al. 2016)' }
+    ];
+
+    for (const t of types) {
+      const rows = assessmentHistory
+        .filter(a => a.type === t.key)
+        .slice()
+        .sort((a, b) => {
+          const da = a.date?.toDate ? a.date.toDate() : new Date(0);
+          const db2 = b.date?.toDate ? b.date.toDate() : new Date(0);
+          return da - db2;
+        });
+      if (!rows.length) continue;
+
+      // Check page overflow (rough)
+      const blockH = 8 + 6 + rows.length * 7 + 8;
+      if (y + blockH > 270) { doc.addPage(); y = 20; }
+
+      // Section heading
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(blueR, blueG, blueB);
+      doc.text(t.label, margin, y);
+      y += 5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(greyR, greyG, greyB);
+      doc.text(t.range, margin, y);
+      y += 5;
+
+      // Table header
+      const col1 = margin, col2 = margin + 50, col3 = margin + 95;
+      doc.setFillColor(235, 240, 247);
+      doc.rect(margin, y - 1, contentW, 6, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(blueR, blueG, blueB);
+      doc.text('Date', col1, y + 3.5);
+      doc.text('Score', col2, y + 3.5);
+      doc.text('Status', col3, y + 3.5);
+      y += 7;
+
+      // Table rows
+      rows.forEach((a, i) => {
+        if (y > 272) { doc.addPage(); y = 20; }
+        const d = a.date?.toDate ? a.date.toDate() : new Date();
+        const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const scoreStr = t.key === 'ssq'
+          ? (typeof a.score === 'number' ? a.score.toFixed(2) : '—')
+          : (typeof a.score === 'number' ? Math.round(a.score).toString() : '—');
+        const statusStr = a.flagged ? '⚠ Above threshold' : 'Within range';
+
+        if (i % 2 === 0) {
+          doc.setFillColor(249, 250, 251);
+          doc.rect(margin, y - 1, contentW, 6, 'F');
+        }
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(navyR, navyG, navyB);
+        doc.text(dateStr, col1, y + 3.5);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(a.flagged ? 185 : 74, a.flagged ? 28 : 111, a.flagged ? 28 : 165);
+        doc.text(scoreStr, col2, y + 3.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(a.flagged ? 185 : greyR, a.flagged ? 28 : greyG, a.flagged ? 28 : greyB);
+        doc.text(statusStr, col3, y + 3.5);
+        y += 6;
+      });
+
+      doc.setDrawColor(lineR, lineG, lineB);
+      doc.line(margin, y, W - margin, y);
+      y += 8;
+    }
+
+    // ── Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFillColor(navyR, navyG, navyB);
+      doc.rect(0, 287, W, 10, 'F');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(155, 178, 206);
+      doc.text('Generated by NeuroFract — neurofract.com', margin, 293);
+      doc.text(`Page ${i} of ${pageCount}`, W - margin, 293, { align: 'right' });
+      doc.setTextColor(74, 111, 165);
+      doc.text('Confidential patient data — for clinical use only', W / 2, 293, { align: 'center' });
+    }
+
+    // ── Save
+    const safeStudy = (patientData?.studyId || 'NF').replace(/[^A-Z0-9\-]/gi, '');
+    const dateSlug = new Date().toISOString().slice(0, 10);
+    doc.save(`NeuroFract-${safeStudy}-${dateSlug}.pdf`);
+
+  } catch(e) {
+    console.error('PDF error:', e);
+    alert('Could not generate PDF — please try again.');
+  } finally {
+    ['btn-share-results','btn-share-dashboard'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.disabled = false; el.innerHTML = '📄 Share with clinician'; }
+    });
+  }
+};
 
 // ── SCORE INTERPRETATION ──────────────────────────────────────────
 
