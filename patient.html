@@ -291,9 +291,62 @@
       font-size: 12px; color: #4A6FA5; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
     }
+    .q-text-wrap {
+      position: relative;
+      margin-bottom: 32px;
+    }
     .q-text {
       font-family: 'Lora', serif; font-size: 20px; font-weight: 600;
-      line-height: 1.45; color: #1A2B3C; margin-bottom: 32px;
+      line-height: 1.45; color: #1A2B3C;
+      padding-right: 32px; /* space for info icon */
+    }
+    .q-info-btn {
+      position: absolute;
+      top: 2px; right: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: #EBF0F7;
+      border: 1.5px solid #d1dae8;
+      color: #4A6FA5;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1;
+    }
+    .q-info-btn:hover { background: #d1dae8; border-color: #4A6FA5; }
+
+    /* ── INFO TOOLTIP OVERLAY ── */
+    .info-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 300;
+      background: rgba(26,43,60,0.45);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .info-overlay.open { display: flex; }
+    .info-sheet {
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      padding: 28px 24px 44px;
+      width: 100%; max-width: 480px;
+    }
+    .info-sheet-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #4A6FA5; margin-bottom: 12px;
+    }
+    .info-sheet-text {
+      font-size: 16px; line-height: 1.65; color: #1A2B3C;
+    }
+    .info-sheet-close {
+      margin-top: 22px;
+      width: 100%; padding: 13px;
+      background: #EBF0F7; border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px;
+      font-weight: 600; color: #4A6FA5; cursor: pointer;
     }
     .options { display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
     .option-btn {
@@ -521,7 +574,10 @@
     <div class="progress-bar"><div class="progress-fill" id="q-progress"></div></div>
     <div class="q-section" id="q-section-label"></div>
     <div class="q-meta" id="q-meta"></div>
-    <div class="q-text" id="q-text"></div>
+    <div class="q-text-wrap">
+      <div class="q-text" id="q-text"></div>
+      <button class="q-info-btn" id="q-info-btn" onclick="openInfoSheet()" aria-label="Why does this question matter?">ⓘ</button>
+    </div>
     <div class="options" id="q-options"></div>
     <div class="q-nav">
       <button class="btn-back hidden" id="btn-back" onclick="goBack()">← Back</button>
@@ -539,6 +595,15 @@
     <div class="result-badge" id="result-badge"></div>
     <div class="result-message" id="result-message"></div>
     <button class="btn-done" onclick="showDashboard()">Back to dashboard</button>
+  </div>
+</div>
+
+<!-- ── INFO TOOLTIP OVERLAY ── -->
+<div class="info-overlay" id="info-overlay" onclick="closeInfoSheet(event)">
+  <div class="info-sheet" onclick="event.stopPropagation()">
+    <div class="info-sheet-label">Why does this question matter?</div>
+    <div class="info-sheet-text" id="info-sheet-text"></div>
+    <button class="info-sheet-close" onclick="closeInfoSheet()">Got it</button>
   </div>
 </div>
 
@@ -583,6 +648,7 @@
 
 <script type="module">
 import { auth, db } from './firebase-config.js';
+import { LAEP_INFO, SSQ_INFO, QOLIE_INFO } from './info-text.js';
 import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   doc, getDoc, setDoc, addDoc, collection,
@@ -999,6 +1065,29 @@ window.saveSeizure = async function() {
   } catch(e) {
     console.error('Error saving seizure:', e);
     alert('Could not save — please try again.');
+  }
+};
+
+// ── INFO TOOLTIP ──────────────────────────────────────────────────
+
+function getInfoText(instrument, index) {
+  if (instrument === LAEP)  return LAEP_INFO[index]  || '';
+  if (instrument === SSQ)   return SSQ_INFO[index]   || '';
+  if (instrument === QOLIE) return QOLIE_INFO[index] || '';
+  return '';
+}
+
+window.openInfoSheet = function() {
+  const text = getInfoText(qState.instrument, qState.currentIndex);
+  if (!text) return;
+  document.getElementById('info-sheet-text').textContent = text;
+  document.getElementById('info-overlay').classList.add('open');
+};
+
+window.closeInfoSheet = function(e) {
+  // Called from overlay backdrop click (has event) or "Got it" button (no event)
+  if (!e || e.target === document.getElementById('info-overlay')) {
+    document.getElementById('info-overlay').classList.remove('open');
   }
 };
 
