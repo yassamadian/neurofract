@@ -6,10 +6,12 @@
   <title>NeuroFract — Researcher Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: #EBF0F7; color: #1A2B3C; min-height: 100vh; }
 
+    /* ── LOADING ── */
     #loading-screen {
       position: fixed; inset: 0; background: #EBF0F7;
       display: flex; align-items: center; justify-content: center; z-index: 100;
@@ -18,102 +20,104 @@
     .loading-logo .neuro { color: #1A2B3C; }
     .loading-logo .fract { color: #4A6FA5; }
 
-    header {
-      background: #1A2B3C;
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    /* ── HEADER ── */
+    header { background: #1A2B3C; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
     .logo h1 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
     .logo h1 .neuro { color: #EBF0F7; }
     .logo h1 .fract { color: #4A6FA5; }
     .header-right { display: flex; align-items: center; gap: 16px; }
     .researcher-name { font-size: 13px; color: #9bb2ce; }
-    .btn-signout {
-      padding: 7px 14px;
-      border: 1.5px solid #4A6FA5;
-      border-radius: 8px;
-      background: transparent;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: #9bb2ce;
-      cursor: pointer;
+    .btn-signout { padding: 7px 14px; border: 1.5px solid #4A6FA5; border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #9bb2ce; cursor: pointer; }
+    .btn-signout:hover { background: rgba(74,111,165,0.15); }
+
+    /* ── TABS ── */
+    .tab-bar { background: #1A2B3C; display: flex; padding: 0 28px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .tab-btn { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #9bb2ce; cursor: pointer; border-bottom: 3px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; margin-bottom: -1px; }
+    .tab-btn.active { color: #fff; border-bottom-color: #4A6FA5; }
+
+    /* ── LAYOUT ── */
+    .tab-panel { display: none; max-width: 1100px; margin: 0 auto; padding: 32px 28px 60px; }
+    .tab-panel.active { display: block; }
+
+    /* ── CARDS ── */
+    .card { background: #fff; border-radius: 14px; padding: 24px; box-shadow: 0 2px 10px rgba(74,111,165,0.08); margin-bottom: 24px; }
+    .card-title { font-family: 'Lora', serif; font-size: 16px; color: #1A2B3C; margin-bottom: 16px; }
+
+    /* ── ANON NOTICE ── */
+    .anon-notice { background: #EBF0F7; border-left: 4px solid #4A6FA5; border-radius: 0 10px 10px 0; padding: 11px 16px; font-size: 13px; color: #4A6FA5; margin-bottom: 24px; }
+
+    /* ── STAT GRID ── */
+    .stats-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stats-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(74,111,165,0.07); }
+    .stat-val { font-size: 28px; font-weight: 700; color: #4A6FA5; margin-bottom: 4px; }
+    .stat-lbl { font-size: 12px; color: #6b7280; line-height: 1.4; }
+    .stat-bench { font-size: 11px; color: #9ca3af; margin-top: 5px; font-style: italic; }
+    .stat-bar { height: 5px; background: #EBF0F7; border-radius: 3px; margin-top: 10px; }
+    .stat-bar-fill { height: 100%; border-radius: 3px; background: #4A6FA5; transition: width 0.6s ease; }
+    .stat-bar-fill.amber { background: #f59e0b; }
+    .stat-bar-fill.green { background: #10b981; }
+
+    /* ── HEATMAP ── */
+    .heatmap-scroll { overflow-x: auto; }
+    .heatmap-table { border-collapse: collapse; font-size: 12px; min-width: 400px; }
+    .heatmap-table th { padding: 5px 6px; font-weight: 600; color: #6b7280; text-align: center; font-size: 11px; white-space: nowrap; background: none; }
+    .heatmap-table th.row-header { text-align: left; padding-right: 12px; }
+    .heatmap-table td { width: 28px; height: 24px; text-align: center; }
+    .hm-cell { width: 22px; height: 22px; border-radius: 4px; margin: 1px auto; }
+    .hm-green  { background: #10b981; }
+    .hm-amber  { background: #f59e0b; }
+    .hm-red    { background: #f87171; }
+    .hm-empty  { background: #e5e7eb; }
+    .hm-future { background: #f9fafb; }
+    .hm-id     { font-size: 11px; font-weight: 600; color: #1A2B3C; padding-right: 12px; white-space: nowrap; }
+
+    /* ── EARLY WARNING ── */
+    .warning-pill { display: inline-flex; align-items: center; gap: 6px; background: #fee2e2; color: #991b1b; border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 600; margin: 4px; }
+
+    /* ── LIVING EVIDENCE ── */
+    .evidence-card { background: #1A2B3C; border-radius: 14px; padding: 24px 26px; margin-bottom: 24px; }
+    .evidence-card .ev-title { font-family: 'Lora', serif; font-size: 14px; color: #9bb2ce; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .evidence-card .ev-line { font-size: 15px; color: #EBF0F7; line-height: 1.7; margin-bottom: 6px; }
+    .evidence-card .ev-cite { font-size: 12px; color: #4A6FA5; font-style: italic; }
+
+    /* ── FILTER ROW ── */
+    .filter-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-end; }
+    .filter-group label { display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .filter-group select, .filter-group input[type="date"] {
+      padding: 9px 12px; border: 1.5px solid #d1dae8; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #1A2B3C;
+      background: #fff; outline: none; -webkit-appearance: none; appearance: none;
     }
+    .filter-group select:focus, .filter-group input[type="date"]:focus { border-color: #4A6FA5; }
+    .btn-filter-reset { padding: 9px 16px; border: 1.5px solid #d1dae8; border-radius: 9px; background: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #6b7280; cursor: pointer; align-self: flex-end; }
+    .btn-filter-reset:hover { border-color: #4A6FA5; color: #4A6FA5; }
 
-    main { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
-
-    h2.page-title { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 6px; }
-    .page-sub { font-size: 14px; color: #6b7280; margin-bottom: 28px; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-    .stat-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
-    }
-    .stat-value { font-size: 28px; font-weight: 700; color: #4A6FA5; margin-bottom: 4px; }
-    .stat-label { font-size: 12px; color: #6b7280; }
-
-    .section-title { font-family: 'Lora', serif; font-size: 17px; margin-bottom: 14px; }
-
-    .table-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
-      margin-bottom: 28px;
-      overflow-x: auto;
-    }
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th {
-      text-align: left;
-      padding: 10px 12px;
-      background: #EBF0F7;
-      color: #4A6FA5;
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    td { padding: 11px 12px; border-bottom: 1px solid #f3f4f6; color: #1A2B3C; }
+    th { text-align: left; padding: 9px 12px; background: #EBF0F7; color: #4A6FA5; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
     tr:last-child td { border-bottom: none; }
-
-    .badge {
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
+    .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-green { background: #d1fae5; color: #065f46; }
-    .badge-amber { background: #fef3c7; color: #92400e; }
     .badge-red   { background: #fee2e2; color: #991b1b; }
+    .badge-grey  { background: #f3f4f6; color: #6b7280; }
 
-    .btn-export {
-      padding: 10px 20px;
-      background: #4A6FA5;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    /* ── CHART CONTAINER ── */
+    .chart-wrap { position: relative; height: 220px; margin-top: 12px; }
+
+    /* ── EXPORT BUTTONS ── */
+    .export-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px; }
+    .export-card { background: #fff; border-radius: 14px; padding: 24px; box-shadow: 0 2px 8px rgba(74,111,165,0.07); display: flex; flex-direction: column; gap: 10px; }
+    .export-card h4 { font-family: 'Lora', serif; font-size: 15px; color: #1A2B3C; }
+    .export-card p { font-size: 13px; color: #6b7280; line-height: 1.5; flex: 1; }
+    .btn-export { padding: 11px 18px; background: #4A6FA5; color: #fff; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
     .btn-export:hover { background: #37577F; }
+    .btn-export:disabled { background: #a0b4cc; cursor: not-allowed; }
+    .methods-note { font-size: 11px; color: #9ca3af; margin-top: 6px; font-style: italic; }
 
-    .anon-notice {
-      background: #EBF0F7;
-      border-left: 4px solid #4A6FA5;
-      border-radius: 0 10px 10px 0;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #4A6FA5;
-      margin-bottom: 24px;
-    }
+    .methods-preview { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; font-size: 13px; color: #374151; line-height: 1.7; white-space: pre-wrap; font-family: 'DM Sans', sans-serif; }
   </style>
 </head>
 <body>
@@ -123,62 +127,232 @@
 </div>
 
 <header id="app-header" style="display:none;">
-  <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span> <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;">— Researcher</span></h1></div>
+  <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span>
+    <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;"> — Researcher</span></h1></div>
   <div class="header-right">
     <span class="researcher-name" id="researcher-name"></span>
     <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
   </div>
 </header>
 
-<main id="main-content" style="display:none;">
-  <h2 class="page-title">Cohort Data</h2>
-  <p class="page-sub">Anonymised data — no names, emails, or dates of birth are shown.</p>
+<div class="tab-bar" id="tab-bar" style="display:none;">
+  <button class="tab-btn active" onclick="switchTab('dashboard')">Study Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('explorer')">Cohort Explorer</button>
+  <button class="tab-btn" onclick="switchTab('export')">Export</button>
+</div>
+
+<!-- ══ TAB: STUDY DASHBOARD ══ -->
+<div class="tab-panel active" id="panel-dashboard">
 
   <div class="anon-notice">
-    🔒 All records shown by Study ID only. Patient identities are protected under NeuroFract data governance policy.
+    🔒 All data displayed by Study ID only. No patient names, emails, or dates of birth are ever shown or exported. NeuroFract data governance policy v1.0.
   </div>
 
-  <div class="stats-grid" id="stats-grid">
-    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Total patients</div></div>
-    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Total assessments</div></div>
-    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Mean LAEP score</div></div>
-    <div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Flagged records</div></div>
+  <!-- Living Evidence Summary (dark card) -->
+  <div class="evidence-card" id="evidence-card">
+    <div class="ev-title">Living Evidence Summary</div>
+    <div class="ev-line" id="ev-line-laep">Loading…</div>
+    <div class="ev-line" id="ev-line-ssq" style="display:none;"></div>
+    <div class="ev-line" id="ev-line-qolie" style="display:none;"></div>
+    <div class="ev-cite">Auto-calculated from live Firestore data · Updated on page load</div>
   </div>
 
-  <div class="section-title">Assessment records</div>
-  <div class="table-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <span style="font-size:13px;color:#6b7280;" id="record-count">Loading…</span>
-      <button class="btn-export" onclick="exportCSV()">Export CSV</button>
+  <!-- Key metrics -->
+  <div class="stats-grid-4" id="stats-grid"></div>
+
+  <!-- Completion rate card -->
+  <div class="card" id="completion-card">
+    <div class="card-title">Completion rate</div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
+      <span id="completion-pct" style="font-size:32px;font-weight:700;color:#4A6FA5;">—%</span>
+      <span style="font-size:13px;color:#6b7280;">of expected weekly LAEP assessments completed</span>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Study ID</th>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Score</th>
-          <th>Flagged</th>
-          <th>Condition</th>
-          <th>Device</th>
-        </tr>
-      </thead>
-      <tbody id="records-tbody">
-        <tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:32px;">Loading…</td></tr>
-      </tbody>
-    </table>
+    <div class="stat-bar"><div class="stat-bar-fill" id="completion-bar" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;">
+      <span style="font-size:11px;color:#9ca3af;">Target: ≥60%</span>
+      <span style="font-size:11px;color:#9ca3af;">Research benchmark: 63.3% (Vansant et al. 2024, Scientific Reports)</span>
+    </div>
   </div>
-</main>
+
+  <!-- Enrolment progress -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="card-title" style="margin:0;">Enrolment progress</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label style="font-size:12px;color:#6b7280;">Target:</label>
+        <input type="number" id="target-n" value="20" min="1" max="500"
+          style="width:64px;padding:5px 8px;border:1.5px solid #d1dae8;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;"
+          oninput="updateEnrolment()" />
+      </div>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
+      <span id="enrol-fraction" style="font-size:28px;font-weight:700;color:#4A6FA5;">— of —</span>
+      <span style="font-size:13px;color:#6b7280;">target participants enrolled</span>
+    </div>
+    <div class="stat-bar"><div class="stat-bar-fill green" id="enrol-bar" style="width:0%"></div></div>
+  </div>
+
+  <!-- Data Completeness Heatmap -->
+  <div class="card">
+    <div class="card-title">Data completeness heatmap
+      <span style="float:right;font-size:11px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">
+        <span style="display:inline-block;width:10px;height:10px;background:#10b981;border-radius:2px;vertical-align:middle;"></span> Completed &nbsp;
+        <span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;vertical-align:middle;"></span> Partial &nbsp;
+        <span style="display:inline-block;width:10px;height:10px;background:#f87171;border-radius:2px;vertical-align:middle;"></span> Missed &nbsp;
+        <span style="display:inline-block;width:10px;height:10px;background:#e5e7eb;border-radius:2px;vertical-align:middle;"></span> Pre-enrolment
+      </span>
+    </div>
+    <div class="heatmap-scroll" id="heatmap-container">
+      <p style="color:#9ca3af;font-size:13px;">Loading…</p>
+    </div>
+  </div>
+
+  <!-- Early warning -->
+  <div class="card">
+    <div class="card-title">⚠ Early warning — 2+ consecutive missed weeks</div>
+    <div id="early-warning-list">
+      <p style="color:#9ca3af;font-size:13px;">Loading…</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ TAB: COHORT EXPLORER ══ -->
+<div class="tab-panel" id="panel-explorer">
+
+  <div class="anon-notice">🔒 Study IDs only. All results filtered client-side from anonymised data.</div>
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-title">Filter cohort</div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Device type</label>
+        <select id="filter-device" onchange="applyFilters()">
+          <option value="">All devices</option>
+          <option value="DBS">DBS</option>
+          <option value="VNS">VNS</option>
+          <option value="TMS">TMS</option>
+          <option value="SCS">SCS</option>
+          <option value="RNS">RNS</option>
+          <option value="tDCS">tDCS</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Condition</label>
+        <select id="filter-condition" onchange="applyFilters()">
+          <option value="">All conditions</option>
+          <option value="Epilepsy">Epilepsy</option>
+          <option value="Parkinsons">Parkinson's</option>
+          <option value="Chronic pain">Chronic pain</option>
+          <option value="Depression">Depression</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>From date</label>
+        <input type="date" id="filter-from" onchange="applyFilters()" />
+      </div>
+      <div class="filter-group">
+        <label>To date</label>
+        <input type="date" id="filter-to" onchange="applyFilters()" />
+      </div>
+      <button class="btn-filter-reset" onclick="resetFilters()">Reset</button>
+    </div>
+    <div id="filter-summary" style="font-size:13px;color:#6b7280;"></div>
+  </div>
+
+  <!-- LAEP distribution chart -->
+  <div class="card" id="explorer-chart-card" style="display:none;">
+    <div class="card-title">LAEP score distribution</div>
+    <div class="chart-wrap"><canvas id="laep-dist-chart"></canvas></div>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:#9ca3af;">
+      <span><span style="display:inline-block;width:10px;height:10px;background:#d1fae5;border-radius:2px;vertical-align:middle;"></span> &lt;30 (well managed)</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#fef3c7;border-radius:2px;vertical-align:middle;"></span> 30–36.4 (watch)</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#fee2e2;border-radius:2px;vertical-align:middle;"></span> ≥36.5 (discontinuation risk)</span>
+    </div>
+  </div>
+
+  <!-- Filtered results table -->
+  <div class="card">
+    <div class="card-title" id="explorer-table-title">All assessments</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Study ID</th>
+            <th>Instrument</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Flagged</th>
+            <th>Condition</th>
+            <th>Device</th>
+          </tr>
+        </thead>
+        <tbody id="explorer-tbody">
+          <tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:28px;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ TAB: EXPORT ══ -->
+<div class="tab-panel" id="panel-export">
+
+  <div class="anon-notice">🔒 All exports contain study IDs only. Patient names and contact details are never included.</div>
+
+  <div class="export-grid">
+    <!-- Long format -->
+    <div class="export-card">
+      <h4>Long format CSV</h4>
+      <p>One row per assessment. Columns: study_id, date, instrument, score, subscales (flattened). Suitable for R, SPSS, Stata.</p>
+      <button class="btn-export" onclick="exportLong()">⬇ Download long format</button>
+      <div class="methods-note">Also downloads methods-paragraph.txt</div>
+    </div>
+
+    <!-- Wide format -->
+    <div class="export-card">
+      <h4>Wide format CSV</h4>
+      <p>One row per participant. Columns for each timepoint (laep_w1, laep_w2 …). Suitable for SPSS repeated-measures, Excel pivot tables.</p>
+      <button class="btn-export" onclick="exportWide()">⬇ Download wide format</button>
+      <div class="methods-note">Also downloads methods-paragraph.txt</div>
+    </div>
+
+    <!-- REDCap -->
+    <div class="export-card">
+      <h4>REDCap-compatible CSV</h4>
+      <p>Formatted with REDCap field naming conventions (record_id, redcap_event_name, snake_case fields). Ready for import.</p>
+      <button class="btn-export" onclick="exportRedcap()">⬇ Download REDCap format</button>
+      <div class="methods-note">Also downloads methods-paragraph.txt</div>
+    </div>
+  </div>
+
+  <!-- Methods paragraph preview -->
+  <div class="card">
+    <div class="card-title">Auto-generated methods paragraph preview</div>
+    <div class="methods-preview" id="methods-preview">Loading…</div>
+    <p style="font-size:12px;color:#9ca3af;margin-top:10px;">This text is dynamically generated from live Firestore data. Download with any export above.</p>
+  </div>
+
+</div>
 
 <script type="module">
 import { auth, db } from './firebase-config.js';
 import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {
-  doc, getDoc, collection, getDocs, query, orderBy
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { doc, getDoc, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-let allRecords = [];
+// ── CONFIG ────────────────────────────────────────────────────────────
+const ENROL_TARGET_DEFAULT = 20; // configurable via UI
 
+// ── STATE ────────────────────────────────────────────────────────────
+let allPatients   = [];   // [{id, studyId, device, condition, enrolledAt}]
+let allAssessments = [];  // [{patientId, studyId, type, dateObj, score, flagged, subscales}]
+let distChart = null;
+
+// ── AUTH ─────────────────────────────────────────────────────────────
 onAuthStateChanged(auth, async user => {
   if (!user) { location.href = 'login.html'; return; }
   const snap = await getDoc(doc(db, 'users', user.uid));
@@ -186,81 +360,541 @@ onAuthStateChanged(auth, async user => {
 
   document.getElementById('researcher-name').textContent = snap.data().name || '';
   document.getElementById('app-header').style.display = '';
+  document.getElementById('tab-bar').style.display = '';
   document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('main-content').style.display = '';
-  loadData();
+  await loadAll();
 });
 
 window.handleSignOut = async () => { await signOut(auth); location.href = 'login.html'; };
 
-async function loadData() {
-  // Load all patients (for condition/device info)
-  const pSnap = await getDocs(collection(db, 'patients'));
-  const patientMap = {};
-  pSnap.docs.forEach(d => { patientMap[d.id] = d.data(); });
+// ── TABS ─────────────────────────────────────────────────────────────
+window.switchTab = function(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['dashboard','explorer','export'][i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'explorer') applyFilters();
+  if (name === 'export')   renderMethodsParagraph();
+};
 
-  // Load all assessments
-  const aSnap = await getDocs(query(collection(db, 'assessments'), orderBy('date', 'desc')));
-  allRecords = aSnap.docs.map(d => {
-    const data = d.data();
-    const p = patientMap[data.patientId] || {};
+// ── LOAD ALL DATA ────────────────────────────────────────────────────
+async function loadAll() {
+  // Patients — study IDs only, no name/email exposed to researcher view
+  const pSnap = await getDocs(collection(db, 'patients'));
+  allPatients = pSnap.docs.map(d => {
+    const p = d.data();
     return {
-      studyId: p.studyId || 'NF-???',
-      type: data.type?.toUpperCase() || '—',
-      date: data.date?.toDate ? data.date.toDate().toLocaleDateString('en-GB') : '—',
-      score: data.score,
-      flagged: data.flagged,
-      condition: p.condition || '—',
-      device: p.device || '—'
+      id: d.id,
+      studyId:    p.studyId    || 'NF-???',
+      device:     p.device     || 'Unknown',
+      condition:  p.condition  || 'Unknown',
+      enrolledAt: p.createdAt?.toDate ? p.createdAt.toDate() : null
+      // ⚠ name, email, clinicianEmail intentionally NOT included
     };
   });
 
-  // Stats
-  const laepRecs = allRecords.filter(r => r.type === 'LAEP');
-  const meanLaep = laepRecs.length ? (laepRecs.reduce((s,r) => s + r.score, 0) / laepRecs.length).toFixed(1) : '—';
-  const flagged = allRecords.filter(r => r.flagged).length;
-  const uniquePatients = new Set(aSnap.docs.map(d => d.data().patientId)).size;
+  // Assessments
+  const aSnap = await getDocs(query(collection(db, 'assessments'), orderBy('date', 'asc')));
+  const patientMap = {};
+  allPatients.forEach(p => { patientMap[p.id] = p; });
 
-  document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card"><div class="stat-value">${uniquePatients}</div><div class="stat-label">Total patients</div></div>
-    <div class="stat-card"><div class="stat-value">${allRecords.length}</div><div class="stat-label">Total assessments</div></div>
-    <div class="stat-card"><div class="stat-value">${meanLaep}</div><div class="stat-label">Mean LAEP score</div></div>
-    <div class="stat-card"><div class="stat-value">${flagged}</div><div class="stat-label">Flagged records</div></div>
-  `;
+  allAssessments = aSnap.docs.map(d => {
+    const a = d.data();
+    const p = patientMap[a.patientId] || {};
+    return {
+      patientId:  a.patientId,
+      studyId:    p.studyId || 'NF-???',
+      type:       a.type || '—',
+      dateObj:    a.date?.toDate ? a.date.toDate() : null,
+      score:      a.score,
+      flagged:    a.flagged || false,
+      subscales:  a.subscales || {},
+      device:     p.device || 'Unknown',
+      condition:  p.condition || 'Unknown'
+    };
+  });
 
-  document.getElementById('record-count').textContent = `${allRecords.length} records`;
-  document.getElementById('records-tbody').innerHTML = allRecords.map(r => {
-    const scoreDisplay = typeof r.score === 'number' ? (Number.isInteger(r.score) ? r.score : r.score.toFixed(2)) : '—';
-    const flagClass = r.flagged ? 'badge-red' : 'badge-green';
-    const flagText = r.flagged ? 'Yes' : 'No';
-    return `<tr>
-      <td><strong>${r.studyId}</strong></td>
-      <td>${r.type}</td>
-      <td>${r.date}</td>
-      <td>${scoreDisplay}</td>
-      <td><span class="badge ${flagClass}">${flagText}</span></td>
-      <td>${r.condition}</td>
-      <td>${r.device}</td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:32px;">No data yet.</td></tr>';
+  renderDashboard();
 }
 
-window.exportCSV = function() {
-  const headers = ['study_id','type','date','score','flagged','condition','device'];
-  const rows = allRecords.map(r => [
-    r.studyId, r.type, r.date,
-    typeof r.score === 'number' ? (Number.isInteger(r.score) ? r.score : r.score.toFixed(2)) : '',
-    r.flagged ? 'true' : 'false',
-    r.condition, r.device
-  ]);
-  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
+// ── DASHBOARD ────────────────────────────────────────────────────────
+function renderDashboard() {
+  const laep  = allAssessments.filter(a => a.type === 'laep');
+  const ssq   = allAssessments.filter(a => a.type === 'ssq');
+  const qolie = allAssessments.filter(a => a.type === 'qolie');
+  const uniquePIDs = new Set(allAssessments.map(a => a.patientId));
+
+  // ── Living Evidence Summary
+  renderLivingEvidence(laep, ssq, qolie);
+
+  // ── Key metrics
+  const laepScores = laep.map(a => a.score).filter(s => typeof s === 'number');
+  const meanLaep = laepScores.length ? (laepScores.reduce((a,b) => a+b,0) / laepScores.length) : null;
+  const sdLaep   = laepScores.length > 1 ? Math.sqrt(laepScores.reduce((a,b) => a + Math.pow(b - meanLaep,2), 0) / laepScores.length) : null;
+  const aboveThreshold = laepScores.filter(s => s >= 36.5).length;
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-val">${uniquePIDs.size}</div>
+      <div class="stat-lbl">Participants with data</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">${allAssessments.length}</div>
+      <div class="stat-lbl">Total assessments<br><span style="font-size:11px;color:#9ca3af;">LAEP: ${laep.length} · SSQ: ${ssq.length} · QOLIE: ${qolie.length}</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">${meanLaep !== null ? meanLaep.toFixed(1) : '—'}</div>
+      <div class="stat-lbl">Mean LAEP${sdLaep !== null ? ` (SD ${sdLaep.toFixed(1)})` : ''}<br><span style="font-size:11px;color:#9ca3af;">Range 19–76</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">${laepScores.length ? Math.round(aboveThreshold / laepScores.length * 100) + '%' : '—'}</div>
+      <div class="stat-lbl">LAEP ≥36.5<br><span style="font-size:11px;color:#9ca3af;">Discontinuation risk (Romoli 2018)</span></div>
+    </div>
+  `;
+
+  // ── Completion rate (expected: 1 LAEP/patient/week from enrolment to now)
+  updateEnrolment();
+  renderCompletionRate(laep);
+
+  // ── Heatmap
+  renderHeatmap(laep);
+
+  // ── Early warning
+  renderEarlyWarning(laep);
+}
+
+function renderLivingEvidence(laep, ssq, qolie) {
+  const laepScores = laep.map(a => a.score).filter(s => typeof s === 'number');
+  if (!laepScores.length) {
+    document.getElementById('ev-line-laep').textContent = 'No LAEP data collected yet.';
+    return;
+  }
+  const mean = (laepScores.reduce((a,b) => a+b,0) / laepScores.length);
+  const sd   = laepScores.length > 1
+    ? Math.sqrt(laepScores.reduce((a,b) => a + Math.pow(b - mean,2), 0) / laepScores.length)
+    : 0;
+  const above = laepScores.filter(s => s >= 36.5).length;
+  const abovePct = Math.round(above / laepScores.length * 100);
+  const uniquePts = new Set(laep.map(a => a.patientId)).size;
+
+  document.getElementById('ev-line-laep').textContent =
+    `Across N=${laepScores.length} LAEP assessments from ${uniquePts} participant${uniquePts !== 1 ? 's' : ''}, ` +
+    `mean=${mean.toFixed(1)} (SD=${sd.toFixed(1)}), ${abovePct}% scored ≥36.5 (Romoli et al. 2018 discontinuation threshold).`;
+
+  const ssqScores = ssq.map(a => a.score).filter(s => typeof s === 'number');
+  if (ssqScores.length) {
+    const ssqMean = ssqScores.reduce((a,b) => a+b,0) / ssqScores.length;
+    document.getElementById('ev-line-ssq').textContent =
+      `SSQ: N=${ssqScores.length} assessments, mean=${ssqMean.toFixed(2)} (range 1–7; threshold ≥5, Cramer et al. 2002).`;
+    document.getElementById('ev-line-ssq').style.display = '';
+  }
+
+  const qScores = qolie.map(a => a.score).filter(s => typeof s === 'number');
+  if (qScores.length) {
+    const qMean = qScores.reduce((a,b) => a+b,0) / qScores.length;
+    document.getElementById('ev-line-qolie').textContent =
+      `QOLIE-31: N=${qScores.length} assessments, mean=${qMean.toFixed(1)} (global benchmark 59.8, Gao et al. 2016).`;
+    document.getElementById('ev-line-qolie').style.display = '';
+  }
+}
+
+window.updateEnrolment = function() {
+  const target = parseInt(document.getElementById('target-n')?.value || '20', 10) || 20;
+  const enrolled = new Set(allAssessments.map(a => a.patientId)).size;
+  const pct = Math.min(100, Math.round(enrolled / target * 100));
+  document.getElementById('enrol-fraction').textContent = `${enrolled} of ${target}`;
+  const bar = document.getElementById('enrol-bar');
+  if (bar) {
+    bar.style.width = pct + '%';
+    bar.className = 'stat-bar-fill ' + (pct >= 100 ? 'green' : pct >= 50 ? '' : 'amber');
+  }
+};
+
+function renderCompletionRate(laep) {
+  // Expected: 1 LAEP per patient per week from enrolment (or first assessment) to now
+  let totalExpected = 0;
+  const patientLaep = {};
+  laep.forEach(a => {
+    if (!patientLaep[a.patientId]) patientLaep[a.patientId] = [];
+    patientLaep[a.patientId].push(a);
+  });
+
+  const now = Date.now();
+  Object.values(patientLaep).forEach(recs => {
+    const earliest = Math.min(...recs.map(r => r.dateObj?.getTime() || now));
+    const weeks = Math.max(1, Math.ceil((now - earliest) / (7 * 24 * 60 * 60 * 1000)));
+    totalExpected += weeks;
+  });
+
+  const actual = laep.length;
+  const pct = totalExpected > 0 ? Math.round(actual / totalExpected * 100) : 0;
+  const clamped = Math.min(100, pct);
+
+  document.getElementById('completion-pct').textContent = pct + '%';
+  const bar = document.getElementById('completion-bar');
+  bar.style.width = clamped + '%';
+  bar.className = 'stat-bar-fill ' + (pct >= 60 ? 'green' : pct >= 40 ? 'amber' : '');
+}
+
+function renderHeatmap(laep) {
+  if (!laep.length) {
+    document.getElementById('heatmap-container').innerHTML =
+      '<p style="color:#9ca3af;font-size:13px;">No assessment data yet.</p>';
+    return;
+  }
+
+  // Build patient → sorted assessments map
+  const byPatient = {};
+  laep.forEach(a => {
+    if (!byPatient[a.patientId]) byPatient[a.patientId] = { studyId: a.studyId, assessments: [] };
+    byPatient[a.patientId].assessments.push(a);
+  });
+
+  const WEEKS_SHOWN = 12;
+
+  let html = '<table class="heatmap-table"><thead><tr><th class="row-header">Study ID</th>';
+  for (let w = 1; w <= WEEKS_SHOWN; w++) html += `<th>W${w}</th>`;
+  html += '</tr></thead><tbody>';
+
+  Object.entries(byPatient).forEach(([pid, { studyId, assessments }]) => {
+    // Sort ascending
+    const sorted = assessments.slice().sort((a,b) => (a.dateObj||new Date()) - (b.dateObj||new Date()));
+    const firstDate = sorted[0].dateObj || new Date();
+    const now = new Date();
+
+    html += `<tr><td class="hm-id">${studyId}</td>`;
+    for (let w = 1; w <= WEEKS_SHOWN; w++) {
+      const weekStart = new Date(firstDate.getTime() + (w - 1) * 7 * 24 * 60 * 60 * 1000);
+      const weekEnd   = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+      if (weekStart > now) {
+        html += `<td><div class="hm-cell hm-future" title="Future"></div></td>`;
+      } else {
+        const count = sorted.filter(a => a.dateObj >= weekStart && a.dateObj < weekEnd).length;
+        let cls, tip;
+        if (count === 0)      { cls = 'hm-red';   tip = 'Missed'; }
+        else if (count === 1) { cls = 'hm-green';  tip = 'Completed'; }
+        else                  { cls = 'hm-green';  tip = `${count} this week`; }
+        html += `<td><div class="hm-cell ${cls}" title="${tip}"></div></td>`;
+      }
+    }
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('heatmap-container').innerHTML = html;
+}
+
+function renderEarlyWarning(laep) {
+  const byPatient = {};
+  laep.forEach(a => {
+    if (!byPatient[a.patientId]) byPatient[a.patientId] = { studyId: a.studyId, assessments: [] };
+    byPatient[a.patientId].assessments.push(a);
+  });
+
+  const warnings = [];
+  const now = new Date();
+
+  Object.values(byPatient).forEach(({ studyId, assessments }) => {
+    const sorted = assessments.slice().sort((a,b) => (a.dateObj||new Date()) - (b.dateObj||new Date()));
+    const firstDate = sorted[0].dateObj || now;
+    const totalWeeks = Math.ceil((now - firstDate) / (7 * 24 * 60 * 60 * 1000));
+
+    // Count consecutive recent missed weeks
+    let consecutive = 0;
+    for (let w = totalWeeks; w >= 1; w--) {
+      const wStart = new Date(firstDate.getTime() + (w - 1) * 7 * 24 * 60 * 60 * 1000);
+      const wEnd   = new Date(wStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+      if (wEnd > now) continue; // skip current incomplete week
+      const hasData = sorted.some(a => a.dateObj >= wStart && a.dateObj < wEnd);
+      if (!hasData) consecutive++;
+      else break;
+    }
+    if (consecutive >= 2) warnings.push({ studyId, consecutive });
+  });
+
+  const el = document.getElementById('early-warning-list');
+  if (!warnings.length) {
+    el.innerHTML = '<p style="color:#059669;font-size:14px;font-weight:500;">✓ No participants with 2+ consecutive missed weeks.</p>';
+    return;
+  }
+  el.innerHTML = warnings.map(w =>
+    `<span class="warning-pill">⚠ ${w.studyId} — ${w.consecutive} weeks missed</span>`
+  ).join('');
+}
+
+// ── COHORT EXPLORER ──────────────────────────────────────────────────
+
+window.resetFilters = function() {
+  document.getElementById('filter-device').value = '';
+  document.getElementById('filter-condition').value = '';
+  document.getElementById('filter-from').value = '';
+  document.getElementById('filter-to').value = '';
+  applyFilters();
+};
+
+window.applyFilters = function() {
+  const device    = document.getElementById('filter-device').value;
+  const condition = document.getElementById('filter-condition').value;
+  const fromStr   = document.getElementById('filter-from').value;
+  const toStr     = document.getElementById('filter-to').value;
+  const from = fromStr ? new Date(fromStr) : null;
+  const to   = toStr   ? new Date(toStr + 'T23:59:59') : null;
+
+  const filtered = allAssessments.filter(a => {
+    if (device    && a.device    !== device)    return false;
+    if (condition && a.condition !== condition) return false;
+    if (from && a.dateObj && a.dateObj < from)  return false;
+    if (to   && a.dateObj && a.dateObj > to)    return false;
+    return true;
+  });
+
+  const uniquePts = new Set(filtered.map(a => a.patientId)).size;
+  document.getElementById('filter-summary').textContent =
+    `${filtered.length} assessment${filtered.length !== 1 ? 's' : ''} from ${uniquePts} participant${uniquePts !== 1 ? 's' : ''}`;
+  document.getElementById('explorer-table-title').textContent =
+    `${filtered.length} assessment${filtered.length !== 1 ? 's' : ''} — filtered results`;
+
+  // Table
+  const tbody = document.getElementById('explorer-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:24px;">No results for these filters.</td></tr>';
+    document.getElementById('explorer-chart-card').style.display = 'none';
+    return;
+  }
+
+  tbody.innerHTML = filtered.slice(0, 200).map(a => {
+    const dateStr = a.dateObj ? a.dateObj.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '—';
+    const scoreStr = typeof a.score === 'number'
+      ? (a.type === 'ssq' ? a.score.toFixed(2) : Math.round(a.score).toString())
+      : '—';
+    const flagCls = a.flagged ? 'badge-red' : 'badge-grey';
+    const flagTxt = a.flagged ? '⚠ Flagged' : 'Clear';
+    return `<tr>
+      <td><strong>${a.studyId}</strong></td>
+      <td>${a.type.toUpperCase()}</td>
+      <td>${dateStr}</td>
+      <td style="font-weight:600;">${scoreStr}</td>
+      <td><span class="badge ${flagCls}">${flagTxt}</span></td>
+      <td>${a.condition}</td>
+      <td>${a.device}</td>
+    </tr>`;
+  }).join('');
+  if (filtered.length > 200) {
+    tbody.innerHTML += `<tr><td colspan="7" style="text-align:center;color:#9ca3af;font-size:12px;padding:10px;">Showing first 200 of ${filtered.length} — export for full dataset</td></tr>`;
+  }
+
+  // LAEP distribution chart
+  const laepFiltered = filtered.filter(a => a.type === 'laep').map(a => a.score).filter(s => typeof s === 'number');
+  if (laepFiltered.length) {
+    document.getElementById('explorer-chart-card').style.display = '';
+    renderDistChart(laepFiltered);
+  } else {
+    document.getElementById('explorer-chart-card').style.display = 'none';
+  }
+};
+
+function renderDistChart(scores) {
+  if (distChart) distChart.destroy();
+  // Bin into 5-point buckets 19–76
+  const bins = [];
+  for (let start = 19; start < 76; start += 5) {
+    const end = Math.min(start + 4, 76);
+    bins.push({ label: `${start}–${end}`, count: 0, start });
+  }
+  scores.forEach(s => {
+    const idx = Math.min(Math.floor((s - 19) / 5), bins.length - 1);
+    if (idx >= 0) bins[idx].count++;
+  });
+
+  const colors = bins.map(b =>
+    b.start >= 36 ? '#fca5a5' : b.start >= 30 ? '#fde68a' : '#6ee7b7'
+  );
+
+  const ctx = document.getElementById('laep-dist-chart').getContext('2d');
+  distChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: bins.map(b => b.label),
+      datasets: [{ data: bins.map(b => b.count), backgroundColor: colors, borderRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 1 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── METHODS PARAGRAPH ────────────────────────────────────────────────
+
+function buildMethodsParagraph() {
+  const laep  = allAssessments.filter(a => a.type === 'laep');
+  const ssq   = allAssessments.filter(a => a.type === 'ssq');
+  const qolie = allAssessments.filter(a => a.type === 'qolie');
+  const uniquePts = new Set(allAssessments.map(a => a.patientId)).size;
+
+  const allDates = allAssessments.map(a => a.dateObj).filter(Boolean);
+  const startDate = allDates.length ? new Date(Math.min(...allDates.map(d => d.getTime()))) : null;
+  const endDate   = allDates.length ? new Date(Math.max(...allDates.map(d => d.getTime()))) : null;
+  const fmt = d => d.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  const dateRange = startDate && endDate ? `${fmt(startDate)} and ${fmt(endDate)}` : '[date range not yet available]';
+
+  let para = '';
+
+  if (laep.length) {
+    para += `Data were collected using the Liverpool Adverse Events Profile (LAEP; Baker et al., 1994), a 19-item validated instrument measuring medication-related adverse events on a 4-point Likert scale (Never=1 to Always=4; range 19–76). Scores ≥36.5 indicate elevated risk of treatment discontinuation (Romoli et al., 2018, Epilepsy & Behavior; 85% predictive accuracy, 79% specificity); scores ≥45 are associated with suicidality risk (Kwon et al., 2019, Seizure). ${laep.length} LAEP assessments were collected from ${new Set(laep.map(a => a.patientId)).size} participant${new Set(laep.map(a => a.patientId)).size !== 1 ? 's' : ''} between ${dateRange}.\n\n`;
+  }
+
+  if (ssq.length) {
+    para += `Seizure severity was assessed using the Seizure Severity Questionnaire (SSQ; Cramer et al., 2002, Epilepsy Research), a 24-item instrument covering warning, ictal, and recovery phases scored on a 7-point scale (range 1.0–7.0 mean). The minimum important clinical difference is 0.48 points (Cramer et al., 2014). ${ssq.length} SSQ assessments were collected from ${new Set(ssq.map(a => a.patientId)).size} participant${new Set(ssq.map(a => a.patientId)).size !== 1 ? 's' : ''}.\n\n`;
+  }
+
+  if (qolie.length) {
+    para += `Health-related quality of life was assessed using the Quality of Life in Epilepsy instrument (QOLIE-31; Cramer et al., 1998, Epilepsia), a 31-item validated measure across 7 subscales (Seizure Worry, Overall QoL, Emotional Wellbeing, Energy/Fatigue, Cognitive Function, Medication Effects, Social Function), transformed to a 0–100 scale (higher = better quality of life). The global benchmark is 59.8 (SD 8.0) across 7,255 patients in 31 countries (Gao et al., 2016). The instrument is in the public domain (RAND Corporation). ${qolie.length} QOLIE-31 assessments were collected from ${new Set(qolie.map(a => a.patientId)).size} participant${new Set(qolie.map(a => a.patientId)).size !== 1 ? 's' : ''}.\n\n`;
+  }
+
+  para += `All data were collected digitally via NeuroFract (neurofract.com), a device-agnostic neuromodulation monitoring platform. Data collection complied with NeuroFract data governance policy v1.0. A total of ${allAssessments.length} assessments were collected from ${uniquePts} participant${uniquePts !== 1 ? 's' : ''} between ${dateRange}. Feasibility of digital monitoring in neuromodulation has been demonstrated previously (Vansant et al., 2024, Scientific Reports [Nature]; N=67 DBS patients, 63.3% daily compliance).`;
+
+  return para.trim() || 'No data collected yet. Methods paragraph will generate automatically as data is added.';
+}
+
+function renderMethodsParagraph() {
+  document.getElementById('methods-preview').textContent = buildMethodsParagraph();
+}
+
+// ── EXPORTS ──────────────────────────────────────────────────────────
+
+function dlText(filename, content) {
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `neurofract-data-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
+}
+function dlCSV(filename, content) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function dateSlug() { return new Date().toISOString().slice(0,10); }
+function csvVal(v) {
+  if (v === null || v === undefined) return '';
+  const s = String(v);
+  return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g,'""')}"` : s;
+}
+function fmtDate(d) { return d ? d.toISOString().slice(0,10) : ''; }
+function fmtScore(a) { return typeof a.score === 'number' ? (a.type === 'ssq' ? a.score.toFixed(3) : Math.round(a.score).toString()) : ''; }
+
+// Subscale columns
+const SUB_COLS = {
+  laep: [],
+  ssq:  ['warning','ictal','recovery'],
+  qolie:['seizureWorry','overallQol','emotionalWellbeing','energyFatigue','cognitiveFunction','medicationEffects','socialFunction']
+};
+
+window.exportLong = function() {
+  const subCols = ['warning','ictal','recovery','seizureWorry','overallQol','emotionalWellbeing','energyFatigue','cognitiveFunction','medicationEffects','socialFunction'];
+  const headers = ['study_id','date','instrument','score','flagged', ...subCols];
+  const rows = allAssessments.map(a => [
+    a.studyId, fmtDate(a.dateObj), a.type.toUpperCase(), fmtScore(a),
+    a.flagged ? '1' : '0',
+    ...subCols.map(k => (a.subscales[k] !== undefined ? Number(a.subscales[k]).toFixed(2) : ''))
+  ]);
+  dlCSV(`neurofract-long-${dateSlug()}.csv`, [headers,...rows].map(r => r.map(csvVal).join(',')).join('\n'));
+  setTimeout(() => dlText(`neurofract-methods-${dateSlug()}.txt`, buildMethodsParagraph()), 400);
+};
+
+window.exportWide = function() {
+  // One row per participant; columns: laep_w1, laep_w2, ..., ssq_w1, ...
+  const byPatient = {};
+  allPatients.forEach(p => { byPatient[p.id] = { studyId: p.studyId, device: p.device, condition: p.condition, laep:[], ssq:[], qolie:[] }; });
+  allAssessments.forEach(a => {
+    if (byPatient[a.patientId]) byPatient[a.patientId][a.type]?.push(a);
+  });
+
+  const maxWeeks = { laep: 0, ssq: 0, qolie: 0 };
+  Object.values(byPatient).forEach(p => {
+    ['laep','ssq','qolie'].forEach(t => { maxWeeks[t] = Math.max(maxWeeks[t], p[t].length); });
+  });
+
+  const headers = ['study_id','device','condition'];
+  ['laep','ssq','qolie'].forEach(t => {
+    for (let w = 1; w <= maxWeeks[t]; w++) headers.push(`${t}_w${w}`);
+  });
+
+  const rows = Object.values(byPatient).map(p => {
+    const row = [p.studyId, p.device, p.condition];
+    ['laep','ssq','qolie'].forEach(t => {
+      const sorted = p[t].slice().sort((a,b) => (a.dateObj||new Date())-(b.dateObj||new Date()));
+      for (let w = 0; w < maxWeeks[t]; w++) {
+        row.push(sorted[w] ? fmtScore(sorted[w]) : '');
+      }
+    });
+    return row;
+  });
+
+  dlCSV(`neurofract-wide-${dateSlug()}.csv`, [headers,...rows].map(r => r.map(csvVal).join(',')).join('\n'));
+  setTimeout(() => dlText(`neurofract-methods-${dateSlug()}.txt`, buildMethodsParagraph()), 400);
+};
+
+window.exportRedcap = function() {
+  // REDCap conventions: record_id, redcap_event_name, snake_case fields
+  const headers = [
+    'record_id','redcap_event_name','laep_date','laep_score','laep_flagged',
+    'ssq_date','ssq_score','ssq_flagged','ssq_warning','ssq_ictal','ssq_recovery',
+    'qolie_date','qolie_score','qolie_flagged',
+    'qolie_seizure_worry','qolie_overall_qol','qolie_emotional_wb',
+    'qolie_energy_fatigue','qolie_cognitive_fn','qolie_medication_fx','qolie_social_fn',
+    'device','condition'
+  ];
+
+  // Group by patient + event (one row per patient per assessment event/visit)
+  const byPatient = {};
+  allPatients.forEach(p => { byPatient[p.id] = { studyId: p.studyId, device: p.device, condition: p.condition, events: {} }; });
+
+  allAssessments.forEach(a => {
+    if (!byPatient[a.patientId]) return;
+    // Determine event number (sequential per type per patient)
+    const events = byPatient[a.patientId].events;
+    const key = a.type + '_' + (fmtDate(a.dateObj) || 'unknown');
+    if (!events[key]) events[key] = { date: fmtDate(a.dateObj) };
+    events[key][a.type] = a;
+  });
+
+  const rows = [];
+  Object.values(byPatient).forEach(p => {
+    // Collect all dates with any assessment
+    const allDatesSet = new Set();
+    Object.values(p.events).forEach(e => { if (e.date) allDatesSet.add(e.date); });
+    const allDates = [...allDatesSet].sort();
+
+    allDates.forEach((date, idx) => {
+      const evName = `visit_${String(idx+1).padStart(2,'0')}`;
+      // Find assessments close to this date (same date or close)
+      const laepA = allAssessments.find(a => a.patientId === Object.keys(byPatient).find(id => byPatient[id].studyId === p.studyId) && a.type === 'laep' && fmtDate(a.dateObj) === date);
+      const ssqA  = allAssessments.find(a => a.patientId === Object.keys(byPatient).find(id => byPatient[id].studyId === p.studyId) && a.type === 'ssq'  && fmtDate(a.dateObj) === date);
+      const qolA  = allAssessments.find(a => a.patientId === Object.keys(byPatient).find(id => byPatient[id].studyId === p.studyId) && a.type === 'qolie'&& fmtDate(a.dateObj) === date);
+
+      rows.push([
+        p.studyId, evName,
+        laepA ? fmtDate(laepA.dateObj) : '', laepA ? fmtScore(laepA) : '', laepA ? (laepA.flagged?'1':'0') : '',
+        ssqA  ? fmtDate(ssqA.dateObj)  : '', ssqA  ? fmtScore(ssqA)  : '', ssqA  ? (ssqA.flagged?'1':'0')  : '',
+        ssqA?.subscales?.warning ?? '', ssqA?.subscales?.ictal ?? '', ssqA?.subscales?.recovery ?? '',
+        qolA  ? fmtDate(qolA.dateObj)  : '', qolA  ? fmtScore(qolA)  : '', qolA  ? (qolA.flagged?'1':'0')  : '',
+        qolA?.subscales?.seizureWorry ?? '', qolA?.subscales?.overallQol ?? '', qolA?.subscales?.emotionalWellbeing ?? '',
+        qolA?.subscales?.energyFatigue ?? '', qolA?.subscales?.cognitiveFunction ?? '', qolA?.subscales?.medicationEffects ?? '', qolA?.subscales?.socialFunction ?? '',
+        p.device, p.condition
+      ]);
+    });
+  });
+
+  dlCSV(`neurofract-redcap-${dateSlug()}.csv`, [headers,...rows].map(r => r.map(csvVal).join(',')).join('\n'));
+  setTimeout(() => dlText(`neurofract-methods-${dateSlug()}.txt`, buildMethodsParagraph()), 400);
 };
 </script>
 </body>
