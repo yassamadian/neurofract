@@ -10,42 +10,23 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --blue: #4A6FA5;
-      --navy: #1A2B3C;
-      --blue-dark: #37577F;
-      --bg: #EBF0F7;
-      --white: #ffffff;
-      --border: #d1dae8;
-      --text-muted: #6b7280;
-      --green: #4A9B6E;
-      --amber: #D4943C;
-      --red: #D65D5D;
-      --red-dark: #9B1C1C;
-    }
-
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--navy);
+      background: #EBF0F7;
+      color: #1A2B3C;
       min-height: 100vh;
     }
 
     /* ── HEADER ── */
     #app-header {
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      background: #ffffff;
+      border-bottom: 1px solid #d1dae8;
+      position: sticky; top: 0; z-index: 50;
     }
     .header-inner {
-      max-width: 480px;
-      margin: 0 auto;
+      max-width: 480px; margin: 0 auto;
       padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
     }
     .logo-text { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
     .logo-text .neuro { color: #1A2B3C; }
@@ -54,13 +35,9 @@
     .header-user span { font-size: 13px; color: #6b7280; }
     .btn-signout {
       padding: 6px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      background: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: #6b7280;
-      cursor: pointer;
+      border: 1.5px solid #d1dae8; border-radius: 8px;
+      background: #ffffff; font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: #6b7280; cursor: pointer;
       transition: border-color 0.2s, color 0.2s;
     }
     .btn-signout:hover { border-color: #4A6FA5; color: #4A6FA5; }
@@ -70,237 +47,268 @@
     .view.active { display: block; }
 
     /* ── CONTAINER ── */
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 24px 20px 40px;
-    }
+    .container { max-width: 480px; margin: 0 auto; padding: 24px 20px 48px; }
 
     /* ── ONBOARDING ── */
-    .onboarding-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .onboarding-header h2 {
-      font-family: 'Lora', serif;
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
+    .onboarding-header { text-align: center; margin-bottom: 32px; }
+    .onboarding-header h2 { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 8px; }
     .onboarding-header p { font-size: 15px; color: #6b7280; line-height: 1.6; }
 
     .form-group { margin-bottom: 20px; }
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
-      color: #1A2B3C;
-      margin-bottom: 7px;
-    }
+    label { display: block; font-size: 14px; font-weight: 600; color: #1A2B3C; margin-bottom: 7px; }
     input, select {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      color: #1A2B3C;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.2s;
-      -webkit-appearance: none;
-      appearance: none;
+      width: 100%; padding: 13px 14px;
+      border: 1.5px solid #d1dae8; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; color: #1A2B3C;
+      background: #fff; outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none; appearance: none;
     }
     input:focus, select:focus { border-color: #4A6FA5; }
 
     .btn-primary {
-      width: 100%;
-      padding: 15px;
-      background: #4A6FA5;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-top: 8px;
+      width: 100%; padding: 15px; background: #4A6FA5; color: #fff;
+      border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; margin-top: 8px;
     }
     .btn-primary:hover { background: #37577F; }
     .btn-primary:disabled { background: #a0b4cc; cursor: not-allowed; }
 
-    /* ── DASHBOARD ── */
-    .greeting {
-      margin-bottom: 24px;
+    /* ── DASHBOARD: RECOVERY TODAY CARD ── */
+    .recovery-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px 22px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 12px rgba(74,111,165,0.10);
+      border-left: 4px solid #4A6FA5;
     }
-    .greeting h2 {
-      font-family: 'Lora', serif;
-      font-size: 22px;
-      margin-bottom: 4px;
-    }
-    .greeting p { font-size: 14px; color: #6b7280; }
+    .recovery-card.all-caught-up { border-left-color: #4A9B6E; }
+    .recovery-card.due { border-left-color: #D4943C; }
 
-    .stats-row {
+    .recovery-status {
+      font-family: 'Lora', serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: #1A2B3C;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .recovery-status .status-icon { margin-right: 6px; }
+
+    .recovery-progress {
+      font-size: 14px;
+      color: #4A6FA5;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* ── STREAK ── */
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff8ed;
+      border: 1.5px solid #f5c97a;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 18px;
+    }
+
+    /* ── QUICK ACTIONS ── */
+    .quick-actions {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 28px;
     }
-    .stat-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 16px 12px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
-    }
-    .stat-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: #4A6FA5;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .stat-label { font-size: 11px; color: #6b7280; line-height: 1.3; }
+    .quick-actions.single { grid-template-columns: 1fr; }
 
+    .qa-btn {
+      padding: 16px 14px;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      transition: all 0.18s;
+      text-align: left;
+      width: 100%;
+    }
+    .qa-btn .qa-icon { font-size: 22px; margin-bottom: 2px; }
+    .qa-btn-seizure {
+      background: #1A2B3C;
+      color: #ffffff;
+    }
+    .qa-btn-seizure:hover { background: #253a50; }
+    .qa-btn-checkin {
+      background: #4A6FA5;
+      color: #ffffff;
+    }
+    .qa-btn-checkin:hover { background: #37577F; }
+
+    /* ── SECTION HEADER WITH TOGGLE ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
     .section-title {
       font-family: 'Lora', serif;
       font-size: 17px;
       font-weight: 600;
-      margin-bottom: 14px;
       color: #1A2B3C;
     }
+    .section-toggle {
+      font-size: 13px;
+      color: #4A6FA5;
+      font-weight: 500;
+    }
 
-    .assessment-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    /* ── ASSESSMENT CARDS ── */
+    .assessment-cards { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
 
     .assess-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      border: 2px solid transparent;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
-      transition: all 0.2s;
-      text-align: left;
-      width: 100%;
+      background: #fff; border-radius: 14px; padding: 16px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+      transition: all 0.2s; text-align: left; width: 100%;
       font-family: 'DM Sans', sans-serif;
     }
-    .assess-card:hover { border-color: #4A6FA5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,111,165,0.15); }
+    .assess-card:hover { border-color: #4A6FA5; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(74,111,165,0.14); }
     .assess-card-left { display: flex; align-items: center; gap: 14px; }
     .assess-icon {
-      width: 42px; height: 42px;
-      background: #EBF0F7;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
+      width: 40px; height: 40px; background: #EBF0F7;
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 19px; flex-shrink: 0;
     }
-    .assess-card h3 { font-size: 15px; font-weight: 600; color: #1A2B3C; margin-bottom: 2px; }
+    .assess-card h3 { font-size: 14px; font-weight: 600; color: #1A2B3C; margin-bottom: 2px; }
     .assess-card p { font-size: 12px; color: #6b7280; }
     .assess-arrow { font-size: 18px; color: #4A6FA5; }
 
+    /* ── HISTORY TABS ── */
+    .history-tabs {
+      display: flex;
+      border-bottom: 2px solid #EBF0F7;
+      margin-bottom: 16px;
+    }
+    .history-tab {
+      padding: 8px 16px;
+      font-size: 14px; font-weight: 500; color: #6b7280;
+      cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; background: none; border-top: none;
+      border-left: none; border-right: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .history-tab.active { color: #4A6FA5; border-bottom-color: #4A6FA5; }
+
     .history-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
-      margin-bottom: 28px;
+      background: #fff; border-radius: 14px; padding: 4px 20px 8px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07); margin-bottom: 24px;
     }
     .history-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 0; border-bottom: 1px solid #f3f4f6;
     }
     .history-item:last-child { border-bottom: none; }
     .history-type { font-weight: 600; font-size: 14px; }
     .history-date { font-size: 12px; color: #6b7280; margin-top: 2px; }
     .history-badge {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px;
     }
     .badge-green { background: #d1fae5; color: #065f46; }
     .badge-amber { background: #fef3c7; color: #92400e; }
-    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-red   { background: #fee2e2; color: #991b1b; }
 
+    /* ── CHART ── */
     .chart-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.08);
-      margin-bottom: 28px;
+      background: #fff; border-radius: 14px; padding: 20px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07); margin-bottom: 24px;
     }
-    .chart-wrap { position: relative; height: 180px; }
+    .chart-title { font-size: 13px; font-weight: 600; color: #6b7280; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .chart-wrap { position: relative; height: 160px; }
 
-    .empty-note { text-align: center; padding: 32px 0; color: #9ca3af; font-size: 14px; }
+    .empty-note { text-align: center; padding: 28px 0; color: #9ca3af; font-size: 14px; }
+
+    /* ── SEIZURE LOG MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(26,43,60,0.6); z-index: 200;
+      align-items: flex-end; justify-content: center;
+      padding: 0;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: #fff; border-radius: 22px 22px 0 0;
+      padding: 28px 24px 40px; width: 100%; max-width: 480px;
+    }
+    .modal-handle {
+      width: 40px; height: 4px; background: #d1dae8;
+      border-radius: 2px; margin: 0 auto 24px;
+    }
+    .modal-title { font-family: 'Lora', serif; font-size: 20px; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+    .btn-cancel {
+      flex: 1; padding: 14px; border: 1.5px solid #d1dae8;
+      border-radius: 12px; background: #fff; font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 600; color: #6b7280; cursor: pointer;
+    }
+    .btn-save-seizure {
+      flex: 2; padding: 14px; background: #1A2B3C;
+      border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 600; color: #fff; cursor: pointer;
+    }
+    .btn-save-seizure:hover { background: #253a50; }
 
     /* ── QUESTIONNAIRE ── */
     #view-questionnaire .container { padding-top: 20px; }
 
     .progress-bar {
-      width: 100%;
-      height: 5px;
-      background: #EBF0F7;
-      border-radius: 3px;
-      margin-bottom: 28px;
-      overflow: hidden;
+      width: 100%; height: 5px; background: #EBF0F7;
+      border-radius: 3px; margin-bottom: 28px; overflow: hidden;
     }
     .progress-fill {
-      height: 100%;
-      background: #4A6FA5;
-      border-radius: 3px;
-      transition: width 0.3s ease;
+      height: 100%; background: #4A6FA5;
+      border-radius: 3px; transition: width 0.3s ease;
     }
 
     .q-meta { font-size: 13px; color: #6b7280; margin-bottom: 10px; }
-    .q-section { font-size: 12px; color: #4A6FA5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-
-    .q-text {
-      font-family: 'Lora', serif;
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 1.45;
-      color: #1A2B3C;
-      margin-bottom: 32px;
+    .q-section {
+      font-size: 12px; color: #4A6FA5; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
     }
-
+    .q-text {
+      font-family: 'Lora', serif; font-size: 20px; font-weight: 600;
+      line-height: 1.45; color: #1A2B3C; margin-bottom: 32px;
+    }
     .options { display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
-
     .option-btn {
-      padding: 15px 18px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: #fff;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      color: #1A2B3C;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.15s;
-      width: 100%;
+      padding: 15px 18px; border: 2px solid #d1dae8; border-radius: 12px;
+      background: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px;
+      color: #1A2B3C; text-align: left; cursor: pointer; transition: all 0.15s; width: 100%;
     }
     .option-btn:hover { border-color: #4A6FA5; background: #EBF0F7; }
     .option-btn.selected { border-color: #4A6FA5; background: #4A6FA5; color: #fff; }
 
-    .q-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .q-nav { display: flex; justify-content: space-between; align-items: center; }
     .btn-back {
-      padding: 10px 18px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: #6b7280;
-      cursor: pointer;
+      padding: 10px 18px; border: 1.5px solid #d1dae8; border-radius: 10px;
+      background: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: #6b7280; cursor: pointer;
     }
     .btn-back:hover { border-color: #4A6FA5; color: #4A6FA5; }
     .btn-back.hidden { visibility: hidden; }
@@ -308,71 +316,54 @@
     /* ── RESULTS ── */
     #view-results .container { text-align: center; padding-top: 40px; }
 
-    .result-emoji { font-size: 60px; margin-bottom: 16px; }
-    .result-title { font-family: 'Lora', serif; font-size: 26px; margin-bottom: 16px; }
-
-    .result-score-badge {
-      display: inline-block;
-      padding: 12px 28px;
-      border-radius: 12px;
-      font-size: 20px;
-      font-weight: 700;
+    .result-emoji { font-size: 56px; margin-bottom: 14px; }
+    .result-comparison {
+      font-family: 'Lora', serif;
+      font-size: 24px; font-weight: 600;
+      color: #1A2B3C; margin-bottom: 8px; line-height: 1.3;
+    }
+    .result-raw-score {
+      font-size: 14px; color: #6b7280; margin-bottom: 24px;
+    }
+    .result-badge {
+      display: inline-block; padding: 10px 24px;
+      border-radius: 20px; font-size: 14px; font-weight: 600;
       margin-bottom: 24px;
     }
-
     .result-message {
-      font-size: 16px;
-      line-height: 1.7;
-      color: #374151;
-      margin-bottom: 8px;
-      text-align: left;
-      background: #f9fafb;
-      border-radius: 12px;
-      padding: 18px;
-    }
-    .result-score-detail {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 32px;
+      font-size: 15px; line-height: 1.7; color: #374151;
+      text-align: left; background: #f9fafb;
+      border-radius: 12px; padding: 18px; margin-bottom: 28px;
     }
     .btn-done {
-      width: 100%;
-      padding: 15px;
-      background: #4A6FA5;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
+      width: 100%; padding: 15px; background: #4A6FA5; color: #fff;
+      border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s;
     }
     .btn-done:hover { background: #37577F; }
 
     /* ── LOADING ── */
     #loading-screen {
-      position: fixed;
-      inset: 0;
-      background: #EBF0F7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
+      position: fixed; inset: 0; background: #EBF0F7;
+      display: flex; align-items: center; justify-content: center; z-index: 100;
     }
     .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
     .loading-logo .neuro { color: #1A2B3C; }
     .loading-logo .fract { color: #4A6FA5; }
+
+    /* ── COLLAPSED SECTION ── */
+    .collapsible-body { display: none; }
+    .collapsible-body.open { display: block; }
   </style>
 </head>
 <body>
 
-<!-- Loading screen -->
+<!-- Loading -->
 <div id="loading-screen">
   <div class="loading-logo"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
 </div>
 
-<!-- App header (hidden until logged in) -->
+<!-- Header -->
 <header id="app-header" style="display:none;">
   <div class="header-inner">
     <div class="logo-text"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
@@ -383,7 +374,7 @@
   </div>
 </header>
 
-<!-- ── VIEW: ONBOARDING ── -->
+<!-- ── ONBOARDING ── -->
 <div id="view-onboarding" class="view">
   <div class="container">
     <div class="onboarding-header">
@@ -427,80 +418,104 @@
   </div>
 </div>
 
-<!-- ── VIEW: DASHBOARD ── -->
+<!-- ── DASHBOARD ── -->
 <div id="view-dashboard" class="view">
   <div class="container">
-    <div class="greeting">
-      <h2 id="greeting-text">Good morning</h2>
-      <p id="greeting-sub">Here's how you're doing</p>
+
+    <!-- Greeting -->
+    <div style="margin-bottom:20px;">
+      <h2 id="greeting-text" style="font-family:'Lora',serif;font-size:22px;margin-bottom:3px;"></h2>
+      <p id="greeting-sub" style="font-size:14px;color:#6b7280;"></p>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-value" id="stat-laep">—</div>
-        <div class="stat-label">Latest LAEP score</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-total">0</div>
-        <div class="stat-label">Assessments completed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="stat-trend">—</div>
-        <div class="stat-label">LAEP trend</div>
-      </div>
+    <!-- Recovery Today card -->
+    <div id="recovery-card" class="recovery-card" style="margin-bottom:12px;">
+      <div class="recovery-status" id="recovery-status">Loading…</div>
+      <div class="recovery-progress" id="recovery-progress"></div>
     </div>
 
-    <div class="section-title">Start an assessment</div>
-    <div class="assessment-cards">
-      <button class="assess-card" onclick="startQuestionnaire('laep')">
-        <div class="assess-card-left">
-          <div class="assess-icon">📋</div>
-          <div>
-            <h3>LAEP</h3>
-            <p>Side effect profile · 19 questions · ~5 min</p>
-          </div>
-        </div>
-        <span class="assess-arrow">›</span>
+    <!-- Streak -->
+    <div id="streak-wrap" style="margin-bottom:20px;display:none;">
+      <span class="streak-badge"><span id="streak-text"></span> 🔥</span>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions" id="quick-actions-row">
+      <button class="qa-btn qa-btn-seizure" onclick="openSeizureLog()">
+        <span class="qa-icon">⚡</span>
+        <span>Log a seizure</span>
       </button>
-      <button class="assess-card" onclick="startQuestionnaire('ssq')">
-        <div class="assess-card-left">
-          <div class="assess-icon">🧠</div>
-          <div>
-            <h3>SSQ</h3>
-            <p>Seizure severity · 24 questions · ~7 min</p>
-          </div>
-        </div>
-        <span class="assess-arrow">›</span>
-      </button>
-      <button class="assess-card" onclick="startQuestionnaire('qolie')">
-        <div class="assess-card-left">
-          <div class="assess-icon">🌟</div>
-          <div>
-            <h3>QOLIE-31</h3>
-            <p>Quality of life · 31 questions · ~10 min</p>
-          </div>
-        </div>
-        <span class="assess-arrow">›</span>
+      <button class="qa-btn qa-btn-checkin" id="btn-checkin" onclick="startQuestionnaire('laep')" style="display:none;">
+        <span class="qa-icon">📋</span>
+        <span>Take today's check-in</span>
       </button>
     </div>
 
-    <div class="section-title">Your recent results</div>
-    <div class="history-card" id="history-list">
-      <div class="empty-note">No assessments yet — start one above.</div>
-    </div>
-
-    <div id="chart-section" style="display:none;">
-      <div class="section-title">LAEP over time</div>
-      <div class="chart-card">
-        <div class="chart-wrap">
-          <canvas id="laep-chart"></canvas>
+    <!-- All Assessments (collapsible) -->
+    <div style="margin-bottom:8px;">
+      <div class="section-header" onclick="toggleSection('assessments')">
+        <span class="section-title">All Assessments</span>
+        <span class="section-toggle" id="toggle-assessments">Show ↓</span>
+      </div>
+      <div class="collapsible-body" id="body-assessments">
+        <div class="assessment-cards">
+          <button class="assess-card" onclick="startQuestionnaire('laep')">
+            <div class="assess-card-left">
+              <div class="assess-icon">📋</div>
+              <div><h3>LAEP</h3><p>Side effect profile · 19 questions · ~5 min</p></div>
+            </div>
+            <span class="assess-arrow">›</span>
+          </button>
+          <button class="assess-card" onclick="startQuestionnaire('ssq')">
+            <div class="assess-card-left">
+              <div class="assess-icon">🧠</div>
+              <div><h3>SSQ</h3><p>Seizure severity · 24 questions · ~7 min</p></div>
+            </div>
+            <span class="assess-arrow">›</span>
+          </button>
+          <button class="assess-card" onclick="startQuestionnaire('qolie')">
+            <div class="assess-card-left">
+              <div class="assess-icon">🌟</div>
+              <div><h3>QOLIE-31</h3><p>Quality of life · 31 questions · ~10 min</p></div>
+            </div>
+            <span class="assess-arrow">›</span>
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- History (collapsible, default open) -->
+    <div style="margin-bottom:8px;">
+      <div class="section-header" onclick="toggleSection('history')">
+        <span class="section-title">Your Results</span>
+        <span class="section-toggle" id="toggle-history">Hide ↑</span>
+      </div>
+      <div class="collapsible-body open" id="body-history">
+        <!-- History tabs -->
+        <div class="history-tabs">
+          <button class="history-tab active" onclick="switchHistoryTab('all', this)">All</button>
+          <button class="history-tab" onclick="switchHistoryTab('laep', this)">LAEP</button>
+          <button class="history-tab" onclick="switchHistoryTab('ssq', this)">SSQ</button>
+          <button class="history-tab" onclick="switchHistoryTab('qolie', this)">QOLIE</button>
+        </div>
+        <div class="history-card" id="history-list">
+          <div class="empty-note">No assessments yet.</div>
+        </div>
+
+        <!-- Chart (shows when 2+ LAEP scores exist) -->
+        <div id="chart-section" style="display:none;">
+          <div class="chart-card">
+            <div class="chart-title">LAEP over time</div>
+            <div class="chart-wrap"><canvas id="laep-chart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- ── VIEW: QUESTIONNAIRE ── -->
+<!-- ── QUESTIONNAIRE ── -->
 <div id="view-questionnaire" class="view">
   <div class="container">
     <div class="progress-bar"><div class="progress-fill" id="q-progress"></div></div>
@@ -509,21 +524,60 @@
     <div class="q-text" id="q-text"></div>
     <div class="options" id="q-options"></div>
     <div class="q-nav">
-      <button class="btn-back" id="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-back hidden" id="btn-back" onclick="goBack()">← Back</button>
       <span></span>
     </div>
   </div>
 </div>
 
-<!-- ── VIEW: RESULTS ── -->
+<!-- ── RESULTS ── -->
 <div id="view-results" class="view">
   <div class="container">
     <div class="result-emoji" id="result-emoji"></div>
-    <div class="result-title" id="result-title"></div>
-    <div class="result-score-badge" id="result-badge"></div>
+    <div class="result-comparison" id="result-comparison"></div>
+    <div class="result-raw-score" id="result-raw-score"></div>
+    <div class="result-badge" id="result-badge"></div>
     <div class="result-message" id="result-message"></div>
-    <div class="result-score-detail" id="result-detail"></div>
     <button class="btn-done" onclick="showDashboard()">Back to dashboard</button>
+  </div>
+</div>
+
+<!-- ── SEIZURE LOG MODAL ── -->
+<div class="modal-overlay" id="seizure-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Log a seizure</div>
+    <div class="form-group">
+      <label for="sz-date">Date</label>
+      <input type="date" id="sz-date" />
+    </div>
+    <div class="form-group">
+      <label for="sz-time">Time of day</label>
+      <select id="sz-time">
+        <option value="morning">Morning</option>
+        <option value="afternoon">Afternoon</option>
+        <option value="evening">Evening</option>
+        <option value="night">Night</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="sz-duration">Duration (approximate)</label>
+      <select id="sz-duration">
+        <option value="<1 min">Less than 1 minute</option>
+        <option value="1-3 min">1–3 minutes</option>
+        <option value="3-5 min">3–5 minutes</option>
+        <option value=">5 min">More than 5 minutes</option>
+        <option value="unknown">I'm not sure</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="sz-notes">Notes (optional)</label>
+      <input type="text" id="sz-notes" placeholder="e.g. tired beforehand, at work…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSeizureLog()">Cancel</button>
+      <button class="btn-save-seizure" onclick="saveSeizure()">Save seizure</button>
+    </div>
   </div>
 </div>
 
@@ -535,11 +589,10 @@ import {
   query, where, orderBy, getDocs, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-// ── INSTRUMENT DATA ──────────────────────────────────────────────────
+// ── INSTRUMENTS ──────────────────────────────────────────────────────
 
 const LAEP = {
-  name: 'LAEP',
-  fullName: 'Liverpool Adverse Events Profile',
+  name: 'LAEP', fullName: 'Liverpool Adverse Events Profile',
   items: [
     'Unsteadiness','Tiredness','Restlessness','Feelings of aggression',
     'Nervousness or agitation','Headache','Hair loss','Problems with skin',
@@ -552,10 +605,8 @@ const LAEP = {
 };
 
 const SSQ = {
-  name: 'SSQ',
-  fullName: 'Seizure Severity Questionnaire',
+  name: 'SSQ', fullName: 'Seizure Severity Questionnaire',
   items: [
-    // Section 1 — Warning
     'How often do you have a warning before a seizure?',
     'How afraid are you when you feel a warning coming on?',
     'How severe are the physical sensations during a warning?',
@@ -564,7 +615,6 @@ const SSQ = {
     'How often do you experience déjà vu before or during seizures?',
     'How severe is any stomach sensation during your seizures?',
     'How well can you prepare yourself when you feel a seizure coming?',
-    // Section 2 — Ictal
     'How often do you lose awareness during seizures?',
     'How often do you fall down during seizures?',
     'How often are you injured during seizures?',
@@ -573,7 +623,6 @@ const SSQ = {
     'How severe are the convulsions (shaking) during seizures?',
     'How long do your seizures typically last?',
     'How severe are your seizures overall?',
-    // Section 3 — Recovery
     'How confused do you feel after a seizure?',
     'How often do you get a headache after a seizure?',
     'How sleepy do you feel after a seizure?',
@@ -587,53 +636,44 @@ const SSQ = {
   section: (i) => i < 8 ? 'Warning & perception' : i < 16 ? 'During the seizure' : 'Recovery'
 };
 
-// QOLIE-31: reverse-scored items (0-indexed) — negative wording means higher = worse
 const QOLIE_REVERSE = new Set([0,1,2,3,4,7,9,11,12,13,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]);
 const QOLIE_SUBSCALES = [
-  { name: 'seizureWorry',      label: 'Seizure worry',      items: [0,1,2,3,4],          weight: 0.08 },
-  { name: 'overallQol',        label: 'Overall quality of life', items: [5,6],            weight: 0.14 },
-  { name: 'emotionalWellbeing',label: 'Emotional wellbeing', items: [7,8,9,10,11],        weight: 0.14 },
-  { name: 'energyFatigue',     label: 'Energy & fatigue',   items: [12,13,14,15],         weight: 0.12 },
-  { name: 'cognitiveFunction', label: 'Cognitive function',  items: [16,17,18,19,20,21],  weight: 0.27 },
-  { name: 'medicationEffects', label: 'Medication effects',  items: [22,23,24],           weight: 0.03 },
-  { name: 'socialFunction',    label: 'Social function',     items: [25,26,27,28,29,30],  weight: 0.17 },
+  { name: 'seizureWorry',       label: 'Seizure worry',           items: [0,1,2,3,4],         weight: 0.08 },
+  { name: 'overallQol',         label: 'Overall quality of life', items: [5,6],               weight: 0.14 },
+  { name: 'emotionalWellbeing', label: 'Emotional wellbeing',     items: [7,8,9,10,11],       weight: 0.14 },
+  { name: 'energyFatigue',      label: 'Energy & fatigue',        items: [12,13,14,15],       weight: 0.12 },
+  { name: 'cognitiveFunction',  label: 'Cognitive function',      items: [16,17,18,19,20,21], weight: 0.27 },
+  { name: 'medicationEffects',  label: 'Medication effects',      items: [22,23,24],          weight: 0.03 },
+  { name: 'socialFunction',     label: 'Social function',         items: [25,26,27,28,29,30], weight: 0.17 },
 ];
 const QOLIE = {
-  name: 'QOLIE-31',
-  fullName: 'Quality of Life in Epilepsy',
+  name: 'QOLIE-31', fullName: 'Quality of Life in Epilepsy',
   items: [
-    // Seizure Worry (1-5)
     'How often did you worry about having another seizure?',
     'How often did you worry about being injured during a seizure?',
     'How often did you avoid activities because of seizure risk?',
     'How often did seizure worries limit what you could do?',
     'How often did you feel frightened about your seizures?',
-    // Overall QOL (6-7)
     'How would you rate your overall quality of life?',
     'How satisfied are you with your life overall?',
-    // Emotional Wellbeing (8-12)
     'How often did you feel nervous or anxious?',
     'How often did you feel calm and peaceful?',
     'How often did you feel downhearted or low?',
     'How often were you a happy person?',
     'How often did you feel so low that nothing could cheer you up?',
-    // Energy/Fatigue (13-16)
     'How much energy did you have?',
     'How often did you feel worn out?',
     'How often did you feel tired?',
     'How often did you feel full of energy?',
-    // Cognitive Function (17-22)
     'How often did you have problems with memory?',
     'How often did you have difficulty concentrating?',
     'How often did you have trouble finding the right word?',
     'How often did you have trouble with mental tasks (e.g. calculations)?',
     'How often did you feel mentally slow?',
     'How often did you have trouble thinking clearly?',
-    // Medication Effects (23-25)
     'How much did your medication affect your memory?',
     'How much did your medication affect your concentration?',
     'How much did your medication affect your physical coordination?',
-    // Social Function (26-31)
     'How often did epilepsy limit your social activities?',
     'How often did epilepsy affect your ability to travel or use transport?',
     'How often did epilepsy cause problems in your relationships?',
@@ -642,61 +682,45 @@ const QOLIE = {
     'How often did epilepsy affect your leisure or hobbies?'
   ],
   options: ['All of the time','Most of the time','A good bit of the time','Some of the time','A little of the time','None of the time'],
-  section: (i) => {
-    const s = QOLIE_SUBSCALES.find(s => s.items.includes(i));
-    return s ? s.label : '';
-  }
+  section: (i) => { const s = QOLIE_SUBSCALES.find(s => s.items.includes(i)); return s ? s.label : ''; }
 };
 
-// ── STATE ───────────────────────────────────────────────────────────
+// ── STATE ──────────────────────────────────────────────────────────
 
 let currentUser = null;
 let patientData = null;
 let assessmentHistory = [];
 let laepChart = null;
+let activeHistoryTab = 'all';
 
-// Questionnaire state
-let qState = {
-  instrument: null,    // LAEP | SSQ | QOLIE
-  currentIndex: 0,
-  answers: [],         // array of 1-based values
-};
+let qState = { instrument: null, currentIndex: 0, answers: [] };
 
-// ── AUTH ─────────────────────────────────────────────────────────────
+// ── AUTH ──────────────────────────────────────────────────────────
 
 onAuthStateChanged(auth, async user => {
   if (!user) { location.href = 'login.html'; return; }
   currentUser = user;
-
-  // Check role
   const userSnap = await getDoc(doc(db, 'users', user.uid));
-  if (!userSnap.exists() || userSnap.data().role !== 'patient') {
-    location.href = 'login.html'; return;
-  }
+  if (!userSnap.exists() || userSnap.data().role !== 'patient') { location.href = 'login.html'; return; }
 
   document.getElementById('header-name').textContent = userSnap.data().name || '';
   document.getElementById('app-header').style.display = '';
   document.getElementById('loading-screen').style.display = 'none';
 
-  // Check if onboarding done
   const patientSnap = await getDoc(doc(db, 'patients', user.uid));
   if (!patientSnap.exists()) {
-    // Pre-fill name from user doc
     document.getElementById('ob-name').value = userSnap.data().name || '';
     showView('onboarding');
   } else {
     patientData = patientSnap.data();
-    try { await loadDashboard(); } catch(e) { console.warn('loadDashboard error:', e); }
+    try { await loadDashboard(); } catch(e) { console.warn('Dashboard load error:', e); }
     showView('dashboard');
   }
 });
 
-window.handleSignOut = async function() {
-  await signOut(auth);
-  location.href = 'login.html';
-};
+window.handleSignOut = async function() { await signOut(auth); location.href = 'login.html'; };
 
-// ── VIEWS ─────────────────────────────────────────────────────────────
+// ── VIEWS ─────────────────────────────────────────────────────────
 
 function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -704,94 +728,202 @@ function showView(name) {
   window.scrollTo(0, 0);
 }
 
-// ── ONBOARDING ────────────────────────────────────────────────────────
+// ── ONBOARDING ────────────────────────────────────────────────────
 
 window.saveOnboarding = async function() {
   const name      = document.getElementById('ob-name').value.trim();
   const device    = document.getElementById('ob-device').value;
   const condition = document.getElementById('ob-condition').value;
   const clinician = document.getElementById('ob-clinician').value.trim();
-
-  if (!name || !device || !condition) {
-    alert('Please fill in your name, device, and condition.');
-    return;
-  }
+  if (!name || !device || !condition) { alert('Please fill in your name, device, and condition.'); return; }
 
   const btn = document.getElementById('btn-save-onboarding');
   btn.disabled = true; btn.textContent = 'Saving…';
 
   const studyId = 'NF-' + String(Math.floor(Math.random() * 9000) + 1000);
-
   await setDoc(doc(db, 'patients', currentUser.uid), {
-    name,
-    device,
-    condition,
+    name, device, condition,
     clinicianEmail: clinician || null,
-    studyId,
-    consentGiven: true,
-    consentDate: serverTimestamp(),
-    createdAt: serverTimestamp()
+    studyId, consentGiven: true,
+    consentDate: serverTimestamp(), createdAt: serverTimestamp()
   });
-
-  // Update user display name
   await setDoc(doc(db, 'users', currentUser.uid), { name }, { merge: true });
   document.getElementById('header-name').textContent = name;
-
   patientData = { name, device, condition, studyId };
-  try { await loadDashboard(); } catch(e) { console.warn('loadDashboard error:', e); }
+  try { await loadDashboard(); } catch(e) { console.warn('Dashboard load error:', e); }
   showView('dashboard');
 };
 
-// ── DASHBOARD ─────────────────────────────────────────────────────────
+// ── DASHBOARD ─────────────────────────────────────────────────────
 
 async function loadDashboard() {
-  // Greeting
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
   const firstName = (patientData?.name || '').split(' ')[0];
   document.getElementById('greeting-text').textContent = greeting + (firstName ? ', ' + firstName : '');
-  document.getElementById('greeting-sub').textContent = 'Here\'s how you\'re doing';
 
   // Load history
-  const q = query(
-    collection(db, 'assessments'),
-    where('patientId', '==', currentUser.uid),
-    orderBy('date', 'desc')
-  );
+  const q = query(collection(db, 'assessments'), where('patientId', '==', currentUser.uid), orderBy('date', 'desc'));
   const snap = await getDocs(q);
   assessmentHistory = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-  // Stats
   const laepScores = assessmentHistory.filter(a => a.type === 'laep');
-  const lastLaep = laepScores[0];
-  document.getElementById('stat-total').textContent = assessmentHistory.length;
-  document.getElementById('stat-laep').textContent = lastLaep ? Math.round(lastLaep.score) : '—';
 
-  if (laepScores.length >= 2) {
-    const diff = laepScores[0].score - laepScores[1].score;
-    document.getElementById('stat-trend').textContent = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
-  } else {
-    document.getElementById('stat-trend').textContent = '—';
-  }
+  // ── Recovery Today card ──
+  renderRecoveryCard(laepScores);
 
-  // History list
-  renderHistory();
+  // ── Streak ──
+  renderStreak(laepScores);
 
-  // Chart
+  // ── Quick actions ──
+  renderQuickActions(laepScores);
+
+  // ── History ──
+  renderHistory(activeHistoryTab);
+
+  // ── Chart ──
   if (laepScores.length >= 2) {
     document.getElementById('chart-section').style.display = '';
     renderLaepChart(laepScores.slice().reverse());
   }
+
+  // Greeting sub
+  document.getElementById('greeting-sub').textContent =
+    assessmentHistory.length === 0 ? 'Welcome — let\'s start tracking your recovery' : 'Here\'s how you\'re doing';
 }
 
-function renderHistory() {
-  const el = document.getElementById('history-list');
-  if (!assessmentHistory.length) {
-    el.innerHTML = '<div class="empty-note">No assessments yet — start one above.</div>';
+function renderRecoveryCard(laepScores) {
+  const card = document.getElementById('recovery-card');
+  const statusEl = document.getElementById('recovery-status');
+  const progressEl = document.getElementById('recovery-progress');
+
+  if (laepScores.length === 0) {
+    card.className = 'recovery-card';
+    statusEl.innerHTML = 'Welcome — let\'s start tracking your recovery';
+    progressEl.textContent = 'Complete your first LAEP check-in to get started.';
     return;
   }
-  el.innerHTML = assessmentHistory.slice(0, 10).map(a => {
-    const date = a.date?.toDate ? a.date.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+
+  const lastDate = laepScores[0].date?.toDate ? laepScores[0].date.toDate() : new Date();
+  const nextDue = new Date(lastDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const isDue = now >= nextDue;
+
+  if (isDue) {
+    card.className = 'recovery-card due';
+    const daysPast = Math.floor((now - nextDue) / (24 * 60 * 60 * 1000));
+    statusEl.innerHTML = `<span class="status-icon">📋</span>Your check-in is due${daysPast > 0 ? ' — ' + daysPast + ' day' + (daysPast > 1 ? 's' : '') + ' overdue' : ' today'}`;
+  } else {
+    card.className = 'recovery-card all-caught-up';
+    const daysUntil = Math.ceil((nextDue - now) / (24 * 60 * 60 * 1000));
+    const nextStr = daysUntil === 1 ? 'tomorrow' : nextDue.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+    statusEl.innerHTML = `<span class="status-icon">✓</span>You're all caught up`;
+    progressEl.textContent = 'Next check-in due ' + nextStr + '.';
+  }
+
+  // Progress sentence
+  if (laepScores.length >= 2) {
+    const latest = laepScores[0].score;
+    const prev   = laepScores[1].score;
+    const diff   = latest - prev;
+    let progressText = '';
+
+    if (diff < -2) {
+      progressText = 'Your side effects have been improving.';
+    } else if (diff > 2) {
+      progressText = 'Your side effects have increased slightly this week.';
+    } else {
+      // Count consecutive stable weeks
+      let stableCount = 1;
+      for (let i = 1; i < laepScores.length - 1; i++) {
+        if (Math.abs(laepScores[i].score - laepScores[i+1].score) <= 2) stableCount++;
+        else break;
+      }
+      progressText = `Your side effects have been stable for ${stableCount} week${stableCount > 1 ? 's' : ''}.`;
+    }
+    if (!isDue) progressEl.textContent += ' ' + progressText;
+    else progressEl.textContent = progressText;
+  } else if (isDue) {
+    progressEl.textContent = 'Complete your check-in to see your progress.';
+  }
+}
+
+function renderStreak(laepScores) {
+  const wrap = document.getElementById('streak-wrap');
+  if (laepScores.length < 2) { wrap.style.display = 'none'; return; }
+
+  // Count consecutive weeks with at least one LAEP
+  let streak = 0;
+  const now = new Date();
+  for (let week = 0; week < 52; week++) {
+    const weekStart = new Date(now.getTime() - (week + 1) * 7 * 24 * 60 * 60 * 1000);
+    const weekEnd   = new Date(now.getTime() - week * 7 * 24 * 60 * 60 * 1000);
+    const hasAssessment = laepScores.some(a => {
+      const d = a.date?.toDate ? a.date.toDate() : new Date();
+      return d >= weekStart && d < weekEnd;
+    });
+    if (hasAssessment) streak++;
+    else break;
+  }
+
+  if (streak >= 2) {
+    document.getElementById('streak-text').textContent = streak + '-week check-in streak';
+    wrap.style.display = '';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function renderQuickActions(laepScores) {
+  const checkinBtn = document.getElementById('btn-checkin');
+  const isDue = isCheckinDue(laepScores);
+  checkinBtn.style.display = isDue ? '' : 'none';
+
+  // If only seizure button, make it full width
+  const row = document.getElementById('quick-actions-row');
+  row.className = isDue ? 'quick-actions' : 'quick-actions single';
+}
+
+function isCheckinDue(laepScores) {
+  if (laepScores.length === 0) return true;
+  const lastDate = laepScores[0].date?.toDate ? laepScores[0].date.toDate() : new Date();
+  const nextDue = new Date(lastDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  return new Date() >= nextDue;
+}
+
+// ── COLLAPSIBLE SECTIONS ─────────────────────────────────────────
+
+window.toggleSection = function(id) {
+  const body   = document.getElementById('body-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.textContent = isOpen ? 'Show ↓' : 'Hide ↑';
+};
+
+// ── HISTORY TABS ─────────────────────────────────────────────────
+
+window.switchHistoryTab = function(tab, el) {
+  activeHistoryTab = tab;
+  document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderHistory(tab);
+};
+
+function renderHistory(tab = 'all') {
+  const el = document.getElementById('history-list');
+  const filtered = tab === 'all'
+    ? assessmentHistory
+    : assessmentHistory.filter(a => a.type === tab);
+
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty-note">No assessments yet.</div>';
+    return;
+  }
+  el.innerHTML = filtered.slice(0, 12).map(a => {
+    const date = a.date?.toDate
+      ? a.date.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : '—';
     const interp = interpretScore(a.type, a.score);
     return `<div class="history-item">
       <div>
@@ -806,56 +938,71 @@ function renderHistory() {
 function renderLaepChart(scores) {
   if (laepChart) laepChart.destroy();
   const ctx = document.getElementById('laep-chart').getContext('2d');
-  const labels = scores.map(a => {
-    const d = a.date?.toDate ? a.date.toDate() : new Date();
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-  });
   laepChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels,
+      labels: scores.map(a => {
+        const d = a.date?.toDate ? a.date.toDate() : new Date();
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      }),
       datasets: [{
-        label: 'LAEP Score',
         data: scores.map(a => a.score),
         borderColor: '#4A6FA5',
-        backgroundColor: 'rgba(74,111,165,0.08)',
+        backgroundColor: 'rgba(74,111,165,0.07)',
         borderWidth: 2.5,
         pointRadius: 5,
         pointBackgroundColor: '#4A6FA5',
-        fill: true,
-        tension: 0.35
+        fill: true, tension: 0.35
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            afterLabel: ctx => {
-              const v = ctx.raw;
-              if (v >= 45) return 'High — contact clinic';
-              if (v >= 36.5) return 'Elevated';
-              if (v >= 30) return 'Some side effects';
-              return 'Within range';
-            }
-          }
-        }
-      },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
-        y: {
-          min: 19, max: 76,
-          grid: { color: '#f3f4f6' },
-          ticks: { stepSize: 10 }
-        },
+        y: { min: 19, max: 76, grid: { color: '#f3f4f6' }, ticks: { stepSize: 10 } },
         x: { grid: { display: false } }
       }
     }
   });
 }
 
-// ── QUESTIONNAIRE ─────────────────────────────────────────────────────
+// ── SEIZURE LOG ───────────────────────────────────────────────────
+
+window.openSeizureLog = function() {
+  document.getElementById('sz-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('seizure-modal').classList.add('open');
+};
+window.closeSeizureLog = function() {
+  document.getElementById('seizure-modal').classList.remove('open');
+};
+window.saveSeizure = async function() {
+  const date     = document.getElementById('sz-date').value;
+  const time     = document.getElementById('sz-time').value;
+  const duration = document.getElementById('sz-duration').value;
+  const notes    = document.getElementById('sz-notes').value.trim();
+  if (!date) { alert('Please enter a date.'); return; }
+
+  try {
+    await addDoc(collection(db, 'seizures'), {
+      patientId: currentUser.uid,
+      studyId: patientData?.studyId || null,
+      date, time, duration,
+      notes: notes || null,
+      loggedAt: serverTimestamp()
+    });
+    closeSeizureLog();
+    // Brief confirmation
+    const card = document.getElementById('recovery-card');
+    const orig = card.innerHTML;
+    card.innerHTML = '<div style="text-align:center;padding:16px 0;font-size:16px;color:#4A9B6E;font-weight:600;">✓ Seizure logged</div>';
+    setTimeout(() => { card.innerHTML = orig; }, 2000);
+  } catch(e) {
+    console.error('Error saving seizure:', e);
+    alert('Could not save — please try again.');
+  }
+};
+
+// ── QUESTIONNAIRE ─────────────────────────────────────────────────
 
 window.startQuestionnaire = function(type) {
   const instrument = type === 'laep' ? LAEP : type === 'ssq' ? SSQ : QOLIE;
@@ -867,21 +1014,16 @@ window.startQuestionnaire = function(type) {
 function renderQuestion() {
   const { instrument, currentIndex, answers } = qState;
   const total = instrument.items.length;
-  const pct = (currentIndex / total * 100).toFixed(1);
-
-  document.getElementById('q-progress').style.width = pct + '%';
+  document.getElementById('q-progress').style.width = (currentIndex / total * 100).toFixed(1) + '%';
   document.getElementById('q-meta').textContent = `Question ${currentIndex + 1} of ${total}`;
   document.getElementById('q-text').textContent = instrument.items[currentIndex];
 
-  const sectionLabel = instrument.section(currentIndex);
+  const sec = instrument.section(currentIndex);
   const secEl = document.getElementById('q-section-label');
-  secEl.textContent = sectionLabel || '';
-  secEl.style.display = sectionLabel ? '' : 'none';
+  secEl.textContent = sec || ''; secEl.style.display = sec ? '' : 'none';
 
-  // Back button
   document.getElementById('btn-back').classList.toggle('hidden', currentIndex === 0);
 
-  // Options
   const optEl = document.getElementById('q-options');
   optEl.innerHTML = '';
   instrument.options.forEach((label, i) => {
@@ -896,13 +1038,9 @@ function renderQuestion() {
 
 function selectAnswer(val) {
   qState.answers[qState.currentIndex] = val;
-
-  // Highlight selected
   document.querySelectorAll('.option-btn').forEach((btn, i) => {
     btn.classList.toggle('selected', i + 1 === val);
   });
-
-  // Auto-advance after 250ms
   setTimeout(() => {
     if (qState.currentIndex < qState.instrument.items.length - 1) {
       qState.currentIndex++;
@@ -914,190 +1052,122 @@ function selectAnswer(val) {
 }
 
 window.goBack = function() {
-  if (qState.currentIndex > 0) {
-    qState.currentIndex--;
-    renderQuestion();
-  }
+  if (qState.currentIndex > 0) { qState.currentIndex--; renderQuestion(); }
 };
 
-// ── SCORING ──────────────────────────────────────────────────────────
+// ── SCORING ───────────────────────────────────────────────────────
 
 async function finishQuestionnaire() {
   const { instrument, answers } = qState;
-  const type = instrument.name.toLowerCase().replace('-','');
+  const type = instrument === LAEP ? 'laep' : instrument === SSQ ? 'ssq' : 'qolie';
 
   let score, subscales = null, flagged = false;
 
   if (instrument === LAEP) {
-    score = answers.reduce((a, b) => a + b, 0); // sum 19-76
+    score = answers.reduce((a, b) => a + b, 0);
     flagged = score >= 36.5;
-
   } else if (instrument === SSQ) {
     score = Math.round((answers.reduce((a, b) => a + b, 0) / answers.length) * 100) / 100;
     subscales = {
-      warning: meanOf(answers.slice(0, 8)),
-      ictal:   meanOf(answers.slice(8, 16)),
+      warning:  meanOf(answers.slice(0, 8)),
+      ictal:    meanOf(answers.slice(8, 16)),
       recovery: meanOf(answers.slice(16, 24))
     };
     flagged = score >= 5;
-
   } else {
-    // QOLIE-31 — transform each item to 0-100, then weighted subscale scores
+    const maxScale = 6;
     const transformed = answers.map((raw, i) => {
-      const maxScale = 6; // 6-point options (1-6)
       const val = QOLIE_REVERSE.has(i) ? (maxScale + 1 - raw) : raw;
       return ((val - 1) / (maxScale - 1)) * 100;
     });
-
     const weightSum = QOLIE_SUBSCALES.reduce((s, sub) => s + sub.weight, 0);
     subscales = {};
     let weightedTotal = 0;
-
     QOLIE_SUBSCALES.forEach(sub => {
       const subScore = meanOf(sub.items.map(idx => transformed[idx]));
       subscales[sub.name] = Math.round(subScore * 10) / 10;
       weightedTotal += (sub.weight / weightSum) * subScore;
     });
-
     score = Math.round(weightedTotal);
     flagged = score < 40;
   }
 
-  // Save to Firestore
   try {
     await addDoc(collection(db, 'assessments'), {
       patientId: currentUser.uid,
       studyId: patientData?.studyId || null,
-      type: type === 'laep' ? 'laep' : type === 'ssq' ? 'ssq' : 'qolie',
-      date: serverTimestamp(),
-      score,
-      answers,
-      subscales,
-      flagged
+      type, date: serverTimestamp(),
+      score, answers, subscales, flagged
     });
-  } catch(e) {
-    console.error('Error saving assessment:', e);
-  }
+  } catch(e) { console.error('Save error:', e); }
 
-  showResults(instrument, score, subscales);
-  loadDashboard(); // refresh stats in background
+  showResults(instrument, score, type);
+  try { await loadDashboard(); } catch(e) {}
 }
 
 function meanOf(arr) {
   return Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 100) / 100;
 }
 
-// ── RESULTS ──────────────────────────────────────────────────────────
+// ── RESULTS ───────────────────────────────────────────────────────
 
-function showResults(instrument, score, subscales) {
-  const type = instrument === LAEP ? 'laep' : instrument === SSQ ? 'ssq' : 'qolie';
+function showResults(instrument, score, type) {
   const interp = interpretScore(type, score);
 
+  // Comparison headline (LAEP only — for SSQ/QOLIE use standard label)
+  let comparisonText = '';
+  let rawScoreText   = '';
+
+  if (type === 'laep') {
+    const prevLaep = assessmentHistory.filter(a => a.type === 'laep');
+    if (prevLaep.length >= 1) {
+      const prev = prevLaep[0].score; // most recent before this (history loaded before save)
+      const diff = score - prev;
+      if (diff < -2)      comparisonText = 'Lower than last time — improving';
+      else if (diff > 2)  comparisonText = 'Higher than last time';
+      else                comparisonText = 'Similar to last time';
+    } else {
+      comparisonText = instrument.fullName + ' complete';
+    }
+    rawScoreText = `Score: ${score} out of 76`;
+  } else if (type === 'ssq') {
+    comparisonText = 'Seizure Severity complete';
+    rawScoreText = `Score: ${score.toFixed(2)} (range 1.0–7.0) · Saved to your record`;
+  } else {
+    comparisonText = 'Quality of Life complete';
+    rawScoreText = `Score: ${score} out of 100 · Saved to your record`;
+  }
+
   document.getElementById('result-emoji').textContent = interp.emoji;
-  document.getElementById('result-title').textContent = instrument.fullName + ' complete';
+  document.getElementById('result-comparison').textContent = comparisonText;
+  document.getElementById('result-raw-score').textContent = rawScoreText + ' · Saved to your record';
   document.getElementById('result-badge').textContent = interp.label;
   document.getElementById('result-badge').style.background = interp.bgColor;
   document.getElementById('result-badge').style.color = interp.textColor;
   document.getElementById('result-message').textContent = interp.message;
 
-  let detail = `Score: ${typeof score === 'number' && !Number.isInteger(score) ? score.toFixed(2) : score}`;
-  if (type === 'laep') detail += ' (range 19–76)';
-  else if (type === 'ssq') detail += ' (range 1.0–7.0)';
-  else detail += ' out of 100';
-  detail += ' · Saved to your record';
-  document.getElementById('result-detail').textContent = detail;
-
   showView('results');
 }
 
-window.showDashboard = function() {
-  showView('dashboard');
-};
+window.showDashboard = function() { showView('dashboard'); };
 
-// ── SCORE INTERPRETATION ──────────────────────────────────────────────
+// ── SCORE INTERPRETATION ──────────────────────────────────────────
 
 function interpretScore(type, score) {
   if (type === 'laep') {
-    if (score >= 45) return {
-      label: 'Significant side effects',
-      badgeClass: 'badge-red',
-      emoji: '🔴',
-      bgColor: '#fde8e8',
-      textColor: '#9B1C1C',
-      message: 'You\'re reporting high levels of side effects. Please contact your epilepsy nurse or clinical team as soon as you can — they\'re here to help adjust your treatment.'
-    };
-    if (score >= 36.5) return {
-      label: 'Elevated side effects',
-      badgeClass: 'badge-red',
-      emoji: '🟠',
-      bgColor: '#fee2e2',
-      textColor: '#D65D5D',
-      message: 'You seem to be experiencing some significant side effects from your treatment. Your clinical team can see these results and will take them into account at your next appointment.'
-    };
-    if (score >= 30) return {
-      label: 'Some side effects',
-      badgeClass: 'badge-amber',
-      emoji: '🟡',
-      bgColor: '#fef3c7',
-      textColor: '#D4943C',
-      message: 'You\'re experiencing some side effects. This is something your clinical team will monitor over time. Keep completing your assessments regularly.'
-    };
-    return {
-      label: 'Side effects well managed',
-      badgeClass: 'badge-green',
-      emoji: '✅',
-      bgColor: '#d1fae5',
-      textColor: '#4A9B6E',
-      message: 'Your side effect profile looks good. Keep completing your assessments regularly so your clinical team can continue to track your progress.'
-    };
+    if (score >= 45) return { label: 'High side effects', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#fde8e8', textColor: '#9B1C1C', message: 'You\'re reporting high levels of side effects. Please contact your epilepsy nurse or clinical team as soon as you can — they\'re here to help adjust your treatment.' };
+    if (score >= 36.5) return { label: 'Elevated side effects', badgeClass: 'badge-red', emoji: '🟠', bgColor: '#fee2e2', textColor: '#D65D5D', message: 'You seem to be experiencing significant side effects from your treatment. Your clinical team can see these results and will take them into account at your next appointment.' };
+    if (score >= 30) return { label: 'Some side effects', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#fef3c7', textColor: '#D4943C', message: 'You\'re experiencing some side effects. Your clinical team will monitor this over time. Keep completing your assessments regularly.' };
+    return { label: 'Side effects well managed', badgeClass: 'badge-green', emoji: '✅', bgColor: '#d1fae5', textColor: '#4A9B6E', message: 'Your side effect profile looks good. Keep completing your assessments regularly so your clinical team can continue to track your progress.' };
   }
-
   if (type === 'ssq') {
-    if (score >= 5) return {
-      label: 'Severe seizures',
-      badgeClass: 'badge-red',
-      emoji: '🔴',
-      bgColor: '#fee2e2', textColor: '#D65D5D',
-      message: 'Your seizures are significantly affecting you. Please make sure your clinical team is aware of how things are going — don\'t wait until your next appointment if you\'re struggling.'
-    };
-    if (score >= 3) return {
-      label: 'Moderate seizures',
-      badgeClass: 'badge-amber',
-      emoji: '🟡',
-      bgColor: '#fef3c7', textColor: '#D4943C',
-      message: 'You\'re experiencing moderate seizure severity. Your clinical team can see these results and will review them at your next appointment.'
-    };
-    return {
-      label: 'Mild seizures',
-      badgeClass: 'badge-green',
-      emoji: '✅',
-      bgColor: '#d1fae5', textColor: '#4A9B6E',
-      message: 'Your seizure severity appears to be relatively mild. Keep monitoring and complete your next assessment in a week or two.'
-    };
+    if (score >= 5) return { label: 'Severe', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#fee2e2', textColor: '#D65D5D', message: 'Your seizures are significantly affecting you. Please make sure your clinical team is aware — don\'t wait until your next appointment if you\'re struggling.' };
+    if (score >= 3) return { label: 'Moderate', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#fef3c7', textColor: '#D4943C', message: 'You\'re experiencing moderate seizure severity. Your clinical team can see these results and will review them.' };
+    return { label: 'Mild', badgeClass: 'badge-green', emoji: '✅', bgColor: '#d1fae5', textColor: '#4A9B6E', message: 'Your seizure severity appears relatively mild. Keep monitoring and complete your next assessment in a week or two.' };
   }
-
-  // QOLIE
-  if (score >= 60) return {
-    label: 'Good quality of life',
-    badgeClass: 'badge-green',
-    emoji: '✅',
-    bgColor: '#d1fae5', textColor: '#4A9B6E',
-    message: 'Your quality of life score is above the global average for people with epilepsy (59.8). This is positive — keep taking your assessments so your team can track your progress.'
-  };
-  if (score >= 40) return {
-    label: 'Some impact on daily life',
-    badgeClass: 'badge-amber',
-    emoji: '🟡',
-    bgColor: '#fef3c7', textColor: '#D4943C',
-    message: 'Epilepsy is having some impact on your quality of life. Your clinical team will be able to see these results and can discuss ways to support you at your next appointment.'
-  };
-  return {
-    label: 'Significant impact on daily life',
-    badgeClass: 'badge-red',
-    emoji: '🔴',
-    bgColor: '#fee2e2', textColor: '#D65D5D',
-    message: 'Epilepsy appears to be having a significant impact on your quality of life. Your clinical team will review this — please reach out to them if you\'d like to talk sooner.'
-  };
+  if (score >= 60) return { label: 'Good quality of life', badgeClass: 'badge-green', emoji: '✅', bgColor: '#d1fae5', textColor: '#4A9B6E', message: 'Your quality of life score is above the global average for people with epilepsy (59.8). Keep taking your assessments so your team can track your progress.' };
+  if (score >= 40) return { label: 'Some impact on daily life', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#fef3c7', textColor: '#D4943C', message: 'Epilepsy is having some impact on your quality of life. Your clinical team can see these results and can discuss support at your next appointment.' };
+  return { label: 'Significant impact', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#fee2e2', textColor: '#D65D5D', message: 'Epilepsy appears to be having a significant impact on your quality of life. Your clinical team will review this — please reach out if you\'d like to talk sooner.' };
 }
 </script>
 </body>
