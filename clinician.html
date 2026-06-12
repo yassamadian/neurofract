@@ -11,6 +11,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: #EBF0F7; color: #1A2B3C; min-height: 100vh; }
 
+    /* ── LOADING ── */
     #loading-screen {
       position: fixed; inset: 0; background: #EBF0F7;
       display: flex; align-items: center; justify-content: center; z-index: 100;
@@ -19,12 +20,11 @@
     .loading-logo .neuro { color: #1A2B3C; }
     .loading-logo .fract { color: #4A6FA5; }
 
+    /* ── HEADER ── */
     header {
-      background: #1A2B3C;
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: #1A2B3C; padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 40;
     }
     .logo h1 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
     .logo h1 .neuro { color: #EBF0F7; }
@@ -32,128 +32,224 @@
     .header-right { display: flex; align-items: center; gap: 16px; }
     .clinician-name { font-size: 13px; color: #9bb2ce; }
     .btn-signout {
-      padding: 7px 14px;
-      border: 1.5px solid #4A6FA5;
-      border-radius: 8px;
-      background: transparent;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: #9bb2ce;
-      cursor: pointer;
+      padding: 7px 14px; border: 1.5px solid #4A6FA5; border-radius: 8px;
+      background: transparent; font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: #9bb2ce; cursor: pointer;
     }
     .btn-signout:hover { background: rgba(74,111,165,0.15); }
 
-    .layout { display: flex; min-height: calc(100vh - 52px); }
+    /* ── MAIN TABS (top of page) ── */
+    .main-tabs {
+      background: #1A2B3C;
+      display: flex;
+      gap: 0;
+      padding: 0 28px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .main-tab {
+      padding: 10px 18px;
+      font-size: 14px; font-weight: 500;
+      color: #9bb2ce; cursor: pointer;
+      border-bottom: 3px solid transparent;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .main-tab.active { color: #fff; border-bottom-color: #4A6FA5; }
 
+    /* ── LAYOUT ── */
+    .layout { display: flex; min-height: calc(100vh - 90px); }
+
+    /* ── SIDEBAR ── */
     aside {
-      width: 260px;
-      background: #fff;
+      width: 270px; background: #fff;
       border-right: 1px solid #d1dae8;
-      padding: 24px 0;
-      flex-shrink: 0;
+      flex-shrink: 0; overflow-y: auto;
     }
-    .sidebar-label {
-      padding: 0 20px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #9ca3af;
+
+    /* Triage section headers */
+    .triage-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px 10px;
+      cursor: pointer; user-select: none;
+      border-bottom: 1px solid #EBF0F7;
     }
+    .triage-section-header:hover { background: #f9fafb; }
+    .triage-label { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
+    .triage-label.red    { color: #dc2626; }
+    .triage-label.amber  { color: #d97706; }
+    .triage-label.green  { color: #059669; }
+    .triage-chevron { font-size: 10px; color: #9ca3af; transition: transform 0.2s; }
+    .triage-chevron.open { transform: rotate(180deg); }
+
+    .triage-body { overflow: hidden; }
+
+    /* Patient row */
     .patient-item {
-      padding: 12px 20px;
+      padding: 11px 16px;
       cursor: pointer;
       border-left: 3px solid transparent;
-      transition: all 0.15s;
+      transition: background 0.12s;
+      border-bottom: 1px solid #f3f4f6;
     }
     .patient-item:hover { background: #EBF0F7; }
     .patient-item.active { background: #EBF0F7; border-left-color: #4A6FA5; }
-    .patient-name { font-size: 14px; font-weight: 600; }
-    .patient-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
-    .alert-dot {
-      display: inline-block;
-      width: 8px; height: 8px;
-      background: #ef4444;
-      border-radius: 50%;
-      margin-left: 6px;
-      vertical-align: middle;
+    .patient-item-top { display: flex; align-items: center; justify-content: space-between; }
+    .patient-name-label { font-size: 14px; font-weight: 600; }
+    .patient-triage-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     }
+    .dot-red   { background: #ef4444; }
+    .dot-amber { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .patient-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
 
-    main { flex: 1; padding: 28px; overflow-y: auto; }
+    /* ── MAIN PANEL ── */
+    main { flex: 1; padding: 0; overflow-y: auto; }
+    .panel-inner { padding: 28px; max-width: 960px; }
 
     .empty-state { text-align: center; padding: 80px 20px; color: #6b7280; }
     .empty-state h3 { font-family: 'Lora', serif; color: #1A2B3C; margin-bottom: 8px; font-size: 20px; }
 
-    /* Patient view */
-    .patient-header {
-      background: #fff;
-      border-radius: 14px;
-      padding: 22px 26px;
+    /* ── HEADLINE CARD ── */
+    .headline-card {
+      border-radius: 14px; padding: 20px 24px;
       margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 12px;
+    }
+    .headline-card.urgent {
+      background: #fef2f2; border-left: 5px solid #ef4444;
+    }
+    .headline-card.watch {
+      background: #fffbeb; border-left: 5px solid #f59e0b;
+    }
+    .headline-card.stable {
+      background: #f0fdf4; border-left: 5px solid #10b981;
+    }
+    .headline-text {
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 600;
+      line-height: 1.5; color: #1A2B3C;
+    }
+    .headline-cite { font-size: 12px; color: #9ca3af; margin-top: 6px; font-style: italic; }
+
+    /* ── PATIENT HEADER ── */
+    .patient-header {
+      background: #fff; border-radius: 14px; padding: 20px 24px;
+      margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 12px;
     }
     .patient-header h2 { font-family: 'Lora', serif; font-size: 20px; margin-bottom: 8px; }
     .tags { display: flex; gap: 8px; flex-wrap: wrap; }
     .tag {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      background: #EBF0F7;
-      color: #4A6FA5;
-    }
-    .tag.alert-tag { background: #fee2e2; color: #dc2626; }
-
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 22px;
-    }
-    .card h3 {
-      font-family: 'Lora', serif;
-      font-size: 15px;
-      margin-bottom: 14px;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 500;
+      background: #EBF0F7; color: #4A6FA5;
     }
 
+    /* ── CARDS ── */
+    .card { background: #fff; border-radius: 14px; padding: 22px; margin-bottom: 18px; }
+    .card-title {
+      font-family: 'Lora', serif; font-size: 15px;
+      color: #1A2B3C; margin-bottom: 14px;
+    }
+
+    /* ── CHART ── */
+    .chart-wrap { position: relative; height: 200px; }
+    .threshold-note { font-size: 11px; color: #9ca3af; margin-top: 8px; }
+
+    /* ── SCORES ── */
     .score-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 0; border-bottom: 1px solid #f3f4f6;
     }
     .score-row:last-child { border-bottom: none; }
     .score-label { font-size: 13px; color: #6b7280; }
     .score-pill {
-      font-size: 13px;
-      font-weight: 700;
-      padding: 3px 12px;
-      border-radius: 20px;
+      font-size: 13px; font-weight: 700;
+      padding: 3px 12px; border-radius: 20px;
     }
     .pill-green { background: #d1fae5; color: #065f46; }
     .pill-amber { background: #fef3c7; color: #92400e; }
     .pill-red   { background: #fee2e2; color: #991b1b; }
     .pill-grey  { background: #f3f4f6; color: #6b7280; }
 
-    .alert-box {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
+    /* ── ITEM BREAKDOWN ── */
+    .item-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; margin: 4px 4px 4px 0;
+      border-radius: 20px; font-size: 13px; font-weight: 500;
+      background: #fee2e2; color: #991b1b;
     }
-    .alert-title { font-weight: 700; font-size: 14px; color: #dc2626; margin-bottom: 4px; }
-    .alert-body  { font-size: 13px; color: #4b5563; line-height: 1.5; }
-    .alert-cite  { font-size: 11px; color: #9ca3af; margin-top: 4px; font-style: italic; }
+    .item-chip.amber { background: #fef3c7; color: #92400e; }
 
-    .chart-wrap { position: relative; height: 190px; }
-    .threshold-note { font-size: 11px; color: #9ca3af; margin-top: 8px; }
+    /* ── CROSS-CHECK ── */
+    .cross-check-sentence {
+      font-size: 14px; line-height: 1.6; color: #374151;
+      background: #f0f9ff; border-left: 4px solid #4A6FA5;
+      border-radius: 0 10px 10px 0; padding: 12px 16px;
+    }
+
+    /* ── SUGGESTED ACTIONS ── */
+    .action-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 0; border-bottom: 1px solid #f3f4f6;
+    }
+    .action-item:last-child { border-bottom: none; }
+    .action-bullet {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #EBF0F7; color: #4A6FA5;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .action-body { font-size: 14px; color: #374151; line-height: 1.5; }
+    .action-cite { font-size: 11px; color: #9ca3af; font-style: italic; margin-top: 3px; }
+
+    /* ── ONE-CLICK ACTIONS ── */
+    .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-action {
+      padding: 10px 18px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-reviewed  { background: #d1fae5; color: #065f46; border: 1.5px solid #a7f3d0; }
+    .btn-reviewed:hover  { background: #a7f3d0; }
+    .btn-flag      { background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; }
+    .btn-flag:hover      { background: #fde68a; }
+    .btn-schedule  { background: #EBF0F7; color: #4A6FA5; border: 1.5px solid #d1dae8; }
+    .btn-schedule:hover  { background: #d1dae8; }
+    .btn-action.active-state { opacity: 0.7; cursor: default; }
+
+    .status-note { font-size: 12px; color: #9ca3af; margin-top: 8px; font-style: italic; }
+
+    /* ── MY PRACTICE (COHORT) TAB ── */
+    .practice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 28px; }
+    .stat-card {
+      background: #fff; border-radius: 14px; padding: 22px 20px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+    }
+    .stat-card .stat-val { font-size: 32px; font-weight: 700; color: #4A6FA5; margin-bottom: 4px; }
+    .stat-card .stat-lbl { font-size: 13px; color: #6b7280; line-height: 1.4; }
+    .stat-card .stat-bench { font-size: 11px; color: #9ca3af; margin-top: 6px; font-style: italic; }
+
+    .practice-table-card { background: #fff; border-radius: 14px; padding: 22px; }
+    .practice-table-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .practice-table-card th {
+      text-align: left; padding: 9px 12px;
+      background: #EBF0F7; color: #4A6FA5;
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .practice-table-card td { padding: 11px 12px; border-bottom: 1px solid #f3f4f6; }
+    .practice-table-card tr:last-child td { border-bottom: none; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: #1A2B3C; color: #fff; padding: 12px 22px;
+      border-radius: 10px; font-size: 14px; font-weight: 500;
+      display: none; z-index: 200; white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -163,35 +259,95 @@
 </div>
 
 <header id="app-header" style="display:none;">
-  <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span> <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;">— Clinician</span></h1></div>
+  <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span>
+    <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;">— Clinician</span></h1></div>
   <div class="header-right">
     <span class="clinician-name" id="clinician-name"></span>
     <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
   </div>
 </header>
 
-<div class="layout" id="app-layout" style="display:none;">
+<!-- Main tabs: Patients / My Practice -->
+<div class="main-tabs" id="main-tabs" style="display:none;">
+  <button class="main-tab active" id="tab-patients" onclick="switchMainTab('patients')">Patients</button>
+  <button class="main-tab" id="tab-practice" onclick="switchMainTab('practice')">My Practice</button>
+</div>
+
+<!-- ── PATIENTS VIEW ── -->
+<div class="layout" id="view-patients" style="display:none;">
   <aside>
-    <div class="sidebar-label">Patients</div>
-    <div id="patient-list"><div style="padding:20px;font-size:13px;color:#9ca3af;">Loading…</div></div>
+    <!-- 🔴 NEEDS ATTENTION -->
+    <div class="triage-section-header" onclick="toggleTriage('red')">
+      <span class="triage-label red" id="label-red">🔴 NEEDS ATTENTION (0)</span>
+      <span class="triage-chevron open" id="chevron-red">▼</span>
+    </div>
+    <div class="triage-body" id="body-red"></div>
+
+    <!-- 🟡 WATCH -->
+    <div class="triage-section-header" onclick="toggleTriage('amber')">
+      <span class="triage-label amber" id="label-amber">🟡 WATCH (0)</span>
+      <span class="triage-chevron" id="chevron-amber">▼</span>
+    </div>
+    <div class="triage-body" style="display:none;" id="body-amber"></div>
+
+    <!-- 🟢 STABLE -->
+    <div class="triage-section-header" onclick="toggleTriage('green')">
+      <span class="triage-label green" id="label-green">🟢 STABLE (0)</span>
+      <span class="triage-chevron" id="chevron-green">▼</span>
+    </div>
+    <div class="triage-body" style="display:none;" id="body-green"></div>
   </aside>
-  <main id="main-panel">
-    <div class="empty-state">
-      <h3>Select a patient</h3>
-      <p>Choose a patient from the panel to view their results and alerts.</p>
+
+  <main>
+    <div class="panel-inner" id="main-panel">
+      <div class="empty-state">
+        <h3>Select a patient</h3>
+        <p>Patients are sorted by clinical priority. Select one to view their full assessment detail.</p>
+      </div>
     </div>
   </main>
 </div>
+
+<!-- ── MY PRACTICE VIEW ── -->
+<div id="view-practice" style="display:none;padding:28px;max-width:960px;margin:0 auto;">
+  <h2 style="font-family:'Lora',serif;font-size:22px;margin-bottom:6px;">My Practice</h2>
+  <p style="font-size:14px;color:#6b7280;margin-bottom:24px;">Cohort-level summary across all your patients.</p>
+  <div class="practice-grid" id="practice-stats">
+    <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Loading…</div></div>
+    <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Loading…</div></div>
+    <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Loading…</div></div>
+  </div>
+  <div class="practice-table-card" id="practice-table">
+    <p style="color:#9ca3af;text-align:center;padding:24px;">Loading…</p>
+  </div>
+</div>
+
+<div id="toast"></div>
 
 <script type="module">
 import { auth, db } from './firebase-config.js';
 import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  doc, getDoc, collection, query, where, orderBy, getDocs
+  doc, getDoc, collection, query, where, orderBy,
+  getDocs, updateDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-let clinicianUid = null;
+// ── LAEP item names (for item-level breakdown)
+const LAEP_ITEMS = [
+  'Unsteadiness','Tiredness','Restlessness','Feelings of aggression',
+  'Nervousness or agitation','Headache','Hair loss','Problems with skin',
+  'Double or blurred vision','Upset stomach','Difficulty concentrating',
+  'Trouble with mouth or gums','Shaky hands','Weight gain','Dizziness',
+  'Sleepiness','Depression','Memory problems','Disturbed sleep'
+];
+
+let clinicianUid  = null;
+let myEmail       = null;
+let allPatients   = [];        // [{id, name, studyId, condition, device, laep:[], ssq:[], qolie:[], triage:'red'|'amber'|'green', slope, weeksTo}]
 let chartInstances = {};
+let activePatientId = null;
+
+// ── AUTH ──────────────────────────────────────────────────────────────
 
 onAuthStateChanged(auth, async user => {
   if (!user) { location.href = 'login.html'; return; }
@@ -199,164 +355,565 @@ onAuthStateChanged(auth, async user => {
   if (!snap.exists() || snap.data().role !== 'clinician') { location.href = 'login.html'; return; }
 
   clinicianUid = user.uid;
+  myEmail = snap.data().email;
   document.getElementById('clinician-name').textContent = snap.data().name || '';
   document.getElementById('app-header').style.display = '';
-  document.getElementById('app-layout').style.display = 'flex';
+  document.getElementById('main-tabs').style.display = '';
   document.getElementById('loading-screen').style.display = 'none';
-  loadPatients();
+
+  await loadAll();
+  document.getElementById('view-patients').style.display = 'flex';
 });
 
 window.handleSignOut = async () => { await signOut(auth); location.href = 'login.html'; };
 
-async function loadPatients() {
-  // Find patients whose clinicianEmail matches this clinician
-  const meSnap = await getDoc(doc(db, 'users', clinicianUid));
-  const myEmail = meSnap.data().email;
+// ── TABS ──────────────────────────────────────────────────────────────
 
-  const pSnap = await getDocs(query(collection(db, 'patients'), where('clinicianEmail', '==', myEmail)));
-  const patients = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-  const listEl = document.getElementById('patient-list');
-  if (!patients.length) {
-    listEl.innerHTML = '<div style="padding:20px;font-size:13px;color:#9ca3af;">No patients assigned yet.<br><br>Patients enter your email during registration.</div>';
-    return;
-  }
-
-  listEl.innerHTML = patients.map(p => `
-    <div class="patient-item" id="pi-${p.id}" onclick="selectPatient('${p.id}','${p.name}','${p.studyId||''}','${p.condition||''}','${p.device||''}')">
-      <div class="patient-name">${p.name}</div>
-      <div class="patient-meta">${p.studyId || ''} · ${p.condition || ''}</div>
-    </div>
-  `).join('');
-}
-
-window.selectPatient = async function(uid, name, studyId, condition, device) {
-  document.querySelectorAll('.patient-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('pi-' + uid)?.classList.add('active');
-
-  const q = query(collection(db, 'assessments'), where('patientId', '==', uid), orderBy('date', 'asc'));
-  const snap = await getDocs(q);
-  const assessments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-  const patient = { id: uid, name, studyId, condition, device };
-  renderPatientView(patient, assessments);
+window.switchMainTab = function(tab) {
+  document.getElementById('tab-patients').classList.toggle('active', tab === 'patients');
+  document.getElementById('tab-practice').classList.toggle('active', tab === 'practice');
+  document.getElementById('view-patients').style.display = tab === 'patients' ? 'flex' : 'none';
+  document.getElementById('view-practice').style.display = tab === 'practice' ? '' : 'none';
+  if (tab === 'practice') renderPractice();
 };
 
-function renderPatientView(patient, assessments) {
-  const laep  = assessments.filter(a => a.type === 'laep');
-  const ssq   = assessments.filter(a => a.type === 'ssq');
-  const qolie = assessments.filter(a => a.type === 'qolie');
-  const lastL = laep.at(-1), lastS = ssq.at(-1), lastQ = qolie.at(-1);
+// ── LOAD ALL DATA ──────────────────────────────────────────────────────
 
-  const alerts = runAlerts(patient, laep, ssq, qolie);
+async function loadAll() {
+  const pSnap = await getDocs(query(collection(db, 'patients'), where('clinicianEmail', '==', myEmail)));
+  const patientDocs = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  allPatients = await Promise.all(patientDocs.map(async p => {
+    const aSnap = await getDocs(query(
+      collection(db, 'assessments'),
+      where('patientId', '==', p.id),
+      orderBy('date', 'asc')
+    ));
+    const assessments = aSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const laep  = assessments.filter(a => a.type === 'laep');
+    const ssq   = assessments.filter(a => a.type === 'ssq');
+    const qolie = assessments.filter(a => a.type === 'qolie');
+
+    const slope   = calcSlope(laep);
+    const lastScore = laep.at(-1)?.score;
+    const weeksTo = (slope > 0 && lastScore < 36.5) ? Math.round((36.5 - lastScore) / slope) : null;
+    const triage  = triageLevel(p, laep, ssq, qolie, slope, weeksTo);
+
+    return { ...p, laep, ssq, qolie, triage, slope, weeksTo };
+  }));
+
+  renderTriage();
+}
+
+// ── TRIAGE LOGIC ──────────────────────────────────────────────────────
+
+function triageLevel(p, laep, ssq, qolie, slope, weeksTo) {
+  const lastL = laep.at(-1);
+
+  // 🔴 NEEDS ATTENTION
+  if (lastL?.score >= 36.5) return 'red';
+  if (slope > 0 && weeksTo !== null && weeksTo <= 4) return 'red';
+  if (assessmentGapWeeks(laep) >= 2) return 'red';
+
+  // 🟡 WATCH
+  if (lastL?.score >= 30) return 'amber';
+  if (slope > 0.3) return 'amber';  // rising but not urgent
+  if (ssq.length >= 2 && laep.length >= 2) {
+    const laepUp = laep.at(-1).score > laep.at(-2).score;
+    const ssqDown = ssq.at(-1).score < ssq.at(-2).score;
+    if (laepUp && ssqDown) return 'amber';
+  }
+  if (qolie.length >= 2) {
+    const cogCurr = qolie.at(-1).subscales?.cognitiveFunction;
+    const cogPrev = qolie.at(-2).subscales?.cognitiveFunction;
+    if (cogPrev !== undefined && cogCurr !== undefined && (cogPrev - cogCurr) >= 10) return 'amber';
+  }
+
+  // 🟢 STABLE
+  return 'green';
+}
+
+function assessmentGapWeeks(laep) {
+  if (!laep.length) return 99;
+  const lastDate = laep.at(-1).date?.toDate ? laep.at(-1).date.toDate() : new Date();
+  return Math.floor((Date.now() - lastDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
+}
+
+function calcSlope(laep) {
+  if (laep.length < 2) return 0;
+  const pts = laep.slice(-4);
+  const n = pts.length;
+  const xs = pts.map((_, i) => i);
+  const ys = pts.map(p => p.score);
+  const sumX  = xs.reduce((a,b) => a+b, 0);
+  const sumY  = ys.reduce((a,b) => a+b, 0);
+  const sumXY = xs.reduce((a,x,i) => a + x * ys[i], 0);
+  const sumX2 = xs.reduce((a,x) => a + x*x, 0);
+  const denom = n * sumX2 - sumX * sumX;
+  return denom === 0 ? 0 : (n * sumXY - sumX * sumY) / denom;
+}
+
+// ── RENDER TRIAGE SIDEBAR ─────────────────────────────────────────────
+
+function renderTriage() {
+  const red   = allPatients.filter(p => p.triage === 'red');
+  const amber = allPatients.filter(p => p.triage === 'amber');
+  const green = allPatients.filter(p => p.triage === 'green');
+
+  document.getElementById('label-red').textContent   = `🔴 NEEDS ATTENTION (${red.length})`;
+  document.getElementById('label-amber').textContent = `🟡 WATCH (${amber.length})`;
+  document.getElementById('label-green').textContent = `🟢 STABLE (${green.length})`;
+
+  renderPatientRows('body-red',   red);
+  renderPatientRows('body-amber', amber);
+  renderPatientRows('body-green', green);
+
+  if (!allPatients.length) {
+    document.getElementById('body-red').innerHTML =
+      '<div style="padding:16px;font-size:13px;color:#9ca3af;">No patients yet.<br><br>Patients link to you by entering your email during registration.</div>';
+  }
+}
+
+function renderPatientRows(containerId, patients) {
+  const el = document.getElementById(containerId);
+  if (!patients.length) { el.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#9ca3af;">None</div>'; return; }
+  el.innerHTML = patients.map(p => {
+    const lastL = p.laep.at(-1);
+    const scoreText = lastL ? `LAEP ${Math.round(lastL.score)}` : 'No LAEP yet';
+    const dotCls = p.triage === 'red' ? 'dot-red' : p.triage === 'amber' ? 'dot-amber' : 'dot-green';
+    return `<div class="patient-item" id="pi-${p.id}" onclick="selectPatient('${p.id}')">
+      <div class="patient-item-top">
+        <span class="patient-name-label">${p.name}</span>
+        <span class="patient-triage-dot ${dotCls}"></span>
+      </div>
+      <div class="patient-meta">${scoreText} · ${p.condition || '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleTriage = function(color) {
+  const body    = document.getElementById('body-' + color);
+  const chevron = document.getElementById('chevron-' + color);
+  const isOpen  = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  chevron.classList.toggle('open', !isOpen);
+};
+
+// ── SELECT PATIENT ────────────────────────────────────────────────────
+
+window.selectPatient = function(uid) {
+  activePatientId = uid;
+  document.querySelectorAll('.patient-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('pi-' + uid)?.classList.add('active');
+  const p = allPatients.find(x => x.id === uid);
+  if (p) renderPatientView(p);
+};
+
+// ── RENDER PATIENT DETAIL ─────────────────────────────────────────────
+
+function renderPatientView(p) {
   Object.values(chartInstances).forEach(c => c.destroy());
   chartInstances = {};
 
-  document.getElementById('main-panel').innerHTML = `
+  const { laep, ssq, qolie, slope, weeksTo, triage } = p;
+  const lastL = laep.at(-1);
+  const lastS = ssq.at(-1);
+  const lastQ = qolie.at(-1);
+
+  // a. HEADLINE
+  const headline = buildHeadline(p);
+  const headlineCls = triage === 'red' ? 'urgent' : triage === 'amber' ? 'watch' : 'stable';
+
+  // c. ITEM-LEVEL BREAKDOWN
+  const itemBreakdown = buildItemBreakdown(laep);
+
+  // d. CROSS-CHECK
+  const crossCheck = buildCrossCheck(laep, ssq);
+
+  // e. SUGGESTED ACTIONS
+  const actions = buildSuggestedActions(p);
+
+  // f. One-click action state
+  const status = p.reviewStatus || null;
+
+  const panel = document.getElementById('main-panel');
+  panel.innerHTML = `
+    <!-- Patient header -->
     <div class="patient-header">
       <div>
-        <h2>${patient.name}</h2>
+        <h2>${p.name}</h2>
         <div class="tags">
-          <span class="tag">${patient.studyId || '—'}</span>
-          <span class="tag">${patient.condition || '—'}</span>
-          <span class="tag">${patient.device || '—'}</span>
-          ${alerts.length ? `<span class="tag alert-tag">⚠ ${alerts.length} alert${alerts.length > 1 ? 's' : ''}</span>` : ''}
+          <span class="tag">${p.studyId || '—'}</span>
+          <span class="tag">${p.condition || '—'}</span>
+          <span class="tag">${p.device || '—'}</span>
+          ${assessmentGapWeeks(laep) >= 2 ? `<span class="tag" style="background:#fee2e2;color:#dc2626;">⚠ ${assessmentGapWeeks(laep)}w no data</span>` : ''}
         </div>
       </div>
-      <div style="font-size:13px;color:#6b7280;">${assessments.length} assessment${assessments.length !== 1 ? 's' : ''} total</div>
+      <div style="font-size:13px;color:#6b7280;">${laep.length + ssq.length + qolie.length} assessment${laep.length + ssq.length + qolie.length !== 1 ? 's' : ''}</div>
     </div>
 
-    ${alerts.length ? `
-      <div class="card" style="margin-bottom:20px;border-left:4px solid #ef4444;">
-        <h3 style="color:#dc2626;">⚠ Clinical Alerts</h3>
-        ${alerts.map(a => `
-          <div class="alert-box">
-            <div class="alert-title">${a.title}</div>
-            <div class="alert-body">${a.body}</div>
-            ${a.cite ? `<div class="alert-cite">${a.cite}</div>` : ''}
+    <!-- a. Headline -->
+    <div class="headline-card ${headlineCls}">
+      <div class="headline-text">${headline.text}</div>
+      ${headline.cite ? `<div class="headline-cite">${headline.cite}</div>` : ''}
+    </div>
+
+    <!-- b. LAEP trend chart -->
+    <div class="card">
+      <div class="card-title">LAEP trend
+        <span style="float:right;font-size:12px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">
+          Range 19–76 · Threshold lines: 36.5 (dropout) / 45 (toxicity)
+        </span>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-laep"></canvas></div>
+      <div class="threshold-note">Romoli et al. 2018 · Kwon et al. 2019</div>
+    </div>
+
+    <!-- Latest scores -->
+    <div class="card">
+      <div class="card-title">Latest scores</div>
+      ${scoreRow('LAEP', lastL ? Math.round(lastL.score) : undefined, scorePill_laep(lastL?.score))}
+      ${scoreRow('SSQ', lastS ? lastS.score.toFixed(2) : undefined, scorePill_ssq(lastS?.score))}
+      ${scoreRow('QOLIE-31', lastQ ? Math.round(lastQ.score) : undefined, scorePill_qolie(lastQ?.score))}
+    </div>
+
+    <!-- c. Item-level breakdown -->
+    ${itemBreakdown ? `
+    <div class="card">
+      <div class="card-title">LAEP item-level breakdown — most recent assessment</div>
+      ${itemBreakdown}
+    </div>` : ''}
+
+    <!-- d. Cross-check -->
+    ${crossCheck ? `
+    <div class="card">
+      <div class="card-title">SSQ–LAEP cross-check</div>
+      <div class="cross-check-sentence">${crossCheck}</div>
+    </div>` : ''}
+
+    <!-- SSQ + QOLIE charts if data -->
+    ${ssq.length ? `
+    <div class="card">
+      <div class="card-title">SSQ trend
+        <span style="float:right;font-size:12px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">Range 1–7 · Threshold: ≥5</span>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-ssq"></canvas></div>
+      <div class="threshold-note">Cramer et al. 2002</div>
+    </div>` : ''}
+    ${qolie.length ? `
+    <div class="card">
+      <div class="card-title">QOLIE-31 trend
+        <span style="float:right;font-size:12px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">Range 0–100 (higher = better)</span>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-qolie"></canvas></div>
+      <div class="threshold-note">Global benchmark: 59.8 (Gao et al. 2016) · Cramer et al. 1998</div>
+    </div>` : ''}
+
+    <!-- e. Suggested actions -->
+    ${actions.length ? `
+    <div class="card">
+      <div class="card-title">Suggested actions</div>
+      ${actions.map((a, i) => `
+        <div class="action-item">
+          <div class="action-bullet">${i + 1}</div>
+          <div>
+            <div class="action-body">${a.text}</div>
+            ${a.cite ? `<div class="action-cite">${a.cite}</div>` : ''}
           </div>
-        `).join('')}
-      </div>` : ''}
+        </div>
+      `).join('')}
+    </div>` : ''}
 
-    <div class="grid-2">
-      <div class="card">
-        <h3>Latest scores</h3>
-        ${scoreRow('LAEP', lastL?.score, scorePill_laep(lastL?.score))}
-        ${scoreRow('SSQ', lastL ? lastS?.score?.toFixed(2) : undefined, scorePill_ssq(lastS?.score))}
-        ${scoreRow('QOLIE-31', lastQ?.score, scorePill_qolie(lastQ?.score))}
-        <p class="threshold-note">LAEP ≥36.5 (Romoli 2018) · SSQ ≥5 · QOLIE &lt;40</p>
+    <!-- f. One-click actions -->
+    <div class="card">
+      <div class="card-title">Actions</div>
+      <div class="action-row">
+        <button class="btn-action btn-reviewed" id="btn-reviewed" onclick="markStatus('reviewed')">
+          ${status === 'reviewed' ? '✓ Marked as reviewed' : '✓ Mark as reviewed'}
+        </button>
+        <button class="btn-action btn-flag" id="btn-flag" onclick="markStatus('flagged')">
+          ${status === 'flagged' ? '⚑ Flagged for next visit' : '⚑ Flag for next visit'}
+        </button>
+        <button class="btn-action btn-schedule" id="btn-schedule" onclick="markStatus('schedule')">
+          ${status === 'schedule' ? '📅 Scheduled earlier' : '📅 Schedule earlier follow-up'}
+        </button>
       </div>
-      <div class="card">
-        <h3>LAEP trend</h3>
-        <div class="chart-wrap"><canvas id="chart-laep"></canvas></div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <h3>SSQ trend</h3>
-        <div class="chart-wrap"><canvas id="chart-ssq"></canvas></div>
-      </div>
-      <div class="card">
-        <h3>QOLIE-31 trend</h3>
-        <div class="chart-wrap"><canvas id="chart-qolie"></canvas></div>
-      </div>
+      ${status ? `<div class="status-note">Last action recorded — ${new Date().toLocaleDateString('en-GB')}</div>` : ''}
     </div>
   `;
 
-  renderTrendChart('chart-laep', laep, '#4A6FA5', 19, 76, [{v:36.5,c:'#D4943C'},{v:45,c:'#D65D5D'}]);
-  renderTrendChart('chart-ssq',  ssq,  '#37577F', 1, 7,   [{v:5,c:'#D65D5D'}]);
-  renderTrendChart('chart-qolie',qolie,'#4A6FA5', 0, 100, [{v:59.8,c:'#4A9B6E'},{v:40,c:'#D4943C'}]);
+  renderTrendChart('chart-laep', laep, '#4A6FA5', 19, 76,
+    [{ v: 36.5, c: '#D4943C', label: '36.5' }, { v: 45, c: '#D65D5D', label: '45' }]);
+  if (ssq.length)   renderTrendChart('chart-ssq',   ssq,   '#37577F', 1,  7,   [{ v: 5, c: '#D65D5D', label: '5' }]);
+  if (qolie.length) renderTrendChart('chart-qolie', qolie, '#4A6FA5', 0,  100, [{ v: 59.8, c: '#4A9B6E', label: '59.8' }, { v: 40, c: '#D4943C', label: '40' }]);
 }
 
-function scoreRow(label, val, pill) {
-  const display = val !== undefined && val !== null ? val : '—';
-  return `<div class="score-row">
-    <span class="score-label">${label}</span>
-    <span class="score-pill ${pill.cls}">${display}${val !== undefined && val !== null ? '' : ''}</span>
-  </div>`;
+// ── HEADLINE BUILDER ──────────────────────────────────────────────────
+
+function buildHeadline(p) {
+  const { laep, ssq, slope, weeksTo, triage } = p;
+  const lastL = laep.at(-1);
+  const gap = assessmentGapWeeks(laep);
+
+  if (gap >= 2) {
+    return {
+      text: `${p.name} has not submitted any data in ${gap} week${gap > 1 ? 's' : ''}. Non-completion correlates with depression, deterioration, and treatment abandonment.`,
+      cite: 'Algorithm 4 — Completion pattern analysis'
+    };
+  }
+
+  if (lastL?.score >= 45) {
+    return {
+      text: `LAEP score of ${Math.round(lastL.score)} — above the toxicity threshold (≥45), which is associated with increased suicidality risk. Urgent medication review is recommended.`,
+      cite: 'Kwon et al. 2019, Seizure'
+    };
+  }
+
+  if (lastL?.score >= 36.5) {
+    return {
+      text: `LAEP score of ${Math.round(lastL.score)} exceeds the discontinuation threshold (36.5), predicting treatment dropout with 85% accuracy.`,
+      cite: 'Romoli et al. 2018, Epilepsy & Behavior'
+    };
+  }
+
+  if (slope > 0 && weeksTo !== null && weeksTo <= 4) {
+    return {
+      text: `LAEP rising at approximately ${slope.toFixed(1)} points per assessment — predicted to cross the dropout threshold (36.5) in approximately ${weeksTo} week${weeksTo !== 1 ? 's' : ''}.`,
+      cite: 'Romoli et al. 2018, Epilepsy & Behavior — Algorithm 1 (linear regression on last 3–4 LAEP scores)'
+    };
+  }
+
+  if (slope > 0.3 && laep.length >= 2) {
+    return {
+      text: `LAEP is trending upward (+${slope.toFixed(1)} pts/assessment). Current score of ${Math.round(lastL.score)} is below threshold, but the trend warrants monitoring.`,
+      cite: 'Algorithm 1 — trajectory analysis'
+    };
+  }
+
+  if (laep.length >= 2) {
+    const diff = laep.at(-1).score - laep.at(-2).score;
+    if (diff < -2) {
+      return {
+        text: `LAEP improving — down ${Math.abs(diff).toFixed(0)} points since last assessment (current: ${Math.round(lastL.score)}). No active alerts.`,
+        cite: null
+      };
+    }
+    return {
+      text: `Stable — LAEP score of ${Math.round(lastL.score)} with no significant change. No active alerts.`,
+      cite: null
+    };
+  }
+
+  if (laep.length === 1) {
+    return {
+      text: `First LAEP completed — score ${Math.round(lastL.score)}. ${lastL.score < 30 ? 'Within normal range.' : 'Monitor at next assessment.'} Trend data will appear after a second assessment.`,
+      cite: null
+    };
+  }
+
+  return { text: 'No LAEP data yet — encourage the patient to complete their first assessment.', cite: null };
 }
-function scorePill_laep(v) {
-  if (v === undefined || v === null) return { cls: 'pill-grey' };
-  if (v >= 45)   return { cls: 'pill-red' };
-  if (v >= 36.5) return { cls: 'pill-red' };
-  if (v >= 30)   return { cls: 'pill-amber' };
-  return { cls: 'pill-green' };
+
+// ── ITEM BREAKDOWN ────────────────────────────────────────────────────
+
+function buildItemBreakdown(laep) {
+  if (!laep.length) return null;
+  const latest = laep.at(-1);
+  if (!latest.answers) return null;
+
+  const flagged = latest.answers
+    .map((val, idx) => ({ val, idx, name: LAEP_ITEMS[idx] }))
+    .filter(x => x.val >= 3);
+
+  if (!flagged.length) return '<p style="font-size:14px;color:#4A9B6E;">✓ No items scored "Sometimes" or "Always" in the most recent assessment.</p>';
+
+  // Check consecutive pattern (how many consecutive recent assessments had val >= 3 for each item)
+  const chips = flagged.map(({ val, idx, name }) => {
+    const label = val === 4 ? '"Always"' : '"Sometimes"';
+    let streak = 0;
+    for (let i = laep.length - 1; i >= 0; i--) {
+      if (laep[i].answers?.[idx] >= 3) streak++;
+      else break;
+    }
+    const streakText = streak >= 2 ? ` · ${streak} assessments in a row` : '';
+    const cls = val === 4 ? '' : 'amber';
+    return `<span class="item-chip ${cls}">${name} <strong>${label}</strong>${streakText}</span>`;
+  }).join('');
+
+  return `<div>${chips}</div>
+    <p style="font-size:12px;color:#9ca3af;margin-top:10px;">Items scoring 3 (Sometimes) or 4 (Always) on the 4-point LAEP scale (Baker et al. 1994)</p>`;
 }
-function scorePill_ssq(v) {
-  if (v === undefined || v === null) return { cls: 'pill-grey' };
-  if (v >= 5) return { cls: 'pill-red' };
-  if (v >= 3) return { cls: 'pill-amber' };
-  return { cls: 'pill-green' };
+
+// ── CROSS-CHECK ───────────────────────────────────────────────────────
+
+function buildCrossCheck(laep, ssq) {
+  if (laep.length < 2 || ssq.length < 2) return null;
+
+  const laepUp   = laep.at(-1).score > laep.at(-2).score;
+  const laepDown = laep.at(-1).score < laep.at(-2).score;
+  const ssqUp    = ssq.at(-1).score > ssq.at(-2).score;
+  const ssqDown  = ssq.at(-1).score < ssq.at(-2).score;
+
+  if (laepUp && ssqDown) {
+    return `SSQ has improved over the same period — seizures are better controlled but side effects are increasing. This divergence pattern (Alg. 2) suggests the medication is working but the dose or formulation may need optimisation to prevent treatment abandonment.`;
+  }
+  if (laepDown && ssqDown) {
+    return `Both LAEP and SSQ are improving — side effects are reducing and seizures are better controlled. This is the optimal treatment response pattern.`;
+  }
+  if (laepDown && ssqUp) {
+    return `Side effects are improving while seizure severity has increased. This may reflect a recent dose reduction or medication change; seizure control needs monitoring.`;
+  }
+  if (laepUp && ssqUp) {
+    return `Both side effects (LAEP) and seizure severity (SSQ) are worsening. This pattern suggests overall treatment deterioration and warrants urgent clinical review.`;
+  }
+  return `LAEP and SSQ trends are broadly stable over the last two assessments.`;
 }
-function scorePill_qolie(v) {
-  if (v === undefined || v === null) return { cls: 'pill-grey' };
-  if (v >= 60) return { cls: 'pill-green' };
-  if (v >= 40) return { cls: 'pill-amber' };
-  return { cls: 'pill-red' };
+
+// ── SUGGESTED ACTIONS ─────────────────────────────────────────────────
+
+function buildSuggestedActions(p) {
+  const { laep, ssq, qolie, slope, weeksTo, triage } = p;
+  const lastL = laep.at(-1);
+  const actions = [];
+  const gap = assessmentGapWeeks(laep);
+
+  if (gap >= 2) {
+    actions.push({
+      text: `Contact patient to enquire about wellbeing — assessment gaps of ≥2 weeks correlate with depression and treatment abandonment.`,
+      cite: 'Algorithm 4 — Vansant et al. 2024, Scientific Reports'
+    });
+  }
+
+  if (lastL?.score >= 45) {
+    actions.push({
+      text: `Urgent medication review — LAEP ≥45 is associated with suicidality risk. Screen using PHQ-9 or direct enquiry at earliest opportunity.`,
+      cite: 'Kwon et al. 2019, Seizure'
+    });
+  }
+
+  if (lastL?.score >= 36.5 && lastL?.score < 45) {
+    actions.push({
+      text: `Consider medication adjustment — LAEP ≥36.5 predicts dropout with 85% accuracy (79% specificity). Review dosing, formulation, or switch to better-tolerated ASM.`,
+      cite: 'Romoli et al. 2018, Epilepsy & Behavior'
+    });
+  }
+
+  if (slope > 0 && weeksTo !== null && weeksTo <= 4) {
+    actions.push({
+      text: `Bring forward next appointment — trajectory analysis predicts threshold crossing in ~${weeksTo} week${weeksTo !== 1 ? 's' : ''}. Proactive review is preferable to reactive intervention.`,
+      cite: 'Algorithm 1 — linear regression on LAEP scores'
+    });
+  }
+
+  if (laep.length >= 2 && ssq.length >= 2) {
+    const laepUp = laep.at(-1).score > laep.at(-2).score;
+    const ssqDown = ssq.at(-1).score < ssq.at(-2).score;
+    if (laepUp && ssqDown) {
+      actions.push({
+        text: `Consider dose optimisation — SSQ-LAEP divergence suggests effective seizure control but medication burden is increasing. Discuss with patient whether the side effect burden is acceptable.`,
+        cite: 'Algorithm 2 — SSQ-LAEP divergence detection'
+      });
+    }
+  }
+
+  if (qolie.length >= 2) {
+    const cogCurr = qolie.at(-1).subscales?.cognitiveFunction;
+    const cogPrev = qolie.at(-2).subscales?.cognitiveFunction;
+    const overallChange = qolie.at(-1).score - qolie.at(-2).score;
+    if (cogPrev !== undefined && cogCurr !== undefined && (cogPrev - cogCurr) >= 10 && overallChange > -8) {
+      actions.push({
+        text: `Consider neuropsychology referral — isolated cognitive subscale decline (≥10 points) with stable global score may indicate subclinical seizures or topiramate/levetiracetam toxicity.`,
+        cite: 'Algorithm 3 — QOLIE-31 cognitive subscale monitoring (Cramer et al. 1998)'
+      });
+    }
+  }
+
+  if (!actions.length && laep.length > 0) {
+    actions.push({
+      text: `Continue current monitoring schedule — no active clinical alerts. Encourage weekly LAEP completion to maintain trend data.`,
+      cite: 'Vansant et al. 2024 — 85.5% monthly completion rate achievable with digital monitoring'
+    });
+  }
+
+  if (!laep.length) {
+    actions.push({
+      text: `Encourage patient to complete their first LAEP assessment — baseline data needed before any clinical pattern recognition is possible.`,
+      cite: null
+    });
+  }
+
+  return actions;
 }
+
+// ── ONE-CLICK ACTIONS ─────────────────────────────────────────────────
+
+window.markStatus = async function(status) {
+  if (!activePatientId) return;
+  try {
+    await updateDoc(doc(db, 'patients', activePatientId), {
+      reviewStatus: status,
+      reviewedAt: serverTimestamp(),
+      reviewedBy: clinicianUid
+    });
+    const p = allPatients.find(x => x.id === activePatientId);
+    if (p) p.reviewStatus = status;
+    showToast(status === 'reviewed' ? '✓ Marked as reviewed' :
+              status === 'flagged'  ? '⚑ Flagged for next visit' :
+                                     '📅 Scheduled for earlier follow-up');
+    // Refresh button labels
+    document.getElementById('btn-reviewed').textContent = '✓ Marked as reviewed';
+    document.getElementById('btn-flag').textContent     = '⚑ Flagged for next visit';
+    document.getElementById('btn-schedule').textContent = '📅 Scheduled earlier';
+  } catch(e) {
+    console.error('Status update failed:', e);
+    showToast('Could not save — please try again.');
+  }
+};
+
+// ── CHART ─────────────────────────────────────────────────────────────
 
 function renderTrendChart(id, data, color, yMin, yMax, thresholds) {
   const ctx = document.getElementById(id)?.getContext('2d');
   if (!ctx) return;
   const labels = data.map(d => {
     const dt = d.date?.toDate ? d.date.toDate() : new Date();
-    return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+    return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
   });
+
+  const annotations = {};
+  thresholds.forEach((t, i) => {
+    annotations['thr' + i] = {
+      type: 'line', yMin: t.v, yMax: t.v,
+      borderColor: t.c, borderWidth: 1.5,
+      borderDash: [4, 3]
+    };
+  });
+
   chartInstances[id] = new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels.length ? labels : ['No data'],
-      datasets: [{
-        data: data.map(d => d.score),
-        borderColor: color,
-        backgroundColor: color + '18',
-        borderWidth: 2,
-        pointRadius: 4,
-        pointBackgroundColor: color,
-        fill: true,
-        tension: 0.3
-      }]
+      datasets: [
+        {
+          data: data.map(d => d.score),
+          borderColor: color,
+          backgroundColor: color + '18',
+          borderWidth: 2.5,
+          pointRadius: 5,
+          pointBackgroundColor: color,
+          fill: true,
+          tension: 0.35
+        },
+        // Threshold lines as separate datasets (avoids annotation plugin dependency)
+        ...thresholds.map(t => ({
+          data: labels.length ? labels.map(() => t.v) : [t.v],
+          borderColor: t.c,
+          borderWidth: 1.5,
+          borderDash: [5, 4],
+          pointRadius: 0,
+          fill: false
+        }))
+      ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -369,76 +926,130 @@ function renderTrendChart(id, data, color, yMin, yMax, thresholds) {
   });
 }
 
-// ── 5 PATTERN RECOGNITION ALGORITHMS ─────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────────
 
-function runAlerts(patient, laep, ssq, qolie) {
-  const alerts = [];
-  const lastL = laep.at(-1);
+function scoreRow(label, val, pill) {
+  const display = val !== undefined && val !== null ? val : '—';
+  return `<div class="score-row">
+    <span class="score-label">${label}</span>
+    <span class="score-pill ${pill}">${display}</span>
+  </div>`;
+}
+function scorePill_laep(v) {
+  if (v === undefined || v === null) return 'pill-grey';
+  if (v >= 45)   return 'pill-red';
+  if (v >= 36.5) return 'pill-red';
+  if (v >= 30)   return 'pill-amber';
+  return 'pill-green';
+}
+function scorePill_ssq(v) {
+  if (v === undefined || v === null) return 'pill-grey';
+  if (v >= 5) return 'pill-red';
+  if (v >= 3) return 'pill-amber';
+  return 'pill-green';
+}
+function scorePill_qolie(v) {
+  if (v === undefined || v === null) return 'pill-grey';
+  if (v >= 60) return 'pill-green';
+  if (v >= 40) return 'pill-amber';
+  return 'pill-red';
+}
 
-  // 1. LAEP threshold
-  if (lastL?.score >= 45) alerts.push({
-    title: 'LAEP ≥45 — Toxicity & Suicidality Risk',
-    body: `${patient.name}'s latest LAEP score is ${lastL.score}. Scores ≥45 are associated with suicidality risk. Urgent medication review recommended.`,
-    cite: 'Kwon et al. 2019, Seizure'
+// ── MY PRACTICE (COHORT) ──────────────────────────────────────────────
+
+function renderPractice() {
+  const total = allPatients.length;
+  if (!total) {
+    document.getElementById('practice-stats').innerHTML = `
+      <div class="stat-card"><div class="stat-val">0</div><div class="stat-lbl">Patients</div></div>
+      <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">No data yet</div></div>
+      <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">No data yet</div></div>`;
+    document.getElementById('practice-table').innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px;">No patients yet.</p>';
+    return;
+  }
+
+  // Rising LAEP this month
+  const risingCount = allPatients.filter(p => p.slope > 0 && p.laep.length >= 2).length;
+
+  // Completion rate: expected 1 LAEP/week per patient over last 8 weeks; actual = count of LAEP in 8 weeks
+  const eightWeeksAgo = Date.now() - 8 * 7 * 24 * 60 * 60 * 1000;
+  let totalExpected = 0; let totalActual = 0;
+  allPatients.forEach(p => {
+    totalExpected += 8;
+    totalActual += p.laep.filter(a => {
+      const d = a.date?.toDate ? a.date.toDate() : new Date(0);
+      return d.getTime() >= eightWeeksAgo;
+    }).length;
   });
-  else if (lastL?.score >= 36.5) alerts.push({
-    title: 'LAEP ≥36.5 — Discontinuation Risk',
-    body: `Score of ${Math.round(lastL.score)} predicts treatment dropout with 85% accuracy. Consider medication adjustment at next appointment.`,
-    cite: 'Romoli et al. 2018, Epilepsy & Behavior'
-  });
+  const completionPct = totalExpected > 0 ? Math.round((totalActual / totalExpected) * 100) : 0;
 
-  // 2. LAEP trajectory
-  if (laep.length >= 3) {
-    const recent = laep.slice(-3).map(a => a.score);
-    const slope = (recent[2] - recent[0]) / 2;
-    if (slope > 0.5 && lastL.score < 45) {
-      const weeksTo = lastL.score < 36.5 ? Math.round((36.5 - lastL.score) / slope) : null;
-      alerts.push({
-        title: 'Rising LAEP Trajectory',
-        body: `LAEP increasing ~${slope.toFixed(1)} pts/assessment. ${weeksTo ? `Projected to cross dropout threshold in ~${weeksTo} more assessments.` : 'Already above dropout threshold.'}`,
-        cite: 'Algorithm 1 — linear regression on last 3 scores'
-      });
-    }
-  }
+  // Patients with no data in 30+ days
+  const inactiveCount = allPatients.filter(p => assessmentGapWeeks(p.laep) >= 4).length;
 
-  // 3. SSQ-LAEP divergence
-  if (laep.length >= 2 && ssq.length >= 2) {
-    const laepUp = laep.at(-1).score > laep.at(-2).score;
-    const ssqDown = ssq.at(-1).score < ssq.at(-2).score;
-    if (laepUp && ssqDown) alerts.push({
-      title: 'SSQ↓ LAEP↑ Divergence',
-      body: 'Seizure severity improving while side effects worsening. Treatment is working but medication burden may drive discontinuation. Consider dose optimisation.',
-      cite: 'Algorithm 2 — SSQ-LAEP divergence detection'
-    });
-  }
+  document.getElementById('practice-stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-val">${risingCount} of ${total}</div>
+      <div class="stat-lbl">Patients with LAEP trending upward this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">${completionPct}%</div>
+      <div class="stat-lbl">Average LAEP completion rate (last 8 weeks)</div>
+      <div class="stat-bench">Research benchmark: 63.3% daily, 85.5% monthly (Vansant et al. 2024)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">${inactiveCount}</div>
+      <div class="stat-lbl">Patients with no data in 30+ days</div>
+    </div>
+  `;
 
-  // 4. Cognitive subscale decline
-  if (qolie.length >= 2) {
-    const curr = qolie.at(-1), prev = qolie.at(-2);
-    const overallChange = curr.score - prev.score;
-    const cogCurr = curr.subscales?.cognitiveFunction;
-    const cogPrev = prev.subscales?.cognitiveFunction;
-    if (overallChange > -8 && cogCurr !== undefined && cogPrev !== undefined && (cogPrev - cogCurr) >= 10) {
-      alerts.push({
-        title: 'Isolated Cognitive Decline',
-        body: 'QOLIE-31 cognitive subscale dropped ≥10 points while overall score stable. May indicate subclinical seizures or medication toxicity (topiramate/levetiracetam). Consider neuropsychology referral.',
-        cite: 'Algorithm 3 — cognitive subscale monitoring'
-      });
-    }
-  }
+  // Table
+  const rows = allPatients.map(p => {
+    const lastL = p.laep.at(-1);
+    const scoreDisp = lastL ? Math.round(lastL.score) : '—';
+    const lastDate = lastL?.date?.toDate ? lastL.date.toDate().toLocaleDateString('en-GB') : '—';
+    const trendArrow = p.slope > 0.3 ? '↑' : p.slope < -0.3 ? '↓' : '→';
+    const trendCol   = p.slope > 0.3 ? '#dc2626' : p.slope < -0.3 ? '#059669' : '#6b7280';
+    const triageBadge = p.triage === 'red'
+      ? '<span style="color:#dc2626;font-weight:600;">🔴 Needs attention</span>'
+      : p.triage === 'amber'
+      ? '<span style="color:#d97706;font-weight:600;">🟡 Watch</span>'
+      : '<span style="color:#059669;font-weight:600;">🟢 Stable</span>';
+    return `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.studyId || '—'}</td>
+      <td>${scoreDisp}</td>
+      <td style="color:${trendCol};font-weight:700;">${trendArrow}</td>
+      <td>${lastDate}</td>
+      <td>${p.laep.length}</td>
+      <td>${triageBadge}</td>
+    </tr>`;
+  }).join('');
 
-  // 5. Completion gap
-  if (laep.length > 0) {
-    const lastDate = laep.at(-1).date?.toDate ? laep.at(-1).date.toDate() : new Date();
-    const weeks = Math.floor((Date.now() - lastDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
-    if (weeks >= 2) alerts.push({
-      title: `${weeks}-Week Assessment Gap`,
-      body: `${patient.name} has not completed a LAEP in ${weeks} weeks. Non-completion correlates with depression, deterioration, and treatment abandonment.`,
-      cite: 'Algorithm 4 — completion pattern analysis'
-    });
-  }
+  document.getElementById('practice-table').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Study ID</th>
+          <th>Latest LAEP</th>
+          <th>Trend</th>
+          <th>Last assessment</th>
+          <th>LAEP count</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:24px;">No data.</td></tr>'}</tbody>
+    </table>
+  `;
+}
 
-  return alerts;
+// ── TOAST ─────────────────────────────────────────────────────────────
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 2800);
 }
 </script>
 </body>
