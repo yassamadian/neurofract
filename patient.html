@@ -686,7 +686,7 @@ onAuthStateChanged(auth, async user => {
     showView('onboarding');
   } else {
     patientData = patientSnap.data();
-    await loadDashboard();
+    try { await loadDashboard(); } catch(e) { console.warn('loadDashboard error:', e); }
     showView('dashboard');
   }
 });
@@ -738,7 +738,7 @@ window.saveOnboarding = async function() {
   document.getElementById('header-name').textContent = name;
 
   patientData = { name, device, condition, studyId };
-  await loadDashboard();
+  try { await loadDashboard(); } catch(e) { console.warn('loadDashboard error:', e); }
   showView('dashboard');
 };
 
