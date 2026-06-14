@@ -13,15 +13,15 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: #EBF0F7;
-      color: #1A2B3C;
+      background: #0A1628;
+      color: #EFF6FF;
       min-height: 100vh;
     }
 
     /* ── HEADER ── */
     #app-header {
-      background: #ffffff;
-      border-bottom: 1px solid #d1dae8;
+      background: #1E3A5F;
+      border-bottom: 1px solid #243F6B;
       position: sticky; top: 0; z-index: 50;
     }
     .header-inner {
@@ -30,18 +30,18 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .logo-text { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
-    .logo-text .neuro { color: #1A2B3C; }
-    .logo-text .fract { color: #4A6FA5; }
+    .logo-text .neuro { color: #EFF6FF; }
+    .logo-text .fract { color: #2563EB; }
     .header-user { display: flex; align-items: center; gap: 12px; }
-    .header-user span { font-size: 13px; color: #6b7280; }
+    .header-user span { font-size: 13px; color: #94A3B8; }
     .btn-signout {
       padding: 6px 14px;
-      border: 1.5px solid #d1dae8; border-radius: 8px;
-      background: #ffffff; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; color: #6b7280; cursor: pointer;
+      border: 1.5px solid #243F6B; border-radius: 8px;
+      background: #1E3A5F; font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: #94A3B8; cursor: pointer;
       transition: border-color 0.2s, color 0.2s;
     }
-    .btn-signout:hover { border-color: #4A6FA5; color: #4A6FA5; }
+    .btn-signout:hover { border-color: #2563EB; color: #2563EB; }
 
     /* ── VIEWS ── */
     .view { display: none; }
@@ -53,45 +53,45 @@
     /* ── ONBOARDING ── */
     .onboarding-header { text-align: center; margin-bottom: 32px; }
     .onboarding-header h2 { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 8px; }
-    .onboarding-header p { font-size: 15px; color: #6b7280; line-height: 1.6; }
+    .onboarding-header p { font-size: 15px; color: #94A3B8; line-height: 1.6; }
 
     .form-group { margin-bottom: 20px; }
-    label { display: block; font-size: 14px; font-weight: 600; color: #1A2B3C; margin-bottom: 7px; }
+    label { display: block; font-size: 14px; font-weight: 600; color: #EFF6FF; margin-bottom: 7px; }
     input, select {
       width: 100%; padding: 13px 14px;
-      border: 1.5px solid #d1dae8; border-radius: 10px;
-      font-family: 'DM Sans', sans-serif; font-size: 15px; color: #1A2B3C;
-      background: #fff; outline: none; transition: border-color 0.2s;
+      border: 1.5px solid #243F6B; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; color: #EFF6FF;
+      background: #0D1F38; outline: none; transition: border-color 0.2s;
       -webkit-appearance: none; appearance: none;
     }
-    input:focus, select:focus { border-color: #4A6FA5; }
+    input:focus, select:focus { border-color: #2563EB; }
 
     .btn-primary {
-      width: 100%; padding: 15px; background: #4A6FA5; color: #fff;
+      width: 100%; padding: 15px; background: #2563EB; color: #EFF6FF;
       border: none; border-radius: 12px;
       font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
       cursor: pointer; transition: background 0.2s; margin-top: 8px;
     }
-    .btn-primary:hover { background: #37577F; }
+    .btn-primary:hover { background: #1d4ed8; }
     .btn-primary:disabled { background: #a0b4cc; cursor: not-allowed; }
 
     /* ── DASHBOARD: RECOVERY TODAY CARD ── */
     .recovery-card {
-      background: #ffffff;
+      background: #1E3A5F;
       border-radius: 18px;
       padding: 24px 22px 20px;
       margin-bottom: 14px;
-      box-shadow: 0 2px 12px rgba(74,111,165,0.10);
-      border-left: 4px solid #4A6FA5;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.10);
+      border-left: 4px solid #2563EB;
     }
-    .recovery-card.all-caught-up { border-left-color: #4A9B6E; }
-    .recovery-card.due { border-left-color: #D4943C; }
+    .recovery-card.all-caught-up { border-left-color: #6ee7b7; }
+    .recovery-card.due { border-left-color: #fcd34d; }
 
     .recovery-status {
       font-family: 'Lora', serif;
       font-size: 19px;
       font-weight: 600;
-      color: #1A2B3C;
+      color: #EFF6FF;
       margin-bottom: 10px;
       line-height: 1.35;
     }
@@ -99,7 +99,7 @@
 
     .recovery-progress {
       font-size: 14px;
-      color: #4A6FA5;
+      color: #2563EB;
       font-weight: 500;
       line-height: 1.5;
     }
@@ -109,13 +109,13 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #fff8ed;
-      border: 1.5px solid #f5c97a;
+      background: #1c1506;
+      border: 1.5px solid #f59e0b;
       border-radius: 20px;
       padding: 6px 14px;
       font-size: 14px;
       font-weight: 600;
-      color: #92400e;
+      color: #fcd34d;
       margin-bottom: 18px;
     }
 
@@ -146,15 +146,15 @@
     }
     .qa-btn .qa-icon { font-size: 22px; margin-bottom: 2px; }
     .qa-btn-seizure {
-      background: #1A2B3C;
-      color: #ffffff;
+      background: #0A1628;
+      color: #EFF6FF;
     }
     .qa-btn-seizure:hover { background: #253a50; }
     .qa-btn-checkin {
-      background: #4A6FA5;
-      color: #ffffff;
+      background: #2563EB;
+      color: #EFF6FF;
     }
-    .qa-btn-checkin:hover { background: #37577F; }
+    .qa-btn-checkin:hover { background: #1d4ed8; }
 
     /* ── SECTION HEADER WITH TOGGLE ── */
     .section-header {
@@ -169,11 +169,11 @@
       font-family: 'Lora', serif;
       font-size: 17px;
       font-weight: 600;
-      color: #1A2B3C;
+      color: #EFF6FF;
     }
     .section-toggle {
       font-size: 13px;
-      color: #4A6FA5;
+      color: #2563EB;
       font-weight: 500;
     }
 
@@ -181,97 +181,97 @@
     .assessment-cards { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
 
     .assess-card {
-      background: #fff; border-radius: 14px; padding: 16px 18px;
+      background: #1E3A5F; border-radius: 14px; padding: 16px 18px;
       display: flex; align-items: center; justify-content: space-between;
       cursor: pointer; border: 2px solid transparent;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+      box-shadow: 0 2px 8px rgba(37,99,235,0.07);
       transition: all 0.2s; text-align: left; width: 100%;
       font-family: 'DM Sans', sans-serif;
     }
-    .assess-card:hover { border-color: #4A6FA5; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(74,111,165,0.14); }
+    .assess-card:hover { border-color: #2563EB; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,99,235,0.14); }
     .assess-card-left { display: flex; align-items: center; gap: 14px; }
     .assess-icon {
-      width: 40px; height: 40px; background: #EBF0F7;
+      width: 40px; height: 40px; background: #152642;
       border-radius: 10px; display: flex; align-items: center;
       justify-content: center; font-size: 19px; flex-shrink: 0;
     }
-    .assess-card h3 { font-size: 14px; font-weight: 600; color: #1A2B3C; margin-bottom: 2px; }
-    .assess-card p { font-size: 12px; color: #6b7280; }
-    .assess-arrow { font-size: 18px; color: #4A6FA5; }
+    .assess-card h3 { font-size: 14px; font-weight: 600; color: #EFF6FF; margin-bottom: 2px; }
+    .assess-card p { font-size: 12px; color: #94A3B8; }
+    .assess-arrow { font-size: 18px; color: #2563EB; }
 
     /* ── HISTORY TABS ── */
     .history-tabs {
       display: flex;
-      border-bottom: 2px solid #EBF0F7;
+      border-bottom: 2px solid #152642;
       margin-bottom: 16px;
     }
     .history-tab {
       padding: 8px 16px;
-      font-size: 14px; font-weight: 500; color: #6b7280;
+      font-size: 14px; font-weight: 500; color: #94A3B8;
       cursor: pointer; border-bottom: 2px solid transparent;
       margin-bottom: -2px; background: none; border-top: none;
       border-left: none; border-right: none;
       font-family: 'DM Sans', sans-serif;
       transition: all 0.15s;
     }
-    .history-tab.active { color: #4A6FA5; border-bottom-color: #4A6FA5; }
+    .history-tab.active { color: #2563EB; border-bottom-color: #2563EB; }
 
     .history-card {
-      background: #fff; border-radius: 14px; padding: 4px 20px 8px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.07); margin-bottom: 24px;
+      background: #1E3A5F; border-radius: 14px; padding: 4px 20px 8px;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.07); margin-bottom: 24px;
     }
     .history-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 0; border-bottom: 1px solid #f3f4f6;
+      padding: 13px 0; border-bottom: 1px solid #0D1F38;
     }
     .history-item:last-child { border-bottom: none; }
     .history-type { font-weight: 600; font-size: 14px; }
-    .history-date { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .history-date { font-size: 12px; color: #94A3B8; margin-top: 2px; }
     .history-badge {
       font-size: 12px; font-weight: 600;
       padding: 4px 12px; border-radius: 20px;
     }
-    .badge-green { background: #d1fae5; color: #065f46; }
-    .badge-amber { background: #fef3c7; color: #92400e; }
-    .badge-red   { background: #fee2e2; color: #991b1b; }
+    .badge-green { background: #052e16; color: #6ee7b7; }
+    .badge-amber { background: #1c1506; color: #fcd34d; }
+    .badge-red   { background: #1c0606; color: #f87171; }
 
     /* ── CHART ── */
     .chart-card {
-      background: #fff; border-radius: 14px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.07); margin-bottom: 24px;
+      background: #1E3A5F; border-radius: 14px; padding: 20px;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.07); margin-bottom: 24px;
     }
-    .chart-title { font-size: 13px; font-weight: 600; color: #6b7280; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .chart-title { font-size: 13px; font-weight: 600; color: #94A3B8; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; }
     .chart-wrap { position: relative; height: 160px; }
 
-    .empty-note { text-align: center; padding: 28px 0; color: #9ca3af; font-size: 14px; }
+    .empty-note { text-align: center; padding: 28px 0; color: #94A3B8; font-size: 14px; }
 
     /* ── SEIZURE LOG MODAL ── */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(26,43,60,0.6); z-index: 200;
+      background: rgba(10,22,40,0.6); z-index: 200;
       align-items: flex-end; justify-content: center;
       padding: 0;
     }
     .modal-overlay.open { display: flex; }
     .modal-sheet {
-      background: #fff; border-radius: 22px 22px 0 0;
+      background: #152642; border-radius: 22px 22px 0 0;
       padding: 28px 24px 40px; width: 100%; max-width: 480px;
     }
     .modal-handle {
-      width: 40px; height: 4px; background: #d1dae8;
+      width: 40px; height: 4px; background: #243F6B;
       border-radius: 2px; margin: 0 auto 24px;
     }
     .modal-title { font-family: 'Lora', serif; font-size: 20px; margin-bottom: 20px; }
     .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
     .btn-cancel {
-      flex: 1; padding: 14px; border: 1.5px solid #d1dae8;
-      border-radius: 12px; background: #fff; font-family: 'DM Sans', sans-serif;
-      font-size: 15px; font-weight: 600; color: #6b7280; cursor: pointer;
+      flex: 1; padding: 14px; border: 1.5px solid #243F6B;
+      border-radius: 12px; background: #1E3A5F; font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 600; color: #94A3B8; cursor: pointer;
     }
     .btn-save-seizure {
-      flex: 2; padding: 14px; background: #1A2B3C;
+      flex: 2; padding: 14px; background: #0A1628;
       border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif;
-      font-size: 15px; font-weight: 600; color: #fff; cursor: pointer;
+      font-size: 15px; font-weight: 600; color: #EFF6FF; cursor: pointer;
     }
     .btn-save-seizure:hover { background: #253a50; }
 
@@ -279,17 +279,17 @@
     #view-questionnaire .container { padding-top: 20px; }
 
     .progress-bar {
-      width: 100%; height: 5px; background: #EBF0F7;
+      width: 100%; height: 5px; background: #152642;
       border-radius: 3px; margin-bottom: 28px; overflow: hidden;
     }
     .progress-fill {
-      height: 100%; background: #4A6FA5;
+      height: 100%; background: #2563EB;
       border-radius: 3px; transition: width 0.3s ease;
     }
 
-    .q-meta { font-size: 13px; color: #6b7280; margin-bottom: 10px; }
+    .q-meta { font-size: 13px; color: #94A3B8; margin-bottom: 10px; }
     .q-section {
-      font-size: 12px; color: #4A6FA5; font-weight: 600;
+      font-size: 12px; color: #2563EB; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
     }
     .q-text-wrap {
@@ -298,7 +298,7 @@
     }
     .q-text {
       font-family: 'Lora', serif; font-size: 20px; font-weight: 600;
-      line-height: 1.45; color: #1A2B3C;
+      line-height: 1.45; color: #EFF6FF;
       padding-right: 32px; /* space for info icon */
     }
     .q-info-btn {
@@ -306,9 +306,9 @@
       top: 2px; right: 0;
       width: 26px; height: 26px;
       border-radius: 50%;
-      background: #EBF0F7;
-      border: 1.5px solid #d1dae8;
-      color: #4A6FA5;
+      background: #152642;
+      border: 1.5px solid #243F6B;
+      color: #2563EB;
       font-size: 13px; font-weight: 700;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
@@ -317,54 +317,54 @@
       font-family: 'DM Sans', sans-serif;
       line-height: 1;
     }
-    .q-info-btn:hover { background: #d1dae8; border-color: #4A6FA5; }
+    .q-info-btn:hover { background: #243F6B; border-color: #2563EB; }
 
     /* ── INFO TOOLTIP OVERLAY ── */
     .info-overlay {
       display: none;
       position: fixed; inset: 0;
       z-index: 300;
-      background: rgba(26,43,60,0.45);
+      background: rgba(10,22,40,0.45);
       align-items: flex-end;
       justify-content: center;
     }
     .info-overlay.open { display: flex; }
     .info-sheet {
-      background: #fff;
+      background: #1E3A5F;
       border-radius: 20px 20px 0 0;
       padding: 28px 24px 44px;
       width: 100%; max-width: 480px;
     }
     .info-sheet-label {
       font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: #4A6FA5; margin-bottom: 12px;
+      text-transform: uppercase; color: #2563EB; margin-bottom: 12px;
     }
     .info-sheet-text {
-      font-size: 16px; line-height: 1.65; color: #1A2B3C;
+      font-size: 16px; line-height: 1.65; color: #EFF6FF;
     }
     .info-sheet-close {
       margin-top: 22px;
       width: 100%; padding: 13px;
-      background: #EBF0F7; border: none; border-radius: 12px;
+      background: #152642; border: none; border-radius: 12px;
       font-family: 'DM Sans', sans-serif; font-size: 15px;
-      font-weight: 600; color: #4A6FA5; cursor: pointer;
+      font-weight: 600; color: #2563EB; cursor: pointer;
     }
     .options { display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
     .option-btn {
-      padding: 15px 18px; border: 2px solid #d1dae8; border-radius: 12px;
-      background: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px;
-      color: #1A2B3C; text-align: left; cursor: pointer; transition: all 0.15s; width: 100%;
+      padding: 15px 18px; border: 2px solid #243F6B; border-radius: 12px;
+      background: #1E3A5F; font-family: 'DM Sans', sans-serif; font-size: 15px;
+      color: #EFF6FF; text-align: left; cursor: pointer; transition: all 0.15s; width: 100%;
     }
-    .option-btn:hover { border-color: #4A6FA5; background: #EBF0F7; }
-    .option-btn.selected { border-color: #4A6FA5; background: #4A6FA5; color: #fff; }
+    .option-btn:hover { border-color: #2563EB; background: #152642; }
+    .option-btn.selected { border-color: #2563EB; background: #2563EB; color: #EFF6FF; }
 
     .q-nav { display: flex; justify-content: space-between; align-items: center; }
     .btn-back {
-      padding: 10px 18px; border: 1.5px solid #d1dae8; border-radius: 10px;
-      background: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px;
-      color: #6b7280; cursor: pointer;
+      padding: 10px 18px; border: 1.5px solid #243F6B; border-radius: 10px;
+      background: #1E3A5F; font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: #94A3B8; cursor: pointer;
     }
-    .btn-back:hover { border-color: #4A6FA5; color: #4A6FA5; }
+    .btn-back:hover { border-color: #2563EB; color: #2563EB; }
     .btn-back.hidden { visibility: hidden; }
 
     /* ── RESULTS ── */
@@ -374,10 +374,10 @@
     .result-comparison {
       font-family: 'Lora', serif;
       font-size: 24px; font-weight: 600;
-      color: #1A2B3C; margin-bottom: 8px; line-height: 1.3;
+      color: #EFF6FF; margin-bottom: 8px; line-height: 1.3;
     }
     .result-raw-score {
-      font-size: 14px; color: #6b7280; margin-bottom: 24px;
+      font-size: 14px; color: #94A3B8; margin-bottom: 24px;
     }
     .result-badge {
       display: inline-block; padding: 10px 24px;
@@ -385,25 +385,25 @@
       margin-bottom: 24px;
     }
     .result-message {
-      font-size: 15px; line-height: 1.7; color: #374151;
-      text-align: left; background: #f9fafb;
+      font-size: 15px; line-height: 1.7; color: #94A3B8;
+      text-align: left; background: #0D1F38;
       border-radius: 12px; padding: 18px; margin-bottom: 28px;
     }
     .btn-done {
-      width: 100%; padding: 15px; background: #4A6FA5; color: #fff;
+      width: 100%; padding: 15px; background: #2563EB; color: #EFF6FF;
       border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif;
       font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s;
     }
-    .btn-done:hover { background: #37577F; }
+    .btn-done:hover { background: #1d4ed8; }
 
     /* ── LOADING ── */
     #loading-screen {
-      position: fixed; inset: 0; background: #EBF0F7;
+      position: fixed; inset: 0; background: #0A1628;
       display: flex; align-items: center; justify-content: center; z-index: 100;
     }
     .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
-    .loading-logo .neuro { color: #1A2B3C; }
-    .loading-logo .fract { color: #4A6FA5; }
+    .loading-logo .neuro { color: #EFF6FF; }
+    .loading-logo .fract { color: #2563EB; }
 
     /* ── COLLAPSED SECTION ── */
     .collapsible-body { display: none; }
@@ -412,16 +412,16 @@
     /* ── SHARE BUTTON ── */
     .btn-share {
       width: 100%; padding: 14px; margin-bottom: 10px;
-      background: #ffffff; color: #4A6FA5;
-      border: 2px solid #4A6FA5; border-radius: 12px;
+      background: #1E3A5F; color: #2563EB;
+      border: 2px solid #2563EB; border-radius: 12px;
       font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
       cursor: pointer; transition: background 0.18s, color 0.18s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-share:hover { background: #4A6FA5; color: #fff; }
+    .btn-share:hover { background: #2563EB; color: #EFF6FF; }
     .btn-share:disabled { opacity: 0.6; cursor: not-allowed; }
     .share-note {
-      font-size: 12px; color: #9ca3af; text-align: center;
+      font-size: 12px; color: #94A3B8; text-align: center;
       margin-bottom: 20px; line-height: 1.5;
     }
 
@@ -432,19 +432,19 @@
       margin-bottom: 14px; cursor: pointer; user-select: none;
     }
     .msg-section-title {
-      font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: #1A2B3C;
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: #EFF6FF;
       display: flex; align-items: center; gap: 10px;
     }
     .msg-unread-badge {
-      background: #ef4444; color: #fff;
+      background: #ef4444; color: #EFF6FF;
       border-radius: 20px; padding: 2px 8px;
       font-size: 11px; font-weight: 700;
       font-family: 'DM Sans', sans-serif;
     }
-    .msg-section-toggle { font-size: 13px; color: #4A6FA5; font-weight: 500; }
+    .msg-section-toggle { font-size: 13px; color: #2563EB; font-weight: 500; }
     .msg-thread {
-      background: #fff; border-radius: 14px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+      background: #1E3A5F; border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.07);
       overflow: hidden; margin-bottom: 12px;
     }
     .msg-list { max-height: 280px; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
@@ -454,29 +454,29 @@
       font-size: 14px; line-height: 1.5;
     }
     .msg-bubble.from-clinician {
-      background: #EBF0F7; color: #1A2B3C; align-self: flex-start;
+      background: #243F6B; color: #EFF6FF; align-self: flex-start;
       border-bottom-left-radius: 4px;
     }
     .msg-bubble.from-patient {
-      background: #4A6FA5; color: #fff; align-self: flex-end;
+      background: #2563EB; color: #EFF6FF; align-self: flex-end;
       border-bottom-right-radius: 4px;
     }
-    .msg-meta { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+    .msg-meta { font-size: 11px; color: #94A3B8; margin-top: 4px; }
     .msg-meta.right { text-align: right; }
-    .msg-empty { text-align: center; padding: 20px 0; color: #9ca3af; font-size: 13px; }
-    .msg-compose { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #f3f4f6; }
+    .msg-empty { text-align: center; padding: 20px 0; color: #94A3B8; font-size: 13px; }
+    .msg-compose { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #0D1F38; }
     .msg-input {
-      flex: 1; padding: 10px 14px; border: 1.5px solid #d1dae8; border-radius: 10px;
-      font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1A2B3C;
+      flex: 1; padding: 10px 14px; border: 1.5px solid #243F6B; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; color: #EFF6FF;
       outline: none; resize: none;
     }
-    .msg-input:focus { border-color: #4A6FA5; }
+    .msg-input:focus { border-color: #2563EB; }
     .msg-send-btn {
-      padding: 10px 16px; background: #4A6FA5; color: #fff; border: none;
+      padding: 10px 16px; background: #2563EB; color: #EFF6FF; border: none;
       border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px;
       font-weight: 600; cursor: pointer; white-space: nowrap;
     }
-    .msg-send-btn:hover { background: #37577F; }
+    .msg-send-btn:hover { background: #1E3A5F; }
     .msg-send-btn:disabled { background: #a0b4cc; cursor: not-allowed; }
 
     /* Header unread dot */
@@ -542,7 +542,7 @@
     <div class="form-group">
       <label for="ob-clinician">Clinician's email address</label>
       <input type="email" id="ob-clinician" placeholder="your.doctor@hospital.nhs.uk" />
-      <p style="font-size:12px;color:#9ca3af;margin-top:6px;">We'll link you to your clinical team. Leave blank if unknown.</p>
+      <p style="font-size:12px;color:#94A3B8;margin-top:6px;">We'll link you to your clinical team. Leave blank if unknown.</p>
     </div>
     <button class="btn-primary" id="btn-save-onboarding" onclick="saveOnboarding()">Save and continue →</button>
   </div>
@@ -555,7 +555,7 @@
     <!-- Greeting -->
     <div style="margin-bottom:20px;">
       <h2 id="greeting-text" style="font-family:'Lora',serif;font-size:22px;margin-bottom:3px;"></h2>
-      <p id="greeting-sub" style="font-size:14px;color:#6b7280;"></p>
+      <p id="greeting-sub" style="font-size:14px;color:#94A3B8;"></p>
     </div>
 
     <!-- Recovery Today card -->
@@ -1132,11 +1132,11 @@ function renderLaepChart(scores) {
       }),
       datasets: [{
         data: scores.map(a => a.score),
-        borderColor: '#4A6FA5',
-        backgroundColor: 'rgba(74,111,165,0.07)',
+        borderColor: '#2563EB',
+        backgroundColor: 'rgba(37,99,235,0.07)',
         borderWidth: 2.5,
         pointRadius: 5,
-        pointBackgroundColor: '#4A6FA5',
+        pointBackgroundColor: '#2563EB',
         fill: true, tension: 0.35
       }]
     },
@@ -1144,7 +1144,7 @@ function renderLaepChart(scores) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { min: 19, max: 76, grid: { color: '#f3f4f6' }, ticks: { stepSize: 10 } },
+        y: { min: 19, max: 76, grid: { color: '#0D1F38' }, ticks: { stepSize: 10 } },
         x: { grid: { display: false } }
       }
     }
@@ -1179,7 +1179,7 @@ window.saveSeizure = async function() {
     // Brief confirmation
     const card = document.getElementById('recovery-card');
     const orig = card.innerHTML;
-    card.innerHTML = '<div style="text-align:center;padding:16px 0;font-size:16px;color:#4A9B6E;font-weight:600;">✓ Seizure logged</div>';
+    card.innerHTML = '<div style="text-align:center;padding:16px 0;font-size:16px;color:#6ee7b7;font-weight:600;">✓ Seizure logged</div>';
     setTimeout(() => { card.innerHTML = orig; }, 2000);
   } catch(e) {
     console.error('Error saving seizure:', e);
@@ -1252,7 +1252,7 @@ async function loadPatientMessages() {
         const who = isFromClinician ? 'Your clinician' : 'You';
         return `<div>
           <div class="msg-bubble ${cls}">${escHtml(m.text)}</div>
-          <div class="msg-meta${isFromClinician ? '' : ' right'}">${who} · ${time}${m.read || !isFromClinician ? '' : ' · <span style="color:#4A6FA5;font-weight:600;">New</span>'}</div>
+          <div class="msg-meta${isFromClinician ? '' : ' right'}">${who} · ${time}${m.read || !isFromClinician ? '' : ' · <span style="color:#2563EB;font-weight:600;">New</span>'}</div>
         </div>`;
       }).join('');
       list.scrollTop = list.scrollHeight;
@@ -1684,19 +1684,19 @@ window.generatePDF = async function() {
 
 function interpretScore(type, score) {
   if (type === 'laep') {
-    if (score >= 45) return { label: 'High side effects', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#fde8e8', textColor: '#9B1C1C', message: 'You\'re reporting high levels of side effects. Please contact your epilepsy nurse or clinical team as soon as you can — they\'re here to help adjust your treatment.' };
-    if (score >= 36.5) return { label: 'Elevated side effects', badgeClass: 'badge-red', emoji: '🟠', bgColor: '#fee2e2', textColor: '#D65D5D', message: 'You seem to be experiencing significant side effects from your treatment. Your clinical team can see these results and will take them into account at your next appointment.' };
-    if (score >= 30) return { label: 'Some side effects', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#fef3c7', textColor: '#D4943C', message: 'You\'re experiencing some side effects. Your clinical team will monitor this over time. Keep completing your assessments regularly.' };
-    return { label: 'Side effects well managed', badgeClass: 'badge-green', emoji: '✅', bgColor: '#d1fae5', textColor: '#4A9B6E', message: 'Your side effect profile looks good. Keep completing your assessments regularly so your clinical team can continue to track your progress.' };
+    if (score >= 45) return { label: 'High side effects', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#1c0606', textColor: '#9B1C1C', message: 'You\'re reporting high levels of side effects. Please contact your epilepsy nurse or clinical team as soon as you can — they\'re here to help adjust your treatment.' };
+    if (score >= 36.5) return { label: 'Elevated side effects', badgeClass: 'badge-red', emoji: '🟠', bgColor: '#1c0606', textColor: '#D65D5D', message: 'You seem to be experiencing significant side effects from your treatment. Your clinical team can see these results and will take them into account at your next appointment.' };
+    if (score >= 30) return { label: 'Some side effects', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#1c1506', textColor: '#fcd34d', message: 'You\'re experiencing some side effects. Your clinical team will monitor this over time. Keep completing your assessments regularly.' };
+    return { label: 'Side effects well managed', badgeClass: 'badge-green', emoji: '✅', bgColor: '#052e16', textColor: '#6ee7b7', message: 'Your side effect profile looks good. Keep completing your assessments regularly so your clinical team can continue to track your progress.' };
   }
   if (type === 'ssq') {
-    if (score >= 5) return { label: 'Severe', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#fee2e2', textColor: '#D65D5D', message: 'Your seizures are significantly affecting you. Please make sure your clinical team is aware — don\'t wait until your next appointment if you\'re struggling.' };
-    if (score >= 3) return { label: 'Moderate', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#fef3c7', textColor: '#D4943C', message: 'You\'re experiencing moderate seizure severity. Your clinical team can see these results and will review them.' };
-    return { label: 'Mild', badgeClass: 'badge-green', emoji: '✅', bgColor: '#d1fae5', textColor: '#4A9B6E', message: 'Your seizure severity appears relatively mild. Keep monitoring and complete your next assessment in a week or two.' };
+    if (score >= 5) return { label: 'Severe', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#1c0606', textColor: '#D65D5D', message: 'Your seizures are significantly affecting you. Please make sure your clinical team is aware — don\'t wait until your next appointment if you\'re struggling.' };
+    if (score >= 3) return { label: 'Moderate', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#1c1506', textColor: '#fcd34d', message: 'You\'re experiencing moderate seizure severity. Your clinical team can see these results and will review them.' };
+    return { label: 'Mild', badgeClass: 'badge-green', emoji: '✅', bgColor: '#052e16', textColor: '#6ee7b7', message: 'Your seizure severity appears relatively mild. Keep monitoring and complete your next assessment in a week or two.' };
   }
-  if (score >= 60) return { label: 'Good quality of life', badgeClass: 'badge-green', emoji: '✅', bgColor: '#d1fae5', textColor: '#4A9B6E', message: 'Your quality of life score is above the global average for people with epilepsy (59.8). Keep taking your assessments so your team can track your progress.' };
-  if (score >= 40) return { label: 'Some impact on daily life', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#fef3c7', textColor: '#D4943C', message: 'Epilepsy is having some impact on your quality of life. Your clinical team can see these results and can discuss support at your next appointment.' };
-  return { label: 'Significant impact', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#fee2e2', textColor: '#D65D5D', message: 'Epilepsy appears to be having a significant impact on your quality of life. Your clinical team will review this — please reach out if you\'d like to talk sooner.' };
+  if (score >= 60) return { label: 'Good quality of life', badgeClass: 'badge-green', emoji: '✅', bgColor: '#052e16', textColor: '#6ee7b7', message: 'Your quality of life score is above the global average for people with epilepsy (59.8). Keep taking your assessments so your team can track your progress.' };
+  if (score >= 40) return { label: 'Some impact on daily life', badgeClass: 'badge-amber', emoji: '🟡', bgColor: '#1c1506', textColor: '#fcd34d', message: 'Epilepsy is having some impact on your quality of life. Your clinical team can see these results and can discuss support at your next appointment.' };
+  return { label: 'Significant impact', badgeClass: 'badge-red', emoji: '🔴', bgColor: '#1c0606', textColor: '#D65D5D', message: 'Epilepsy appears to be having a significant impact on your quality of life. Your clinical team will review this — please reach out if you\'d like to talk sooner.' };
 }
 </script>
 </body>

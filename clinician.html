@@ -9,38 +9,38 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #EBF0F7; color: #1A2B3C; min-height: 100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: #0A1628; color: #EFF6FF; min-height: 100vh; }
 
     /* ── LOADING ── */
     #loading-screen {
-      position: fixed; inset: 0; background: #EBF0F7;
+      position: fixed; inset: 0; background: #0A1628;
       display: flex; align-items: center; justify-content: center; z-index: 100;
     }
     .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
-    .loading-logo .neuro { color: #1A2B3C; }
-    .loading-logo .fract { color: #4A6FA5; }
+    .loading-logo .neuro { color: #EFF6FF; }
+    .loading-logo .fract { color: #2563EB; }
 
     /* ── HEADER ── */
     header {
-      background: #1A2B3C; padding: 14px 28px;
+      background: #0A1628; padding: 14px 28px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 40;
     }
     .logo h1 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
-    .logo h1 .neuro { color: #EBF0F7; }
-    .logo h1 .fract { color: #4A6FA5; }
+    .logo h1 .neuro { color: #EFF6FF; }
+    .logo h1 .fract { color: #2563EB; }
     .header-right { display: flex; align-items: center; gap: 16px; }
-    .clinician-name { font-size: 13px; color: #9bb2ce; }
+    .clinician-name { font-size: 13px; color: #94A3B8; }
     .btn-signout {
-      padding: 7px 14px; border: 1.5px solid #4A6FA5; border-radius: 8px;
+      padding: 7px 14px; border: 1.5px solid #2563EB; border-radius: 8px;
       background: transparent; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; color: #9bb2ce; cursor: pointer;
+      font-size: 13px; color: #94A3B8; cursor: pointer;
     }
-    .btn-signout:hover { background: rgba(74,111,165,0.15); }
+    .btn-signout:hover { background: rgba(37,99,235,0.15); }
 
     /* ── MAIN TABS (top of page) ── */
     .main-tabs {
-      background: #1A2B3C;
+      background: #0A1628;
       display: flex;
       gap: 0;
       padding: 0 28px;
@@ -49,21 +49,21 @@
     .main-tab {
       padding: 10px 18px;
       font-size: 14px; font-weight: 500;
-      color: #9bb2ce; cursor: pointer;
+      color: #94A3B8; cursor: pointer;
       border-bottom: 3px solid transparent;
       background: none; border-top: none; border-left: none; border-right: none;
       font-family: 'DM Sans', sans-serif;
       transition: color 0.15s, border-color 0.15s;
     }
-    .main-tab.active { color: #fff; border-bottom-color: #4A6FA5; }
+    .main-tab.active { color: #EFF6FF; border-bottom-color: #2563EB; }
 
     /* ── LAYOUT ── */
     .layout { display: flex; min-height: calc(100vh - 90px); }
 
     /* ── SIDEBAR ── */
     aside {
-      width: 270px; background: #fff;
-      border-right: 1px solid #d1dae8;
+      width: 270px; background: #1E3A5F;
+      border-right: 1px solid #243F6B;
       flex-shrink: 0; overflow-y: auto;
     }
 
@@ -72,14 +72,14 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 16px 10px;
       cursor: pointer; user-select: none;
-      border-bottom: 1px solid #EBF0F7;
+      border-bottom: 1px solid #152642;
     }
-    .triage-section-header:hover { background: #f9fafb; }
+    .triage-section-header:hover { background: #152642; }
     .triage-label { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
-    .triage-label.red    { color: #dc2626; }
+    .triage-label.red    { color: #F87171; }
     .triage-label.amber  { color: #d97706; }
     .triage-label.green  { color: #059669; }
-    .triage-chevron { font-size: 10px; color: #9ca3af; transition: transform 0.2s; }
+    .triage-chevron { font-size: 10px; color: #94A3B8; transition: transform 0.2s; }
     .triage-chevron.open { transform: rotate(180deg); }
 
     .triage-body { overflow: hidden; }
@@ -90,10 +90,10 @@
       cursor: pointer;
       border-left: 3px solid transparent;
       transition: background 0.12s;
-      border-bottom: 1px solid #f3f4f6;
+      border-bottom: 1px solid #0D1F38;
     }
-    .patient-item:hover { background: #EBF0F7; }
-    .patient-item.active { background: #EBF0F7; border-left-color: #4A6FA5; }
+    .patient-item:hover { background: #152642; }
+    .patient-item.active { background: #152642; border-left-color: #2563EB; }
     .patient-item-top { display: flex; align-items: center; justify-content: space-between; }
     .patient-name-label { font-size: 14px; font-weight: 600; }
     .patient-triage-dot {
@@ -102,14 +102,14 @@
     .dot-red   { background: #ef4444; }
     .dot-amber { background: #f59e0b; }
     .dot-green { background: #10b981; }
-    .patient-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .patient-meta { font-size: 12px; color: #94A3B8; margin-top: 2px; }
 
     /* ── MAIN PANEL ── */
     main { flex: 1; padding: 0; overflow-y: auto; }
     .panel-inner { padding: 28px; max-width: 960px; }
 
-    .empty-state { text-align: center; padding: 80px 20px; color: #6b7280; }
-    .empty-state h3 { font-family: 'Lora', serif; color: #1A2B3C; margin-bottom: 8px; font-size: 20px; }
+    .empty-state { text-align: center; padding: 80px 20px; color: #94A3B8; }
+    .empty-state h3 { font-family: 'Lora', serif; color: #EFF6FF; margin-bottom: 8px; font-size: 20px; }
 
     /* ── HEADLINE CARD ── */
     .headline-card {
@@ -117,23 +117,23 @@
       margin-bottom: 20px;
     }
     .headline-card.urgent {
-      background: #fef2f2; border-left: 5px solid #ef4444;
+      background: #1c0606; border-left: 5px solid #ef4444;
     }
     .headline-card.watch {
-      background: #fffbeb; border-left: 5px solid #f59e0b;
+      background: #1c1506; border-left: 5px solid #f59e0b;
     }
     .headline-card.stable {
-      background: #f0fdf4; border-left: 5px solid #10b981;
+      background: #022c16; border-left: 5px solid #10b981;
     }
     .headline-text {
       font-family: 'Lora', serif; font-size: 17px; font-weight: 600;
-      line-height: 1.5; color: #1A2B3C;
+      line-height: 1.5; color: #EFF6FF;
     }
-    .headline-cite { font-size: 12px; color: #9ca3af; margin-top: 6px; font-style: italic; }
+    .headline-cite { font-size: 12px; color: #94A3B8; margin-top: 6px; font-style: italic; }
 
     /* ── PATIENT HEADER ── */
     .patient-header {
-      background: #fff; border-radius: 14px; padding: 20px 24px;
+      background: #1E3A5F; border-radius: 14px; padding: 20px 24px;
       margin-bottom: 16px;
       display: flex; justify-content: space-between; align-items: flex-start;
       flex-wrap: wrap; gap: 12px;
@@ -143,67 +143,67 @@
     .tag {
       padding: 4px 12px; border-radius: 20px;
       font-size: 12px; font-weight: 500;
-      background: #EBF0F7; color: #4A6FA5;
+      background: #152642; color: #2563EB;
     }
 
     /* ── CARDS ── */
-    .card { background: #fff; border-radius: 14px; padding: 22px; margin-bottom: 18px; }
+    .card { background: #1E3A5F; border-radius: 14px; padding: 22px; margin-bottom: 18px; }
     .card-title {
       font-family: 'Lora', serif; font-size: 15px;
-      color: #1A2B3C; margin-bottom: 14px;
+      color: #EFF6FF; margin-bottom: 14px;
     }
 
     /* ── CHART ── */
     .chart-wrap { position: relative; height: 200px; }
-    .threshold-note { font-size: 11px; color: #9ca3af; margin-top: 8px; }
+    .threshold-note { font-size: 11px; color: #94A3B8; margin-top: 8px; }
 
     /* ── SCORES ── */
     .score-row {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 9px 0; border-bottom: 1px solid #f3f4f6;
+      padding: 9px 0; border-bottom: 1px solid #0D1F38;
     }
     .score-row:last-child { border-bottom: none; }
-    .score-label { font-size: 13px; color: #6b7280; }
+    .score-label { font-size: 13px; color: #94A3B8; }
     .score-pill {
       font-size: 13px; font-weight: 700;
       padding: 3px 12px; border-radius: 20px;
     }
-    .pill-green { background: #d1fae5; color: #065f46; }
-    .pill-amber { background: #fef3c7; color: #92400e; }
-    .pill-red   { background: #fee2e2; color: #991b1b; }
-    .pill-grey  { background: #f3f4f6; color: #6b7280; }
+    .pill-green { background: #052e16; color: #6ee7b7; }
+    .pill-amber { background: #1c1506; color: #fcd34d; }
+    .pill-red   { background: #1c0606; color: #f87171; }
+    .pill-grey  { background: #0D1F38; color: #94A3B8; }
 
     /* ── ITEM BREAKDOWN ── */
     .item-chip {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 5px 12px; margin: 4px 4px 4px 0;
       border-radius: 20px; font-size: 13px; font-weight: 500;
-      background: #fee2e2; color: #991b1b;
+      background: #1c0606; color: #f87171;
     }
-    .item-chip.amber { background: #fef3c7; color: #92400e; }
+    .item-chip.amber { background: #1c1506; color: #fcd34d; }
 
     /* ── CROSS-CHECK ── */
     .cross-check-sentence {
-      font-size: 14px; line-height: 1.6; color: #374151;
-      background: #f0f9ff; border-left: 4px solid #4A6FA5;
+      font-size: 14px; line-height: 1.6; color: #94A3B8;
+      background: #0c1e3a; border-left: 4px solid #2563EB;
       border-radius: 0 10px 10px 0; padding: 12px 16px;
     }
 
     /* ── SUGGESTED ACTIONS ── */
     .action-item {
       display: flex; gap: 12px; align-items: flex-start;
-      padding: 12px 0; border-bottom: 1px solid #f3f4f6;
+      padding: 12px 0; border-bottom: 1px solid #0D1F38;
     }
     .action-item:last-child { border-bottom: none; }
     .action-bullet {
       width: 22px; height: 22px; border-radius: 50%;
-      background: #EBF0F7; color: #4A6FA5;
+      background: #152642; color: #2563EB;
       font-size: 12px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; margin-top: 1px;
     }
-    .action-body { font-size: 14px; color: #374151; line-height: 1.5; }
-    .action-cite { font-size: 11px; color: #9ca3af; font-style: italic; margin-top: 3px; }
+    .action-body { font-size: 14px; color: #94A3B8; line-height: 1.5; }
+    .action-cite { font-size: 11px; color: #94A3B8; font-style: italic; margin-top: 3px; }
 
     /* ── ONE-CLICK ACTIONS ── */
     .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -212,41 +212,41 @@
       font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
       cursor: pointer; transition: all 0.15s;
     }
-    .btn-reviewed  { background: #d1fae5; color: #065f46; border: 1.5px solid #a7f3d0; }
-    .btn-reviewed:hover  { background: #a7f3d0; }
-    .btn-flag      { background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; }
-    .btn-flag:hover      { background: #fde68a; }
-    .btn-schedule  { background: #EBF0F7; color: #4A6FA5; border: 1.5px solid #d1dae8; }
-    .btn-schedule:hover  { background: #d1dae8; }
+    .btn-reviewed  { background: #052e16; color: #6ee7b7; border: 1.5px solid #065f46; }
+    .btn-reviewed:hover  { background: #065f46; }
+    .btn-flag      { background: #1c1506; color: #fcd34d; border: 1.5px solid #78350f; }
+    .btn-flag:hover      { background: #78350f; }
+    .btn-schedule  { background: #152642; color: #2563EB; border: 1.5px solid #243F6B; }
+    .btn-schedule:hover  { background: #243F6B; }
     .btn-action.active-state { opacity: 0.7; cursor: default; }
 
-    .status-note { font-size: 12px; color: #9ca3af; margin-top: 8px; font-style: italic; }
+    .status-note { font-size: 12px; color: #94A3B8; margin-top: 8px; font-style: italic; }
 
     /* ── MY PRACTICE (COHORT) TAB ── */
     .practice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 28px; }
     .stat-card {
-      background: #fff; border-radius: 14px; padding: 22px 20px;
-      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+      background: #1E3A5F; border-radius: 14px; padding: 22px 20px;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.07);
     }
-    .stat-card .stat-val { font-size: 32px; font-weight: 700; color: #4A6FA5; margin-bottom: 4px; }
-    .stat-card .stat-lbl { font-size: 13px; color: #6b7280; line-height: 1.4; }
-    .stat-card .stat-bench { font-size: 11px; color: #9ca3af; margin-top: 6px; font-style: italic; }
+    .stat-card .stat-val { font-size: 32px; font-weight: 700; color: #2563EB; margin-bottom: 4px; }
+    .stat-card .stat-lbl { font-size: 13px; color: #94A3B8; line-height: 1.4; }
+    .stat-card .stat-bench { font-size: 11px; color: #94A3B8; margin-top: 6px; font-style: italic; }
 
-    .practice-table-card { background: #fff; border-radius: 14px; padding: 22px; }
+    .practice-table-card { background: #1E3A5F; border-radius: 14px; padding: 22px; }
     .practice-table-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .practice-table-card th {
       text-align: left; padding: 9px 12px;
-      background: #EBF0F7; color: #4A6FA5;
+      background: #152642; color: #2563EB;
       font-size: 12px; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .practice-table-card td { padding: 11px 12px; border-bottom: 1px solid #f3f4f6; }
+    .practice-table-card td { padding: 11px 12px; border-bottom: 1px solid #0D1F38; }
     .practice-table-card tr:last-child td { border-bottom: none; }
 
     /* ── TOAST ── */
     #toast {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-      background: #1A2B3C; color: #fff; padding: 12px 22px;
+      background: #0A1628; color: #EFF6FF; padding: 12px 22px;
       border-radius: 10px; font-size: 14px; font-weight: 500;
       display: none; z-index: 200; white-space: nowrap;
     }
@@ -254,15 +254,15 @@
     /* ── MESSAGES ── */
     .msg-unread-chip {
       display: inline-flex; align-items: center; justify-content: center;
-      background: #ef4444; color: #fff;
+      background: #ef4444; color: #EFF6FF;
       border-radius: 20px; padding: 1px 7px;
       font-size: 10px; font-weight: 700;
       margin-left: 6px; vertical-align: middle;
     }
-    .msg-card { background: #fff; border-radius: 14px; padding: 0; margin-bottom: 18px; overflow: hidden; }
+    .msg-card { background: #1E3A5F; border-radius: 14px; padding: 0; margin-bottom: 18px; overflow: hidden; }
     .msg-card-header {
-      padding: 16px 20px 14px; border-bottom: 1px solid #f3f4f6;
-      font-family: 'Lora', serif; font-size: 15px; color: #1A2B3C;
+      padding: 16px 20px 14px; border-bottom: 1px solid #0D1F38;
+      font-family: 'Lora', serif; font-size: 15px; color: #EFF6FF;
       display: flex; align-items: center; gap: 8px;
     }
     .msg-list {
@@ -270,25 +270,25 @@
       padding: 14px 18px; display: flex; flex-direction: column; gap: 10px;
     }
     .msg-bubble { max-width: 82%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
-    .msg-bubble.from-patient   { background: #EBF0F7; color: #1A2B3C; align-self: flex-start; border-bottom-left-radius: 4px; }
-    .msg-bubble.from-clinician { background: #1A2B3C; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .msg-meta { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+    .msg-bubble.from-patient   { background: #243F6B; color: #EFF6FF; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg-bubble.from-clinician { background: #0A1628; color: #EFF6FF; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg-meta { font-size: 11px; color: #94A3B8; margin-top: 3px; }
     .msg-meta.right { text-align: right; }
-    .msg-empty-note { text-align: center; padding: 20px 0; color: #9ca3af; font-size: 13px; }
-    .msg-compose { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+    .msg-empty-note { text-align: center; padding: 20px 0; color: #94A3B8; font-size: 13px; }
+    .msg-compose { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid #0D1F38; }
     .msg-input {
-      flex: 1; padding: 9px 13px; border: 1.5px solid #d1dae8; border-radius: 9px;
-      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #1A2B3C;
+      flex: 1; padding: 9px 13px; border: 1.5px solid #243F6B; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #EFF6FF;
       outline: none; resize: none;
     }
-    .msg-input:focus { border-color: #4A6FA5; }
+    .msg-input:focus { border-color: #2563EB; }
     .msg-send-btn {
-      padding: 9px 16px; background: #1A2B3C; color: #fff; border: none;
+      padding: 9px 16px; background: #0A1628; color: #EFF6FF; border: none;
       border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px;
       font-weight: 600; cursor: pointer;
     }
     .msg-send-btn:hover { background: #253a50; }
-    .msg-send-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    .msg-send-btn:disabled { background: #94A3B8; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -299,7 +299,7 @@
 
 <header id="app-header" style="display:none;">
   <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span>
-    <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;">— Clinician</span></h1></div>
+    <span style="font-size:13px;color:#94A3B8;font-family:'DM Sans',sans-serif;font-weight:400;">— Clinician</span></h1></div>
   <div class="header-right">
     <span class="clinician-name" id="clinician-name"></span>
     <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
@@ -350,14 +350,14 @@
 <!-- ── MY PRACTICE VIEW ── -->
 <div id="view-practice" style="display:none;padding:28px;max-width:960px;margin:0 auto;">
   <h2 style="font-family:'Lora',serif;font-size:22px;margin-bottom:6px;">My Practice</h2>
-  <p style="font-size:14px;color:#6b7280;margin-bottom:24px;">Cohort-level summary across all your patients.</p>
+  <p style="font-size:14px;color:#94A3B8;margin-bottom:24px;">Cohort-level summary across all your patients.</p>
   <div class="practice-grid" id="practice-stats">
     <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Loading…</div></div>
     <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Loading…</div></div>
     <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">Loading…</div></div>
   </div>
   <div class="practice-table-card" id="practice-table">
-    <p style="color:#9ca3af;text-align:center;padding:24px;">Loading…</p>
+    <p style="color:#94A3B8;text-align:center;padding:24px;">Loading…</p>
   </div>
 </div>
 
@@ -521,13 +521,13 @@ function renderTriage() {
 
   if (!allPatients.length) {
     document.getElementById('body-red').innerHTML =
-      '<div style="padding:16px;font-size:13px;color:#9ca3af;">No patients yet.<br><br>Patients link to you by entering your email during registration.</div>';
+      '<div style="padding:16px;font-size:13px;color:#94A3B8;">No patients yet.<br><br>Patients link to you by entering your email during registration.</div>';
   }
 }
 
 function renderPatientRows(containerId, patients) {
   const el = document.getElementById(containerId);
-  if (!patients.length) { el.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#9ca3af;">None</div>'; return; }
+  if (!patients.length) { el.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#94A3B8;">None</div>'; return; }
   el.innerHTML = patients.map(p => {
     const lastL = p.laep.at(-1);
     const scoreText = lastL ? `LAEP ${Math.round(lastL.score)}` : 'No LAEP yet';
@@ -599,10 +599,10 @@ function renderPatientView(p) {
           <span class="tag">${p.studyId || '—'}</span>
           <span class="tag">${p.condition || '—'}</span>
           <span class="tag">${p.device || '—'}</span>
-          ${assessmentGapWeeks(laep) >= 2 ? `<span class="tag" style="background:#fee2e2;color:#dc2626;">⚠ ${assessmentGapWeeks(laep)}w no data</span>` : ''}
+          ${assessmentGapWeeks(laep) >= 2 ? `<span class="tag" style="background:#1c0606;color:#F87171;">⚠ ${assessmentGapWeeks(laep)}w no data</span>` : ''}
         </div>
       </div>
-      <div style="font-size:13px;color:#6b7280;">${laep.length + ssq.length + qolie.length} assessment${laep.length + ssq.length + qolie.length !== 1 ? 's' : ''}</div>
+      <div style="font-size:13px;color:#94A3B8;">${laep.length + ssq.length + qolie.length} assessment${laep.length + ssq.length + qolie.length !== 1 ? 's' : ''}</div>
     </div>
 
     <!-- a. Headline -->
@@ -614,7 +614,7 @@ function renderPatientView(p) {
     <!-- b. LAEP trend chart -->
     <div class="card">
       <div class="card-title">LAEP trend
-        <span style="float:right;font-size:12px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">
+        <span style="float:right;font-size:12px;color:#94A3B8;font-family:'DM Sans',sans-serif;font-weight:400;">
           Range 19–76 · Threshold lines: 36.5 (dropout) / 45 (toxicity)
         </span>
       </div>
@@ -648,7 +648,7 @@ function renderPatientView(p) {
     ${ssq.length ? `
     <div class="card">
       <div class="card-title">SSQ trend
-        <span style="float:right;font-size:12px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">Range 1–7 · Threshold: ≥5</span>
+        <span style="float:right;font-size:12px;color:#94A3B8;font-family:'DM Sans',sans-serif;font-weight:400;">Range 1–7 · Threshold: ≥5</span>
       </div>
       <div class="chart-wrap"><canvas id="chart-ssq"></canvas></div>
       <div class="threshold-note">Cramer et al. 2002</div>
@@ -656,7 +656,7 @@ function renderPatientView(p) {
     ${qolie.length ? `
     <div class="card">
       <div class="card-title">QOLIE-31 trend
-        <span style="float:right;font-size:12px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">Range 0–100 (higher = better)</span>
+        <span style="float:right;font-size:12px;color:#94A3B8;font-family:'DM Sans',sans-serif;font-weight:400;">Range 0–100 (higher = better)</span>
       </div>
       <div class="chart-wrap"><canvas id="chart-qolie"></canvas></div>
       <div class="threshold-note">Global benchmark: 59.8 (Gao et al. 2016) · Cramer et al. 1998</div>
@@ -710,10 +710,10 @@ function renderPatientView(p) {
     </div>
   `;
 
-  renderTrendChart('chart-laep', laep, '#4A6FA5', 19, 76,
-    [{ v: 36.5, c: '#D4943C', label: '36.5' }, { v: 45, c: '#D65D5D', label: '45' }]);
-  if (ssq.length)   renderTrendChart('chart-ssq',   ssq,   '#37577F', 1,  7,   [{ v: 5, c: '#D65D5D', label: '5' }]);
-  if (qolie.length) renderTrendChart('chart-qolie', qolie, '#4A6FA5', 0,  100, [{ v: 59.8, c: '#4A9B6E', label: '59.8' }, { v: 40, c: '#D4943C', label: '40' }]);
+  renderTrendChart('chart-laep', laep, '#2563EB', 19, 76,
+    [{ v: 36.5, c: '#fcd34d', label: '36.5' }, { v: 45, c: '#D65D5D', label: '45' }]);
+  if (ssq.length)   renderTrendChart('chart-ssq',   ssq,   '#1E3A5F', 1,  7,   [{ v: 5, c: '#D65D5D', label: '5' }]);
+  if (qolie.length) renderTrendChart('chart-qolie', qolie, '#2563EB', 0,  100, [{ v: 59.8, c: '#6ee7b7', label: '59.8' }, { v: 40, c: '#fcd34d', label: '40' }]);
 
   // Load messages for this patient
   loadClinicianMessages(p.id);
@@ -754,7 +754,7 @@ async function loadClinicianMessages(patientId) {
         const who = fromPatient ? 'Patient' : 'You';
         return `<div>
           <div class="msg-bubble ${cls}">${escHtml(m.text)}</div>
-          <div class="msg-meta${fromPatient ? '' : ' right'}">${who} · ${time}${fromPatient && !m.read ? ' · <span style="color:#4A6FA5;font-weight:600;">New</span>' : ''}</div>
+          <div class="msg-meta${fromPatient ? '' : ' right'}">${who} · ${time}${fromPatient && !m.read ? ' · <span style="color:#2563EB;font-weight:600;">New</span>' : ''}</div>
         </div>`;
       }).join('');
       list.scrollTop = list.scrollHeight;
@@ -774,7 +774,7 @@ async function loadClinicianMessages(patientId) {
   } catch(e) {
     console.warn('Messages load error:', e);
     const list = document.getElementById('clin-msg-list');
-    if (list) list.innerHTML = '<div class="msg-empty-note" style="color:#9ca3af;">Messages unavailable.</div>';
+    if (list) list.innerHTML = '<div class="msg-empty-note" style="color:#94A3B8;">Messages unavailable.</div>';
   }
 }
 
@@ -885,7 +885,7 @@ function buildItemBreakdown(laep) {
     .map((val, idx) => ({ val, idx, name: LAEP_ITEMS[idx] }))
     .filter(x => x.val >= 3);
 
-  if (!flagged.length) return '<p style="font-size:14px;color:#4A9B6E;">✓ No items scored "Sometimes" or "Always" in the most recent assessment.</p>';
+  if (!flagged.length) return '<p style="font-size:14px;color:#6ee7b7;">✓ No items scored "Sometimes" or "Always" in the most recent assessment.</p>';
 
   // Check consecutive pattern (how many consecutive recent assessments had val >= 3 for each item)
   const chips = flagged.map(({ val, idx, name }) => {
@@ -901,7 +901,7 @@ function buildItemBreakdown(laep) {
   }).join('');
 
   return `<div>${chips}</div>
-    <p style="font-size:12px;color:#9ca3af;margin-top:10px;">Items scoring 3 (Sometimes) or 4 (Always) on the 4-point LAEP scale (Baker et al. 1994)</p>`;
+    <p style="font-size:12px;color:#94A3B8;margin-top:10px;">Items scoring 3 (Sometimes) or 4 (Always) on the 4-point LAEP scale (Baker et al. 1994)</p>`;
 }
 
 // ── CROSS-CHECK ───────────────────────────────────────────────────────
@@ -1079,7 +1079,7 @@ function renderTrendChart(id, data, color, yMin, yMax, thresholds) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { min: yMin, max: yMax, grid: { color: '#f3f4f6' } },
+        y: { min: yMin, max: yMax, grid: { color: '#0D1F38' } },
         x: { grid: { display: false } }
       }
     }
@@ -1124,7 +1124,7 @@ function renderPractice() {
       <div class="stat-card"><div class="stat-val">0</div><div class="stat-lbl">Patients</div></div>
       <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">No data yet</div></div>
       <div class="stat-card"><div class="stat-val">—</div><div class="stat-lbl">No data yet</div></div>`;
-    document.getElementById('practice-table').innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px;">No patients yet.</p>';
+    document.getElementById('practice-table').innerHTML = '<p style="color:#94A3B8;text-align:center;padding:24px;">No patients yet.</p>';
     return;
   }
 
@@ -1168,9 +1168,9 @@ function renderPractice() {
     const scoreDisp = lastL ? Math.round(lastL.score) : '—';
     const lastDate = lastL?.date?.toDate ? lastL.date.toDate().toLocaleDateString('en-GB') : '—';
     const trendArrow = p.slope > 0.3 ? '↑' : p.slope < -0.3 ? '↓' : '→';
-    const trendCol   = p.slope > 0.3 ? '#dc2626' : p.slope < -0.3 ? '#059669' : '#6b7280';
+    const trendCol   = p.slope > 0.3 ? '#F87171' : p.slope < -0.3 ? '#059669' : '#94A3B8';
     const triageBadge = p.triage === 'red'
-      ? '<span style="color:#dc2626;font-weight:600;">🔴 Needs attention</span>'
+      ? '<span style="color:#F87171;font-weight:600;">🔴 Needs attention</span>'
       : p.triage === 'amber'
       ? '<span style="color:#d97706;font-weight:600;">🟡 Watch</span>'
       : '<span style="color:#059669;font-weight:600;">🟢 Stable</span>';
@@ -1198,7 +1198,7 @@ function renderPractice() {
           <th>Status</th>
         </tr>
       </thead>
-      <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:24px;">No data.</td></tr>'}</tbody>
+      <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#94A3B8;padding:24px;">No data.</td></tr>'}</tbody>
     </table>
   `;
 }

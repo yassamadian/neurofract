@@ -9,115 +9,115 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #EBF0F7; color: #1A2B3C; min-height: 100vh; }
+    body { font-family: 'DM Sans', sans-serif; background: #0A1628; color: #EFF6FF; min-height: 100vh; }
 
     /* ── LOADING ── */
     #loading-screen {
-      position: fixed; inset: 0; background: #EBF0F7;
+      position: fixed; inset: 0; background: #0A1628;
       display: flex; align-items: center; justify-content: center; z-index: 100;
     }
     .loading-logo { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; }
-    .loading-logo .neuro { color: #1A2B3C; }
-    .loading-logo .fract { color: #4A6FA5; }
+    .loading-logo .neuro { color: #EFF6FF; }
+    .loading-logo .fract { color: #2563EB; }
 
     /* ── HEADER ── */
-    header { background: #1A2B3C; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+    header { background: #0A1628; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
     .logo h1 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
-    .logo h1 .neuro { color: #EBF0F7; }
-    .logo h1 .fract { color: #4A6FA5; }
+    .logo h1 .neuro { color: #EFF6FF; }
+    .logo h1 .fract { color: #2563EB; }
     .header-right { display: flex; align-items: center; gap: 16px; }
-    .researcher-name { font-size: 13px; color: #9bb2ce; }
-    .btn-signout { padding: 7px 14px; border: 1.5px solid #4A6FA5; border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #9bb2ce; cursor: pointer; }
-    .btn-signout:hover { background: rgba(74,111,165,0.15); }
+    .researcher-name { font-size: 13px; color: #94A3B8; }
+    .btn-signout { padding: 7px 14px; border: 1.5px solid #2563EB; border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #94A3B8; cursor: pointer; }
+    .btn-signout:hover { background: rgba(37,99,235,0.15); }
 
     /* ── TABS ── */
-    .tab-bar { background: #1A2B3C; display: flex; padding: 0 28px; border-top: 1px solid rgba(255,255,255,0.06); }
-    .tab-btn { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #9bb2ce; cursor: pointer; border-bottom: 3px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; margin-bottom: -1px; }
-    .tab-btn.active { color: #fff; border-bottom-color: #4A6FA5; }
+    .tab-bar { background: #0A1628; display: flex; padding: 0 28px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .tab-btn { padding: 10px 20px; font-size: 14px; font-weight: 500; color: #94A3B8; cursor: pointer; border-bottom: 3px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; margin-bottom: -1px; }
+    .tab-btn.active { color: #EFF6FF; border-bottom-color: #2563EB; }
 
     /* ── LAYOUT ── */
     .tab-panel { display: none; max-width: 1100px; margin: 0 auto; padding: 32px 28px 60px; }
     .tab-panel.active { display: block; }
 
     /* ── CARDS ── */
-    .card { background: #fff; border-radius: 14px; padding: 24px; box-shadow: 0 2px 10px rgba(74,111,165,0.08); margin-bottom: 24px; }
-    .card-title { font-family: 'Lora', serif; font-size: 16px; color: #1A2B3C; margin-bottom: 16px; }
+    .card { background: #1E3A5F; border-radius: 14px; padding: 24px; box-shadow: 0 2px 10px rgba(37,99,235,0.08); margin-bottom: 24px; }
+    .card-title { font-family: 'Lora', serif; font-size: 16px; color: #EFF6FF; margin-bottom: 16px; }
 
     /* ── ANON NOTICE ── */
-    .anon-notice { background: #EBF0F7; border-left: 4px solid #4A6FA5; border-radius: 0 10px 10px 0; padding: 11px 16px; font-size: 13px; color: #4A6FA5; margin-bottom: 24px; }
+    .anon-notice { background: #152642; border-left: 4px solid #2563EB; border-radius: 0 10px 10px 0; padding: 11px 16px; font-size: 13px; color: #2563EB; margin-bottom: 24px; }
 
     /* ── STAT GRID ── */
     .stats-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
     .stats-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(74,111,165,0.07); }
-    .stat-val { font-size: 28px; font-weight: 700; color: #4A6FA5; margin-bottom: 4px; }
-    .stat-lbl { font-size: 12px; color: #6b7280; line-height: 1.4; }
-    .stat-bench { font-size: 11px; color: #9ca3af; margin-top: 5px; font-style: italic; }
-    .stat-bar { height: 5px; background: #EBF0F7; border-radius: 3px; margin-top: 10px; }
-    .stat-bar-fill { height: 100%; border-radius: 3px; background: #4A6FA5; transition: width 0.6s ease; }
+    .stat-card { background: #1E3A5F; border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(37,99,235,0.07); }
+    .stat-val { font-size: 28px; font-weight: 700; color: #2563EB; margin-bottom: 4px; }
+    .stat-lbl { font-size: 12px; color: #94A3B8; line-height: 1.4; }
+    .stat-bench { font-size: 11px; color: #94A3B8; margin-top: 5px; font-style: italic; }
+    .stat-bar { height: 5px; background: #152642; border-radius: 3px; margin-top: 10px; }
+    .stat-bar-fill { height: 100%; border-radius: 3px; background: #2563EB; transition: width 0.6s ease; }
     .stat-bar-fill.amber { background: #f59e0b; }
     .stat-bar-fill.green { background: #10b981; }
 
     /* ── HEATMAP ── */
     .heatmap-scroll { overflow-x: auto; }
     .heatmap-table { border-collapse: collapse; font-size: 12px; min-width: 400px; }
-    .heatmap-table th { padding: 5px 6px; font-weight: 600; color: #6b7280; text-align: center; font-size: 11px; white-space: nowrap; background: none; }
+    .heatmap-table th { padding: 5px 6px; font-weight: 600; color: #94A3B8; text-align: center; font-size: 11px; white-space: nowrap; background: none; }
     .heatmap-table th.row-header { text-align: left; padding-right: 12px; }
     .heatmap-table td { width: 28px; height: 24px; text-align: center; }
     .hm-cell { width: 22px; height: 22px; border-radius: 4px; margin: 1px auto; }
     .hm-green  { background: #10b981; }
     .hm-amber  { background: #f59e0b; }
     .hm-red    { background: #f87171; }
-    .hm-empty  { background: #e5e7eb; }
-    .hm-future { background: #f9fafb; }
-    .hm-id     { font-size: 11px; font-weight: 600; color: #1A2B3C; padding-right: 12px; white-space: nowrap; }
+    .hm-empty  { background: #243F6B; }
+    .hm-future { background: #0D1F38; }
+    .hm-id     { font-size: 11px; font-weight: 600; color: #EFF6FF; padding-right: 12px; white-space: nowrap; }
 
     /* ── EARLY WARNING ── */
-    .warning-pill { display: inline-flex; align-items: center; gap: 6px; background: #fee2e2; color: #991b1b; border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 600; margin: 4px; }
+    .warning-pill { display: inline-flex; align-items: center; gap: 6px; background: #1c0606; color: #f87171; border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 600; margin: 4px; }
 
     /* ── LIVING EVIDENCE ── */
-    .evidence-card { background: #1A2B3C; border-radius: 14px; padding: 24px 26px; margin-bottom: 24px; }
-    .evidence-card .ev-title { font-family: 'Lora', serif; font-size: 14px; color: #9bb2ce; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-    .evidence-card .ev-line { font-size: 15px; color: #EBF0F7; line-height: 1.7; margin-bottom: 6px; }
-    .evidence-card .ev-cite { font-size: 12px; color: #4A6FA5; font-style: italic; }
+    .evidence-card { background: #0A1628; border-radius: 14px; padding: 24px 26px; margin-bottom: 24px; }
+    .evidence-card .ev-title { font-family: 'Lora', serif; font-size: 14px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .evidence-card .ev-line { font-size: 15px; color: #EFF6FF; line-height: 1.7; margin-bottom: 6px; }
+    .evidence-card .ev-cite { font-size: 12px; color: #2563EB; font-style: italic; }
 
     /* ── FILTER ROW ── */
     .filter-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-end; }
-    .filter-group label { display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .filter-group label { display: block; font-size: 12px; font-weight: 600; color: #94A3B8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
     .filter-group select, .filter-group input[type="date"] {
-      padding: 9px 12px; border: 1.5px solid #d1dae8; border-radius: 9px;
-      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #1A2B3C;
-      background: #fff; outline: none; -webkit-appearance: none; appearance: none;
+      padding: 9px 12px; border: 1.5px solid #243F6B; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #EFF6FF;
+      background: #0D1F38; outline: none; -webkit-appearance: none; appearance: none;
     }
-    .filter-group select:focus, .filter-group input[type="date"]:focus { border-color: #4A6FA5; }
-    .btn-filter-reset { padding: 9px 16px; border: 1.5px solid #d1dae8; border-radius: 9px; background: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #6b7280; cursor: pointer; align-self: flex-end; }
-    .btn-filter-reset:hover { border-color: #4A6FA5; color: #4A6FA5; }
+    .filter-group select:focus, .filter-group input[type="date"]:focus { border-color: #2563EB; }
+    .btn-filter-reset { padding: 9px 16px; border: 1.5px solid #243F6B; border-radius: 9px; background: #1E3A5F; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #94A3B8; cursor: pointer; align-self: flex-end; }
+    .btn-filter-reset:hover { border-color: #2563EB; color: #2563EB; }
 
     /* ── TABLES ── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { text-align: left; padding: 9px 12px; background: #EBF0F7; color: #4A6FA5; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
-    td { padding: 10px 12px; border-bottom: 1px solid #f3f4f6; }
+    th { text-align: left; padding: 9px 12px; background: #152642; color: #2563EB; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid #0D1F38; }
     tr:last-child td { border-bottom: none; }
     .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-    .badge-green { background: #d1fae5; color: #065f46; }
-    .badge-red   { background: #fee2e2; color: #991b1b; }
-    .badge-grey  { background: #f3f4f6; color: #6b7280; }
+    .badge-green { background: #052e16; color: #6ee7b7; }
+    .badge-red   { background: #1c0606; color: #f87171; }
+    .badge-grey  { background: #0D1F38; color: #94A3B8; }
 
     /* ── CHART CONTAINER ── */
     .chart-wrap { position: relative; height: 220px; margin-top: 12px; }
 
     /* ── EXPORT BUTTONS ── */
     .export-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px; }
-    .export-card { background: #fff; border-radius: 14px; padding: 24px; box-shadow: 0 2px 8px rgba(74,111,165,0.07); display: flex; flex-direction: column; gap: 10px; }
-    .export-card h4 { font-family: 'Lora', serif; font-size: 15px; color: #1A2B3C; }
-    .export-card p { font-size: 13px; color: #6b7280; line-height: 1.5; flex: 1; }
-    .btn-export { padding: 11px 18px; background: #4A6FA5; color: #fff; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
-    .btn-export:hover { background: #37577F; }
+    .export-card { background: #1E3A5F; border-radius: 14px; padding: 24px; box-shadow: 0 2px 8px rgba(37,99,235,0.07); display: flex; flex-direction: column; gap: 10px; }
+    .export-card h4 { font-family: 'Lora', serif; font-size: 15px; color: #EFF6FF; }
+    .export-card p { font-size: 13px; color: #94A3B8; line-height: 1.5; flex: 1; }
+    .btn-export { padding: 11px 18px; background: #2563EB; color: #EFF6FF; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+    .btn-export:hover { background: #1E3A5F; }
     .btn-export:disabled { background: #a0b4cc; cursor: not-allowed; }
-    .methods-note { font-size: 11px; color: #9ca3af; margin-top: 6px; font-style: italic; }
+    .methods-note { font-size: 11px; color: #94A3B8; margin-top: 6px; font-style: italic; }
 
-    .methods-preview { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; font-size: 13px; color: #374151; line-height: 1.7; white-space: pre-wrap; font-family: 'DM Sans', sans-serif; }
+    .methods-preview { background: #0D1F38; border: 1px solid #243F6B; border-radius: 10px; padding: 16px; font-size: 13px; color: #94A3B8; line-height: 1.7; white-space: pre-wrap; font-family: 'DM Sans', sans-serif; }
   </style>
 </head>
 <body>
@@ -128,7 +128,7 @@
 
 <header id="app-header" style="display:none;">
   <div class="logo"><h1><span class="neuro">Neuro</span><span class="fract">Fract</span>
-    <span style="font-size:13px;color:#9bb2ce;font-family:'DM Sans',sans-serif;font-weight:400;"> — Researcher</span></h1></div>
+    <span style="font-size:13px;color:#94A3B8;font-family:'DM Sans',sans-serif;font-weight:400;"> — Researcher</span></h1></div>
   <div class="header-right">
     <span class="researcher-name" id="researcher-name"></span>
     <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
@@ -164,13 +164,13 @@
   <div class="card" id="completion-card">
     <div class="card-title">Completion rate</div>
     <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
-      <span id="completion-pct" style="font-size:32px;font-weight:700;color:#4A6FA5;">—%</span>
-      <span style="font-size:13px;color:#6b7280;">of expected weekly LAEP assessments completed</span>
+      <span id="completion-pct" style="font-size:32px;font-weight:700;color:#2563EB;">—%</span>
+      <span style="font-size:13px;color:#94A3B8;">of expected weekly LAEP assessments completed</span>
     </div>
     <div class="stat-bar"><div class="stat-bar-fill" id="completion-bar" style="width:0%"></div></div>
     <div style="display:flex;justify-content:space-between;margin-top:6px;">
-      <span style="font-size:11px;color:#9ca3af;">Target: ≥60%</span>
-      <span style="font-size:11px;color:#9ca3af;">Research benchmark: 63.3% (Vansant et al. 2024, Scientific Reports)</span>
+      <span style="font-size:11px;color:#94A3B8;">Target: ≥60%</span>
+      <span style="font-size:11px;color:#94A3B8;">Research benchmark: 63.3% (Vansant et al. 2024, Scientific Reports)</span>
     </div>
   </div>
 
@@ -179,15 +179,15 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div class="card-title" style="margin:0;">Enrolment progress</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <label style="font-size:12px;color:#6b7280;">Target:</label>
+        <label style="font-size:12px;color:#94A3B8;">Target:</label>
         <input type="number" id="target-n" value="20" min="1" max="500"
-          style="width:64px;padding:5px 8px;border:1.5px solid #d1dae8;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;"
+          style="width:64px;padding:5px 8px;border:1.5px solid #243F6B;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;"
           oninput="updateEnrolment()" />
       </div>
     </div>
     <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
-      <span id="enrol-fraction" style="font-size:28px;font-weight:700;color:#4A6FA5;">— of —</span>
-      <span style="font-size:13px;color:#6b7280;">target participants enrolled</span>
+      <span id="enrol-fraction" style="font-size:28px;font-weight:700;color:#2563EB;">— of —</span>
+      <span style="font-size:13px;color:#94A3B8;">target participants enrolled</span>
     </div>
     <div class="stat-bar"><div class="stat-bar-fill green" id="enrol-bar" style="width:0%"></div></div>
   </div>
@@ -195,15 +195,15 @@
   <!-- Data Completeness Heatmap -->
   <div class="card">
     <div class="card-title">Data completeness heatmap
-      <span style="float:right;font-size:11px;color:#9ca3af;font-family:'DM Sans',sans-serif;font-weight:400;">
+      <span style="float:right;font-size:11px;color:#94A3B8;font-family:'DM Sans',sans-serif;font-weight:400;">
         <span style="display:inline-block;width:10px;height:10px;background:#10b981;border-radius:2px;vertical-align:middle;"></span> Completed &nbsp;
         <span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;vertical-align:middle;"></span> Partial &nbsp;
         <span style="display:inline-block;width:10px;height:10px;background:#f87171;border-radius:2px;vertical-align:middle;"></span> Missed &nbsp;
-        <span style="display:inline-block;width:10px;height:10px;background:#e5e7eb;border-radius:2px;vertical-align:middle;"></span> Pre-enrolment
+        <span style="display:inline-block;width:10px;height:10px;background:#243F6B;border-radius:2px;vertical-align:middle;"></span> Pre-enrolment
       </span>
     </div>
     <div class="heatmap-scroll" id="heatmap-container">
-      <p style="color:#9ca3af;font-size:13px;">Loading…</p>
+      <p style="color:#94A3B8;font-size:13px;">Loading…</p>
     </div>
   </div>
 
@@ -211,7 +211,7 @@
   <div class="card">
     <div class="card-title">⚠ Early warning — 2+ consecutive missed weeks</div>
     <div id="early-warning-list">
-      <p style="color:#9ca3af;font-size:13px;">Loading…</p>
+      <p style="color:#94A3B8;font-size:13px;">Loading…</p>
     </div>
   </div>
 
@@ -260,17 +260,17 @@
       </div>
       <button class="btn-filter-reset" onclick="resetFilters()">Reset</button>
     </div>
-    <div id="filter-summary" style="font-size:13px;color:#6b7280;"></div>
+    <div id="filter-summary" style="font-size:13px;color:#94A3B8;"></div>
   </div>
 
   <!-- LAEP distribution chart -->
   <div class="card" id="explorer-chart-card" style="display:none;">
     <div class="card-title">LAEP score distribution</div>
     <div class="chart-wrap"><canvas id="laep-dist-chart"></canvas></div>
-    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:#9ca3af;">
-      <span><span style="display:inline-block;width:10px;height:10px;background:#d1fae5;border-radius:2px;vertical-align:middle;"></span> &lt;30 (well managed)</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#fef3c7;border-radius:2px;vertical-align:middle;"></span> 30–36.4 (watch)</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#fee2e2;border-radius:2px;vertical-align:middle;"></span> ≥36.5 (discontinuation risk)</span>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:#94A3B8;">
+      <span><span style="display:inline-block;width:10px;height:10px;background:#052e16;border-radius:2px;vertical-align:middle;"></span> &lt;30 (well managed)</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#1c1506;border-radius:2px;vertical-align:middle;"></span> 30–36.4 (watch)</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#1c0606;border-radius:2px;vertical-align:middle;"></span> ≥36.5 (discontinuation risk)</span>
     </div>
   </div>
 
@@ -291,7 +291,7 @@
           </tr>
         </thead>
         <tbody id="explorer-tbody">
-          <tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:28px;">Loading…</td></tr>
+          <tr><td colspan="7" style="text-align:center;color:#94A3B8;padding:28px;">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -334,7 +334,7 @@
   <div class="card">
     <div class="card-title">Auto-generated methods paragraph preview</div>
     <div class="methods-preview" id="methods-preview">Loading…</div>
-    <p style="font-size:12px;color:#9ca3af;margin-top:10px;">This text is dynamically generated from live Firestore data. Download with any export above.</p>
+    <p style="font-size:12px;color:#94A3B8;margin-top:10px;">This text is dynamically generated from live Firestore data. Download with any export above.</p>
   </div>
 
 </div>
@@ -441,15 +441,15 @@ function renderDashboard() {
     </div>
     <div class="stat-card">
       <div class="stat-val">${allAssessments.length}</div>
-      <div class="stat-lbl">Total assessments<br><span style="font-size:11px;color:#9ca3af;">LAEP: ${laep.length} · SSQ: ${ssq.length} · QOLIE: ${qolie.length}</span></div>
+      <div class="stat-lbl">Total assessments<br><span style="font-size:11px;color:#94A3B8;">LAEP: ${laep.length} · SSQ: ${ssq.length} · QOLIE: ${qolie.length}</span></div>
     </div>
     <div class="stat-card">
       <div class="stat-val">${meanLaep !== null ? meanLaep.toFixed(1) : '—'}</div>
-      <div class="stat-lbl">Mean LAEP${sdLaep !== null ? ` (SD ${sdLaep.toFixed(1)})` : ''}<br><span style="font-size:11px;color:#9ca3af;">Range 19–76</span></div>
+      <div class="stat-lbl">Mean LAEP${sdLaep !== null ? ` (SD ${sdLaep.toFixed(1)})` : ''}<br><span style="font-size:11px;color:#94A3B8;">Range 19–76</span></div>
     </div>
     <div class="stat-card">
       <div class="stat-val">${laepScores.length ? Math.round(aboveThreshold / laepScores.length * 100) + '%' : '—'}</div>
-      <div class="stat-lbl">LAEP ≥36.5<br><span style="font-size:11px;color:#9ca3af;">Discontinuation risk (Romoli 2018)</span></div>
+      <div class="stat-lbl">LAEP ≥36.5<br><span style="font-size:11px;color:#94A3B8;">Discontinuation risk (Romoli 2018)</span></div>
     </div>
   `;
 
@@ -540,7 +540,7 @@ function renderCompletionRate(laep) {
 function renderHeatmap(laep) {
   if (!laep.length) {
     document.getElementById('heatmap-container').innerHTML =
-      '<p style="color:#9ca3af;font-size:13px;">No assessment data yet.</p>';
+      '<p style="color:#94A3B8;font-size:13px;">No assessment data yet.</p>';
     return;
   }
 
@@ -659,7 +659,7 @@ window.applyFilters = function() {
   // Table
   const tbody = document.getElementById('explorer-tbody');
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#9ca3af;padding:24px;">No results for these filters.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#94A3B8;padding:24px;">No results for these filters.</td></tr>';
     document.getElementById('explorer-chart-card').style.display = 'none';
     return;
   }
@@ -682,7 +682,7 @@ window.applyFilters = function() {
     </tr>`;
   }).join('');
   if (filtered.length > 200) {
-    tbody.innerHTML += `<tr><td colspan="7" style="text-align:center;color:#9ca3af;font-size:12px;padding:10px;">Showing first 200 of ${filtered.length} — export for full dataset</td></tr>`;
+    tbody.innerHTML += `<tr><td colspan="7" style="text-align:center;color:#94A3B8;font-size:12px;padding:10px;">Showing first 200 of ${filtered.length} — export for full dataset</td></tr>`;
   }
 
   // LAEP distribution chart
@@ -709,7 +709,7 @@ function renderDistChart(scores) {
   });
 
   const colors = bins.map(b =>
-    b.start >= 36 ? '#fca5a5' : b.start >= 30 ? '#fde68a' : '#6ee7b7'
+    b.start >= 36 ? '#fca5a5' : b.start >= 30 ? '#78350f' : '#6ee7b7'
   );
 
   const ctx = document.getElementById('laep-dist-chart').getContext('2d');
@@ -723,7 +723,7 @@ function renderDistChart(scores) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 1 } },
+        y: { beginAtZero: true, grid: { color: '#0D1F38' }, ticks: { stepSize: 1 } },
         x: { grid: { display: false } }
       }
     }
