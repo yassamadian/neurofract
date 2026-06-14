@@ -250,6 +250,45 @@
       border-radius: 10px; font-size: 14px; font-weight: 500;
       display: none; z-index: 200; white-space: nowrap;
     }
+
+    /* ── MESSAGES ── */
+    .msg-unread-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #ef4444; color: #fff;
+      border-radius: 20px; padding: 1px 7px;
+      font-size: 10px; font-weight: 700;
+      margin-left: 6px; vertical-align: middle;
+    }
+    .msg-card { background: #fff; border-radius: 14px; padding: 0; margin-bottom: 18px; overflow: hidden; }
+    .msg-card-header {
+      padding: 16px 20px 14px; border-bottom: 1px solid #f3f4f6;
+      font-family: 'Lora', serif; font-size: 15px; color: #1A2B3C;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .msg-list {
+      max-height: 300px; overflow-y: auto;
+      padding: 14px 18px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .msg-bubble { max-width: 82%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
+    .msg-bubble.from-patient   { background: #EBF0F7; color: #1A2B3C; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg-bubble.from-clinician { background: #1A2B3C; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg-meta { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+    .msg-meta.right { text-align: right; }
+    .msg-empty-note { text-align: center; padding: 20px 0; color: #9ca3af; font-size: 13px; }
+    .msg-compose { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+    .msg-input {
+      flex: 1; padding: 9px 13px; border: 1.5px solid #d1dae8; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #1A2B3C;
+      outline: none; resize: none;
+    }
+    .msg-input:focus { border-color: #4A6FA5; }
+    .msg-send-btn {
+      padding: 9px 16px; background: #1A2B3C; color: #fff; border: none;
+      border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+      font-weight: 600; cursor: pointer;
+    }
+    .msg-send-btn:hover { background: #253a50; }
+    .msg-send-btn:disabled { background: #9ca3af; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -329,7 +368,7 @@ import { auth, db } from './firebase-config.js';
 import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   doc, getDoc, collection, query, where, orderBy,
-  getDocs, updateDoc, serverTimestamp
+  getDocs, addDoc, updateDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 // ── LAEP item names (for item-level breakdown)
@@ -399,7 +438,19 @@ async function loadAll() {
     const weeksTo = (slope > 0 && lastScore < 36.5) ? Math.round((36.5 - lastScore) / slope) : null;
     const triage  = triageLevel(p, laep, ssq, qolie, slope, weeksTo);
 
-    return { ...p, laep, ssq, qolie, triage, slope, weeksTo };
+    // Unread messages from this patient
+    let unreadCount = 0;
+    try {
+      const mSnap = await getDocs(query(
+        collection(db, 'messages'),
+        where('patientId', '==', p.id),
+        where('sender', '==', 'patient'),
+        where('read', '==', false)
+      ));
+      unreadCount = mSnap.size;
+    } catch(e) {}
+
+    return { ...p, laep, ssq, qolie, triage, slope, weeksTo, unreadCount };
   }));
 
   renderTriage();
@@ -481,9 +532,11 @@ function renderPatientRows(containerId, patients) {
     const lastL = p.laep.at(-1);
     const scoreText = lastL ? `LAEP ${Math.round(lastL.score)}` : 'No LAEP yet';
     const dotCls = p.triage === 'red' ? 'dot-red' : p.triage === 'amber' ? 'dot-amber' : 'dot-green';
+    const unreadChip = (p.unreadCount || 0) > 0
+      ? `<span class="msg-unread-chip">${p.unreadCount}</span>` : '';
     return `<div class="patient-item" id="pi-${p.id}" onclick="selectPatient('${p.id}')">
       <div class="patient-item-top">
-        <span class="patient-name-label">${p.name}</span>
+        <span class="patient-name-label">${p.name}${unreadChip}</span>
         <span class="patient-triage-dot ${dotCls}"></span>
       </div>
       <div class="patient-meta">${scoreText} · ${p.condition || '—'}</div>
@@ -640,12 +693,119 @@ function renderPatientView(p) {
       </div>
       ${status ? `<div class="status-note">Last action recorded — ${new Date().toLocaleDateString('en-GB')}</div>` : ''}
     </div>
+
+    <!-- g. Message thread -->
+    <div class="msg-card" id="msg-card">
+      <div class="msg-card-header">
+        💬 Messages with ${patient.name.split(' ')[0]}
+        <span id="clin-unread-chip" style="display:none;" class="msg-unread-chip"></span>
+      </div>
+      <div class="msg-list" id="clin-msg-list">
+        <div class="msg-empty-note">Loading messages…</div>
+      </div>
+      <div class="msg-compose">
+        <textarea class="msg-input" id="clin-msg-input" rows="1" placeholder="Write a message to ${patient.name.split(' ')[0]}…"></textarea>
+        <button class="msg-send-btn" id="clin-msg-send" onclick="clinicianSendMessage()">Send</button>
+      </div>
+    </div>
   `;
 
   renderTrendChart('chart-laep', laep, '#4A6FA5', 19, 76,
     [{ v: 36.5, c: '#D4943C', label: '36.5' }, { v: 45, c: '#D65D5D', label: '45' }]);
   if (ssq.length)   renderTrendChart('chart-ssq',   ssq,   '#37577F', 1,  7,   [{ v: 5, c: '#D65D5D', label: '5' }]);
   if (qolie.length) renderTrendChart('chart-qolie', qolie, '#4A6FA5', 0,  100, [{ v: 59.8, c: '#4A9B6E', label: '59.8' }, { v: 40, c: '#D4943C', label: '40' }]);
+
+  // Load messages for this patient
+  loadClinicianMessages(p.id);
+}
+
+// ── CLINICIAN MESSAGES ────────────────────────────────────────────────
+
+async function loadClinicianMessages(patientId) {
+  try {
+    const q = query(
+      collection(db, 'messages'),
+      where('patientId', '==', patientId),
+      orderBy('timestamp', 'asc')
+    );
+    const snap = await getDocs(q);
+    const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Unread from patient
+    const unread = msgs.filter(m => m.sender === 'patient' && !m.read);
+    const chip = document.getElementById('clin-unread-chip');
+    if (chip) {
+      if (unread.length) { chip.textContent = unread.length + ' new'; chip.style.display = ''; }
+      else chip.style.display = 'none';
+    }
+
+    // Render
+    const list = document.getElementById('clin-msg-list');
+    if (!list) return;
+    if (!msgs.length) {
+      list.innerHTML = '<div class="msg-empty-note">No messages yet. Start the conversation below.</div>';
+    } else {
+      list.innerHTML = msgs.map(m => {
+        const fromPatient = m.sender === 'patient';
+        const cls = fromPatient ? 'from-patient' : 'from-clinician';
+        const time = m.timestamp?.toDate
+          ? m.timestamp.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : '';
+        const who = fromPatient ? 'Patient' : 'You';
+        return `<div>
+          <div class="msg-bubble ${cls}">${escHtml(m.text)}</div>
+          <div class="msg-meta${fromPatient ? '' : ' right'}">${who} · ${time}${fromPatient && !m.read ? ' · <span style="color:#4A6FA5;font-weight:600;">New</span>' : ''}</div>
+        </div>`;
+      }).join('');
+      list.scrollTop = list.scrollHeight;
+    }
+
+    // Mark patient messages as read
+    const unreadIds = snap.docs.filter(d => d.data().sender === 'patient' && !d.data().read).map(d => d.id);
+    for (const id of unreadIds) {
+      updateDoc(doc(db, 'messages', id), { read: true }).catch(() => {});
+    }
+    // Clear unread from sidebar for this patient
+    if (unreadIds.length) {
+      const p = allPatients.find(x => x.id === patientId);
+      if (p) { p.unreadCount = 0; renderTriage(); }
+      if (chip) chip.style.display = 'none';
+    }
+  } catch(e) {
+    console.warn('Messages load error:', e);
+    const list = document.getElementById('clin-msg-list');
+    if (list) list.innerHTML = '<div class="msg-empty-note" style="color:#9ca3af;">Messages unavailable.</div>';
+  }
+}
+
+window.clinicianSendMessage = async function() {
+  const input = document.getElementById('clin-msg-input');
+  const text = input.value.trim();
+  if (!text || !activePatientId) return;
+  const btn = document.getElementById('clin-msg-send');
+  btn.disabled = true;
+
+  try {
+    await addDoc(collection(db, 'messages'), {
+      patientId:   activePatientId,
+      clinicianId: clinicianUid,
+      sender:      'clinician',
+      text,
+      timestamp:   serverTimestamp(),
+      read:        false
+    });
+    input.value = '';
+    await loadClinicianMessages(activePatientId);
+  } catch(e) {
+    console.error('Send error:', e);
+    showToast('Could not send — please try again.');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ── HEADLINE BUILDER ──────────────────────────────────────────────────

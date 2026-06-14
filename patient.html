@@ -424,6 +424,66 @@
       font-size: 12px; color: #9ca3af; text-align: center;
       margin-bottom: 20px; line-height: 1.5;
     }
+
+    /* ── MESSAGES ── */
+    .msg-section { margin-top: 8px; margin-bottom: 8px; }
+    .msg-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; cursor: pointer; user-select: none;
+    }
+    .msg-section-title {
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: #1A2B3C;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .msg-unread-badge {
+      background: #ef4444; color: #fff;
+      border-radius: 20px; padding: 2px 8px;
+      font-size: 11px; font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .msg-section-toggle { font-size: 13px; color: #4A6FA5; font-weight: 500; }
+    .msg-thread {
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(74,111,165,0.07);
+      overflow: hidden; margin-bottom: 12px;
+    }
+    .msg-list { max-height: 280px; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .msg-bubble {
+      max-width: 85%;
+      padding: 10px 14px; border-radius: 16px;
+      font-size: 14px; line-height: 1.5;
+    }
+    .msg-bubble.from-clinician {
+      background: #EBF0F7; color: #1A2B3C; align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .msg-bubble.from-patient {
+      background: #4A6FA5; color: #fff; align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-meta { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+    .msg-meta.right { text-align: right; }
+    .msg-empty { text-align: center; padding: 20px 0; color: #9ca3af; font-size: 13px; }
+    .msg-compose { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #f3f4f6; }
+    .msg-input {
+      flex: 1; padding: 10px 14px; border: 1.5px solid #d1dae8; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1A2B3C;
+      outline: none; resize: none;
+    }
+    .msg-input:focus { border-color: #4A6FA5; }
+    .msg-send-btn {
+      padding: 10px 16px; background: #4A6FA5; color: #fff; border: none;
+      border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+      font-weight: 600; cursor: pointer; white-space: nowrap;
+    }
+    .msg-send-btn:hover { background: #37577F; }
+    .msg-send-btn:disabled { background: #a0b4cc; cursor: not-allowed; }
+
+    /* Header unread dot */
+    .header-msg-dot {
+      width: 8px; height: 8px; background: #ef4444;
+      border-radius: 50%; display: inline-block; margin-left: 4px;
+    }
   </style>
 </head>
 <body>
@@ -438,7 +498,7 @@
   <div class="header-inner">
     <div class="logo-text"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
     <div class="header-user">
-      <span id="header-name"></span>
+      <span id="header-name"></span><span id="header-msg-dot" class="header-msg-dot" style="display:none;" title="Unread message from your clinician"></span>
       <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
     </div>
   </div>
@@ -582,6 +642,28 @@
       </div>
     </div>
 
+    <!-- Messages from clinician -->
+    <div class="msg-section" id="msg-section" style="display:none;">
+      <div class="msg-section-header" onclick="toggleSection('msgs')">
+        <div class="msg-section-title">
+          Messages
+          <span class="msg-unread-badge" id="msg-unread-badge" style="display:none;"></span>
+        </div>
+        <span class="msg-section-toggle" id="toggle-msgs">Hide ↑</span>
+      </div>
+      <div class="collapsible-body open" id="body-msgs">
+        <div class="msg-thread">
+          <div class="msg-list" id="patient-msg-list">
+            <div class="msg-empty">No messages yet.</div>
+          </div>
+          <div class="msg-compose">
+            <textarea class="msg-input" id="patient-msg-input" rows="1" placeholder="Write to your clinician…"></textarea>
+            <button class="msg-send-btn" id="patient-msg-send" onclick="patientSendMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Share with clinician -->
     <div id="share-section" style="display:none;margin-top:8px;">
       <button class="btn-share" id="btn-share-dashboard" onclick="generatePDF()">
@@ -681,7 +763,7 @@ import { LAEP_INFO, SSQ_INFO, QOLIE_INFO } from './info-text.js';
 import { signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   doc, getDoc, setDoc, addDoc, collection,
-  query, where, orderBy, getDocs, serverTimestamp
+  query, where, orderBy, getDocs, updateDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 // ── INSTRUMENTS ──────────────────────────────────────────────────────
@@ -886,6 +968,9 @@ async function loadDashboard() {
   if (assessmentHistory.length > 0) {
     document.getElementById('share-section').style.display = '';
   }
+
+  // Load messages (always — even before first assessment)
+  await loadPatientMessages();
 
   // Greeting sub
   document.getElementById('greeting-sub').textContent =
@@ -1124,6 +1209,108 @@ window.closeInfoSheet = function(e) {
     document.getElementById('info-overlay').classList.remove('open');
   }
 };
+
+// ── PATIENT MESSAGES ─────────────────────────────────────────────
+
+async function loadPatientMessages() {
+  try {
+    const q = query(
+      collection(db, 'messages'),
+      where('patientId', '==', currentUser.uid),
+      orderBy('timestamp', 'asc')
+    );
+    const snap = await getDocs(q);
+    const msgs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Show section (always, even if empty — so patient can initiate)
+    document.getElementById('msg-section').style.display = '';
+
+    // Count unread (messages from clinician not yet read)
+    const unread = msgs.filter(m => m.sender === 'clinician' && !m.read);
+    const badge = document.getElementById('msg-unread-badge');
+    const dot   = document.getElementById('header-msg-dot');
+    if (unread.length) {
+      badge.textContent = unread.length;
+      badge.style.display = '';
+      dot.style.display = '';
+    } else {
+      badge.style.display = 'none';
+      dot.style.display = 'none';
+    }
+
+    // Render thread
+    const list = document.getElementById('patient-msg-list');
+    if (!msgs.length) {
+      list.innerHTML = '<div class="msg-empty">No messages yet.<br>Send a message to your clinical team.</div>';
+    } else {
+      list.innerHTML = msgs.map(m => {
+        const isFromClinician = m.sender === 'clinician';
+        const cls = isFromClinician ? 'from-clinician' : 'from-patient';
+        const time = m.timestamp?.toDate
+          ? m.timestamp.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : '';
+        const who = isFromClinician ? 'Your clinician' : 'You';
+        return `<div>
+          <div class="msg-bubble ${cls}">${escHtml(m.text)}</div>
+          <div class="msg-meta${isFromClinician ? '' : ' right'}">${who} · ${time}${m.read || !isFromClinician ? '' : ' · <span style="color:#4A6FA5;font-weight:600;">New</span>'}</div>
+        </div>`;
+      }).join('');
+      list.scrollTop = list.scrollHeight;
+    }
+
+    // Mark clinician messages as read
+    const unreadIds = snap.docs.filter(d => d.data().sender === 'clinician' && !d.data().read).map(d => d.id);
+    for (const id of unreadIds) {
+      updateDoc(doc(db, 'messages', id), { read: true }).catch(() => {});
+    }
+    if (unreadIds.length) {
+      badge.style.display = 'none';
+      dot.style.display = 'none';
+    }
+  } catch(e) {
+    console.warn('Messages load error:', e);
+  }
+}
+
+window.patientSendMessage = async function() {
+  const input = document.getElementById('patient-msg-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const btn = document.getElementById('patient-msg-send');
+  btn.disabled = true;
+
+  // Find clinicianEmail from patientData — resolve to clinicianId via users collection
+  let clinicianId = null;
+  if (patientData?.clinicianEmail) {
+    try {
+      // Query users by email to find clinicianId
+      const uSnap = await getDocs(query(collection(db, 'users'), where('email', '==', patientData.clinicianEmail)));
+      if (!uSnap.empty) clinicianId = uSnap.docs[0].id;
+    } catch(e) {}
+  }
+
+  try {
+    await addDoc(collection(db, 'messages'), {
+      patientId:   currentUser.uid,
+      clinicianId: clinicianId || null,
+      sender:      'patient',
+      text,
+      timestamp:   serverTimestamp(),
+      read:        false
+    });
+    input.value = '';
+    await loadPatientMessages();
+  } catch(e) {
+    console.error('Send error:', e);
+    alert('Could not send — please try again.');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 // ── QUESTIONNAIRE ─────────────────────────────────────────────────
 

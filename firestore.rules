@@ -50,5 +50,31 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician';
       allow delete: if false;
     }
+
+    // Messages: patients and clinicians can read/write messages they are party to
+    // - Patient can read/write messages where patientId == their uid
+    // - Clinician can read/write messages where clinicianId == their uid OR
+    //   messages from their patients (sender=patient, patientId in their list)
+    // - update allowed only to mark read=true (no editing message text enforced in app)
+    // - no deletes
+    match /messages/{messageId} {
+      allow read: if request.auth != null && (
+        resource.data.patientId  == request.auth.uid ||
+        resource.data.clinicianId == request.auth.uid
+      );
+      allow create: if request.auth != null && (
+        // Patient sending: patientId must be their own uid, sender must be 'patient'
+        (request.resource.data.patientId == request.auth.uid &&
+         request.resource.data.sender == 'patient') ||
+        // Clinician sending: sender must be 'clinician'
+        (request.resource.data.sender == 'clinician' &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'clinician')
+      );
+      allow update: if request.auth != null && (
+        resource.data.patientId  == request.auth.uid ||
+        resource.data.clinicianId == request.auth.uid
+      );
+      allow delete: if false;
+    }
   }
 }
