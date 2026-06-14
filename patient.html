@@ -20,28 +20,54 @@
 
     /* ── HEADER ── */
     #app-header {
-      background: #1E3A5F;
-      border-bottom: 1px solid #243F6B;
+      background: #0A1628;
+      border-bottom: 1px solid #1E3A5F;
       position: sticky; top: 0; z-index: 50;
     }
     .header-inner {
       max-width: 480px; margin: 0 auto;
-      padding: 14px 20px;
+      padding: 16px 20px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .logo-text { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
+    .header-left { display: flex; flex-direction: column; gap: 1px; }
+    .logo-text { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; line-height: 1; }
     .logo-text .neuro { color: #EFF6FF; }
     .logo-text .fract { color: #2563EB; }
-    .header-user { display: flex; align-items: center; gap: 12px; }
-    .header-user span { font-size: 13px; color: #94A3B8; }
-    .btn-signout {
-      padding: 6px 14px;
-      border: 1.5px solid #243F6B; border-radius: 8px;
-      background: #1E3A5F; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; color: #94A3B8; cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
+    .header-greeting { font-size: 12px; color: #94A3B8; margin-top: 3px; }
+
+    /* Hamburger */
+    .hamburger-btn {
+      width: 40px; height: 40px; border-radius: 10px;
+      border: 1.5px solid #243F6B; background: #1E3A5F;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 5px; cursor: pointer;
+      position: relative;
     }
-    .btn-signout:hover { border-color: #2563EB; color: #2563EB; }
+    .hamburger-btn span {
+      display: block; width: 18px; height: 2px;
+      background: #94A3B8; border-radius: 2px; transition: all 0.2s;
+    }
+    .hamburger-menu {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: #1E3A5F; border: 1.5px solid #243F6B; border-radius: 14px;
+      padding: 8px; min-width: 180px; display: none; z-index: 200;
+      box-shadow: 0 8px 24px rgba(10,22,40,0.5);
+    }
+    .hamburger-menu.open { display: block; }
+    .hmenu-item {
+      display: block; width: 100%; padding: 12px 16px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: #94A3B8; background: none; border: none; border-radius: 10px;
+      text-align: left; cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .hmenu-item:hover { background: #243F6B; color: #EFF6FF; }
+    .hmenu-item.danger:hover { color: #f87171; background: #1c0606; }
+
+    /* Unread dot in header area */
+    .header-msg-dot {
+      width: 8px; height: 8px; background: #ef4444;
+      border-radius: 50%; display: inline-block; margin-left: 4px;
+    }
 
     /* ── VIEWS ── */
     .view { display: none; }
@@ -75,111 +101,59 @@
     .btn-primary:hover { background: #1d4ed8; }
     .btn-primary:disabled { background: #a0b4cc; cursor: not-allowed; }
 
-    /* ── DASHBOARD: RECOVERY TODAY CARD ── */
+    /* ── DASHBOARD: RECOVERY CARD ── */
     .recovery-card {
       background: #1E3A5F;
-      border-radius: 18px;
-      padding: 24px 22px 20px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 12px rgba(37,99,235,0.10);
-      border-left: 4px solid #2563EB;
-    }
-    .recovery-card.all-caught-up { border-left-color: #6ee7b7; }
-    .recovery-card.due { border-left-color: #fcd34d; }
-
-    .recovery-status {
-      font-family: 'Lora', serif;
-      font-size: 19px;
-      font-weight: 600;
-      color: #EFF6FF;
-      margin-bottom: 10px;
-      line-height: 1.35;
-    }
-    .recovery-status .status-icon { margin-right: 6px; }
-
-    .recovery-progress {
-      font-size: 14px;
-      color: #2563EB;
-      font-weight: 500;
-      line-height: 1.5;
-    }
-
-    /* ── STREAK ── */
-    .streak-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #1c1506;
-      border: 1.5px solid #f59e0b;
       border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #fcd34d;
-      margin-bottom: 18px;
+      padding: 22px 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.12);
+    }
+    .rc-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px; margin-bottom: 12px;
+    }
+    .rc-title {
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 600;
+      color: #EFF6FF; line-height: 1.3;
+    }
+    .rc-streak {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 700; color: #F59E0B;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .rc-last-date {
+      font-size: 13px; color: #94A3B8; margin-bottom: 14px; line-height: 1.4;
+    }
+    .rc-status {
+      font-size: 16px; font-weight: 600; color: #EFF6FF; line-height: 1.3;
     }
 
-    /* ── QUICK ACTIONS ── */
-    .quick-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 28px;
+    /* ── MAIN CHECK-IN BUTTON ── */
+    .btn-checkin-main {
+      width: 100%; height: 56px;
+      background: #2563EB; color: #EFF6FF;
+      border: none; border-radius: 16px;
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 600;
+      cursor: pointer; margin-bottom: 24px;
+      transition: background 0.2s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
     }
-    .quick-actions.single { grid-template-columns: 1fr; }
-
-    .qa-btn {
-      padding: 16px 14px;
-      border-radius: 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-      transition: all 0.18s;
-      text-align: left;
-      width: 100%;
-    }
-    .qa-btn .qa-icon { font-size: 22px; margin-bottom: 2px; }
-    .qa-btn-seizure {
-      background: #0A1628;
-      color: #EFF6FF;
-    }
-    .qa-btn-seizure:hover { background: #253a50; }
-    .qa-btn-checkin {
-      background: #2563EB;
-      color: #EFF6FF;
-    }
-    .qa-btn-checkin:hover { background: #1d4ed8; }
+    .btn-checkin-main:hover { background: #1d4ed8; }
+    .btn-checkin-main:active { transform: scale(0.98); }
 
     /* ── SECTION HEADER WITH TOGGLE ── */
     .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      cursor: pointer;
-      user-select: none;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; cursor: pointer; user-select: none;
     }
     .section-title {
-      font-family: 'Lora', serif;
-      font-size: 17px;
-      font-weight: 600;
-      color: #EFF6FF;
+      font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: #EFF6FF;
     }
-    .section-toggle {
-      font-size: 13px;
-      color: #2563EB;
-      font-weight: 500;
-    }
+    .section-toggle { font-size: 13px; color: #2563EB; font-weight: 500; }
 
     /* ── ASSESSMENT CARDS ── */
     .assessment-cards { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
-
     .assess-card {
       background: #1E3A5F; border-radius: 14px; padding: 16px 18px;
       display: flex; align-items: center; justify-content: space-between;
@@ -199,41 +173,64 @@
     .assess-card p { font-size: 12px; color: #94A3B8; }
     .assess-arrow { font-size: 18px; color: #2563EB; }
 
-    /* ── HISTORY TABS ── */
-    .history-tabs {
-      display: flex;
-      border-bottom: 2px solid #152642;
-      margin-bottom: 16px;
+    /* ── WEEK HISTORY PILLS ── */
+    .history-section { margin-bottom: 24px; }
+    .history-section-label {
+      font-size: 12px; font-weight: 600; color: #94A3B8;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
     }
-    .history-tab {
-      padding: 8px 16px;
-      font-size: 14px; font-weight: 500; color: #94A3B8;
-      cursor: pointer; border-bottom: 2px solid transparent;
-      margin-bottom: -2px; background: none; border-top: none;
-      border-left: none; border-right: none;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.15s;
+    .week-pills-row {
+      display: flex; gap: 10px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none;
     }
-    .history-tab.active { color: #2563EB; border-bottom-color: #2563EB; }
+    .week-pills-row::-webkit-scrollbar { display: none; }
+    .week-pill {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 16px; border-radius: 30px;
+      background: #1E3A5F; border: 1.5px solid #243F6B;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+      color: #EFF6FF; cursor: pointer; white-space: nowrap;
+      transition: border-color 0.15s, background 0.15s; flex-shrink: 0;
+    }
+    .week-pill:hover { border-color: #2563EB; background: #152642; }
+    .week-pill.active { border-color: #2563EB; background: #152642; }
+    .week-pill.missed { border-color: #1c0606; }
+    .pill-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .pill-dot-green { background: #10B981; }
+    .pill-dot-amber { background: #F59E0B; }
+    .pill-dot-red   { background: #DC2626; }
+    .pill-dot-grey  { background: #243F6B; }
 
-    .history-card {
-      background: #1E3A5F; border-radius: 14px; padding: 4px 20px 8px;
-      box-shadow: 0 2px 8px rgba(37,99,235,0.07); margin-bottom: 24px;
+    .pill-accordion {
+      background: #0F2040; border-radius: 14px; padding: 16px 18px;
+      margin-top: 10px; border: 1px solid #1E3A5F;
     }
-    .history-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 0; border-bottom: 1px solid #0D1F38;
+    .pill-acc-date { font-size: 12px; color: #94A3B8; margin-bottom: 8px; }
+    .pill-acc-summary { font-size: 15px; color: #EFF6FF; line-height: 1.55; }
+    .pill-acc-items { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .pill-acc-item {
+      padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 600;
     }
-    .history-item:last-child { border-bottom: none; }
-    .history-type { font-weight: 600; font-size: 14px; }
-    .history-date { font-size: 12px; color: #94A3B8; margin-top: 2px; }
-    .history-badge {
-      font-size: 12px; font-weight: 600;
-      padding: 4px 12px; border-radius: 20px;
+
+    /* ── TIP CARD ── */
+    .tip-card {
+      background: #0F2040; border-radius: 16px; padding: 18px 20px;
+      margin-bottom: 24px; border: 1px solid #1E3A5F;
     }
+    .tip-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #2563EB; margin-bottom: 8px;
+    }
+    .tip-text {
+      font-size: 14px; color: #94A3B8; line-height: 1.65;
+    }
+
+    /* Legacy badges still used by results / shared sections */
     .badge-green { background: #052e16; color: #6ee7b7; }
     .badge-amber { background: #1c1506; color: #fcd34d; }
     .badge-red   { background: #1c0606; color: #f87171; }
+    .badge-grey  { background: #0D1F38; color: #94A3B8; }
+    .history-badge { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
 
     /* ── CHART ── */
     .chart-card {
@@ -496,10 +493,20 @@
 <!-- Header -->
 <header id="app-header" style="display:none;">
   <div class="header-inner">
-    <div class="logo-text"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
-    <div class="header-user">
-      <span id="header-name"></span><span id="header-msg-dot" class="header-msg-dot" style="display:none;" title="Unread message from your clinician"></span>
-      <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
+    <div class="header-left">
+      <div class="logo-text"><span class="neuro">Neuro</span><span class="fract">Fract</span></div>
+      <div class="header-greeting" id="header-greeting"></div>
+    </div>
+    <div style="position:relative;">
+      <button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()" aria-label="Menu">
+        <span></span><span></span><span></span>
+        <span id="header-msg-dot" class="header-msg-dot" style="display:none;position:absolute;top:6px;right:6px;width:7px;height:7px;"></span>
+      </button>
+      <div class="hamburger-menu" id="hamburger-menu">
+        <button class="hmenu-item" onclick="openSeizureLog();toggleHamburger()">⚡ Log a seizure</button>
+        <button class="hmenu-item" onclick="toggleHamburger();showView('dashboard')">🏠 Home</button>
+        <button class="hmenu-item danger" onclick="handleSignOut()">Sign out</button>
+      </div>
     </div>
   </div>
 </header>
@@ -552,37 +559,36 @@
 <div id="view-dashboard" class="view">
   <div class="container">
 
-    <!-- Greeting -->
-    <div style="margin-bottom:20px;">
-      <h2 id="greeting-text" style="font-family:'Lora',serif;font-size:22px;margin-bottom:3px;"></h2>
-      <p id="greeting-sub" style="font-size:14px;color:#94A3B8;"></p>
+    <!-- Recovery This Week card -->
+    <div id="recovery-card" class="recovery-card">
+      <div class="rc-top">
+        <div class="rc-title">Your Recovery This Week</div>
+        <div class="rc-streak" id="rc-streak" style="display:none;">🔥 <span id="rc-streak-text"></span></div>
+      </div>
+      <div class="rc-last-date" id="rc-last-date"></div>
+      <div class="rc-status" id="rc-status">Loading…</div>
     </div>
 
-    <!-- Recovery Today card -->
-    <div id="recovery-card" class="recovery-card" style="margin-bottom:12px;">
-      <div class="recovery-status" id="recovery-status">Loading…</div>
-      <div class="recovery-progress" id="recovery-progress"></div>
+    <!-- Primary check-in CTA -->
+    <button class="btn-checkin-main" id="btn-checkin-main" onclick="startQuestionnaire('laep')" style="display:none;">
+      📋 Start This Week's Check-in
+    </button>
+
+    <!-- 4-week history pills -->
+    <div class="history-section" id="history-section">
+      <div class="history-section-label">Last 4 Weeks</div>
+      <div class="week-pills-row" id="week-pills-row"></div>
+      <div class="pill-accordion" id="pill-accordion" style="display:none;"></div>
     </div>
 
-    <!-- Streak -->
-    <div id="streak-wrap" style="margin-bottom:20px;display:none;">
-      <span class="streak-badge"><span id="streak-text"></span> 🔥</span>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions" id="quick-actions-row">
-      <button class="qa-btn qa-btn-seizure" onclick="openSeizureLog()">
-        <span class="qa-icon">⚡</span>
-        <span>Log a seizure</span>
-      </button>
-      <button class="qa-btn qa-btn-checkin" id="btn-checkin" onclick="startQuestionnaire('laep')" style="display:none;">
-        <span class="qa-icon">📋</span>
-        <span>Take today's check-in</span>
-      </button>
+    <!-- Neuroscience tip -->
+    <div class="tip-card" id="tip-card">
+      <div class="tip-label">💡 This week's tip</div>
+      <div class="tip-text" id="tip-text"></div>
     </div>
 
     <!-- All Assessments (collapsible) -->
-    <div style="margin-bottom:8px;">
+    <div style="margin-bottom:24px;">
       <div class="section-header" onclick="toggleSection('assessments')">
         <span class="section-title">All Assessments</span>
         <span class="section-toggle" id="toggle-assessments">Show ↓</span>
@@ -610,34 +616,6 @@
             </div>
             <span class="assess-arrow">›</span>
           </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- History (collapsible, default open) -->
-    <div style="margin-bottom:8px;">
-      <div class="section-header" onclick="toggleSection('history')">
-        <span class="section-title">Your Results</span>
-        <span class="section-toggle" id="toggle-history">Hide ↑</span>
-      </div>
-      <div class="collapsible-body open" id="body-history">
-        <!-- History tabs -->
-        <div class="history-tabs">
-          <button class="history-tab active" onclick="switchHistoryTab('all', this)">All</button>
-          <button class="history-tab" onclick="switchHistoryTab('laep', this)">LAEP</button>
-          <button class="history-tab" onclick="switchHistoryTab('ssq', this)">SSQ</button>
-          <button class="history-tab" onclick="switchHistoryTab('qolie', this)">QOLIE</button>
-        </div>
-        <div class="history-card" id="history-list">
-          <div class="empty-note">No assessments yet.</div>
-        </div>
-
-        <!-- Chart (shows when 2+ LAEP scores exist) -->
-        <div id="chart-section" style="display:none;">
-          <div class="chart-card">
-            <div class="chart-title">LAEP over time</div>
-            <div class="chart-wrap"><canvas id="laep-chart"></canvas></div>
-          </div>
         </div>
       </div>
     </div>
@@ -880,7 +858,6 @@ onAuthStateChanged(auth, async user => {
   const userSnap = await getDoc(doc(db, 'users', user.uid));
   if (!userSnap.exists() || userSnap.data().role !== 'patient') { location.href = 'login.html'; return; }
 
-  document.getElementById('header-name').textContent = userSnap.data().name || '';
   document.getElementById('app-header').style.display = '';
   document.getElementById('loading-screen').style.display = 'none';
 
@@ -931,13 +908,36 @@ window.saveOnboarding = async function() {
   showView('dashboard');
 };
 
+// ── TIPS ─────────────────────────────────────────────────────────
+
+const TIPS = [
+  "Sleep is when your brain consolidates the day's learning and clears metabolic waste via the glymphatic system. Consistent sleep timing — within 30 minutes each night — reduces seizure threshold more than total hours alone.",
+  "Stress activates the HPA axis, raising cortisol, which can lower seizure threshold. Even five minutes of slow diaphragmatic breathing shifts the autonomic nervous system toward parasympathetic tone.",
+  "Physical activity increases BDNF (brain-derived neurotrophic factor), which supports neuroplasticity and may reduce medication side effects like fatigue and cognitive fog.",
+  "Hydration affects neural excitability. Even mild dehydration (1–2% body weight) can impair cognition and mood — both tracked in your assessments.",
+  "Social connection is a biological need: isolation activates the same brain regions as physical pain. Maintaining even one regular social touchpoint each week has measurable effects on quality of life in epilepsy.",
+  "Caffeine blocks adenosine receptors, temporarily improving alertness, but can disrupt slow-wave sleep if consumed after 2pm — affecting the restorative sleep your brain needs.",
+  "The vagus nerve connects your gut, heart, and brain. Slow, rhythmic breathing (5–6 breaths per minute) directly stimulates it — mimicking the mechanism of VNS therapy.",
+  "Photosensitive epilepsy affects about 3% of people with epilepsy. Screen brightness, refresh rate, and contrast settings can be adjusted in your device's accessibility settings as a precaution.",
+  "Mood and seizure frequency interact bidirectionally — low mood can lower seizure threshold, and seizures can worsen mood. Your QOLIE-31 tracks both, helping your clinician see the full picture.",
+  "Many anti-seizure medications affect folate and vitamin B12 metabolism. Discuss with your clinician whether a simple blood test would be useful to check your levels.",
+  "Cognitive side effects of medication are often dose-dependent and time-of-day dependent. Noting when you feel most sharp — and when foggiest — can help your clinician optimise your medication timing.",
+  "The brain uses roughly 20% of the body's energy despite being only 2% of its mass. Consistent meal timing helps maintain the steady glucose supply that neuronal activity depends on.",
+];
+
+function renderTip() {
+  const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  document.getElementById('tip-text').textContent = TIPS[week % TIPS.length];
+}
+
 // ── DASHBOARD ─────────────────────────────────────────────────────
 
 async function loadDashboard() {
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const timeGreeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
   const firstName = (patientData?.name || '').split(' ')[0];
-  document.getElementById('greeting-text').textContent = greeting + (firstName ? ', ' + firstName : '');
+  document.getElementById('header-greeting').textContent =
+    timeGreeting + (firstName ? ', ' + firstName : '');
 
   // Load history
   const q = query(collection(db, 'assessments'), where('patientId', '==', currentUser.uid), orderBy('date', 'desc'));
@@ -946,135 +946,185 @@ async function loadDashboard() {
 
   const laepScores = assessmentHistory.filter(a => a.type === 'laep');
 
-  // ── Recovery Today card ──
   renderRecoveryCard(laepScores);
+  renderCheckinButton(laepScores);
+  renderWeekPills(laepScores);
+  renderTip();
 
-  // ── Streak ──
-  renderStreak(laepScores);
-
-  // ── Quick actions ──
-  renderQuickActions(laepScores);
-
-  // ── History ──
-  renderHistory(activeHistoryTab);
-
-  // ── Chart ──
-  if (laepScores.length >= 2) {
-    document.getElementById('chart-section').style.display = '';
-    renderLaepChart(laepScores.slice().reverse());
-  }
-
-  // Show share button once patient has at least one assessment
   if (assessmentHistory.length > 0) {
     document.getElementById('share-section').style.display = '';
   }
 
-  // Load messages (always — even before first assessment)
   await loadPatientMessages();
-
-  // Greeting sub
-  document.getElementById('greeting-sub').textContent =
-    assessmentHistory.length === 0 ? 'Welcome — let\'s start tracking your recovery' : 'Here\'s how you\'re doing';
 }
 
 function renderRecoveryCard(laepScores) {
-  const card = document.getElementById('recovery-card');
-  const statusEl = document.getElementById('recovery-status');
-  const progressEl = document.getElementById('recovery-progress');
+  const statusEl  = document.getElementById('rc-status');
+  const dateEl    = document.getElementById('rc-last-date');
+  const streakEl  = document.getElementById('rc-streak');
+  const streakTxt = document.getElementById('rc-streak-text');
+
+  // ── Streak (inside card top-right) ──
+  const streak = calcStreak(laepScores);
+  if (streak >= 2) {
+    streakTxt.textContent = streak + ' week streak';
+    streakEl.style.display = '';
+  } else {
+    streakEl.style.display = 'none';
+  }
 
   if (laepScores.length === 0) {
-    card.className = 'recovery-card';
-    statusEl.innerHTML = 'Welcome — let\'s start tracking your recovery';
-    progressEl.textContent = 'Complete your first LAEP check-in to get started.';
+    dateEl.textContent = 'No check-ins yet';
+    statusEl.textContent = 'Worth checking in 🟡';
     return;
   }
 
   const lastDate = laepScores[0].date?.toDate ? laepScores[0].date.toDate() : new Date();
-  const nextDue = new Date(lastDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const now = new Date();
-  const isDue = now >= nextDue;
+  dateEl.textContent = 'Last check-in: ' + lastDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 
-  if (isDue) {
-    card.className = 'recovery-card due';
-    const daysPast = Math.floor((now - nextDue) / (24 * 60 * 60 * 1000));
-    statusEl.innerHTML = `<span class="status-icon">📋</span>Your check-in is due${daysPast > 0 ? ' — ' + daysPast + ' day' + (daysPast > 1 ? 's' : '') + ' overdue' : ' today'}`;
-  } else {
-    card.className = 'recovery-card all-caught-up';
-    const daysUntil = Math.ceil((nextDue - now) / (24 * 60 * 60 * 1000));
-    const nextStr = daysUntil === 1 ? 'tomorrow' : nextDue.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
-    statusEl.innerHTML = `<span class="status-icon">✓</span>You're all caught up`;
-    progressEl.textContent = 'Next check-in due ' + nextStr + '.';
-  }
-
-  // Progress sentence
+  // Gentle status — never raw scores
   if (laepScores.length >= 2) {
+    const diff = laepScores[0].score - laepScores[1].score;
     const latest = laepScores[0].score;
-    const prev   = laepScores[1].score;
-    const diff   = latest - prev;
-    let progressText = '';
-
-    if (diff < -2) {
-      progressText = 'Your side effects have been improving.';
-    } else if (diff > 2) {
-      progressText = 'Your side effects have increased slightly this week.';
+    if (latest < 30 && diff <= 0) {
+      statusEl.textContent = 'Progressing well 🟢';
+    } else if (latest >= 36.5 || diff > 5) {
+      statusEl.textContent = "Let's talk 🔴";
     } else {
-      // Count consecutive stable weeks
-      let stableCount = 1;
-      for (let i = 1; i < laepScores.length - 1; i++) {
-        if (Math.abs(laepScores[i].score - laepScores[i+1].score) <= 2) stableCount++;
-        else break;
-      }
-      progressText = `Your side effects have been stable for ${stableCount} week${stableCount > 1 ? 's' : ''}.`;
+      statusEl.textContent = 'Worth checking in 🟡';
     }
-    if (!isDue) progressEl.textContent += ' ' + progressText;
-    else progressEl.textContent = progressText;
-  } else if (isDue) {
-    progressEl.textContent = 'Complete your check-in to see your progress.';
+  } else {
+    // Only one score
+    const latest = laepScores[0].score;
+    if (latest < 30) statusEl.textContent = 'Progressing well 🟢';
+    else if (latest >= 36.5) statusEl.textContent = "Let's talk 🔴";
+    else statusEl.textContent = 'Worth checking in 🟡';
   }
 }
 
-function renderStreak(laepScores) {
-  const wrap = document.getElementById('streak-wrap');
-  if (laepScores.length < 2) { wrap.style.display = 'none'; return; }
-
-  // Count consecutive weeks with at least one LAEP
+function calcStreak(laepScores) {
+  if (laepScores.length < 2) return 0;
   let streak = 0;
   const now = new Date();
   for (let week = 0; week < 52; week++) {
     const weekStart = new Date(now.getTime() - (week + 1) * 7 * 24 * 60 * 60 * 1000);
     const weekEnd   = new Date(now.getTime() - week * 7 * 24 * 60 * 60 * 1000);
-    const hasAssessment = laepScores.some(a => {
+    const has = laepScores.some(a => {
       const d = a.date?.toDate ? a.date.toDate() : new Date();
       return d >= weekStart && d < weekEnd;
     });
-    if (hasAssessment) streak++;
-    else break;
+    if (has) streak++; else break;
   }
-
-  if (streak >= 2) {
-    document.getElementById('streak-text').textContent = streak + '-week check-in streak';
-    wrap.style.display = '';
-  } else {
-    wrap.style.display = 'none';
-  }
+  return streak;
 }
 
-function renderQuickActions(laepScores) {
-  const checkinBtn = document.getElementById('btn-checkin');
-  const isDue = isCheckinDue(laepScores);
-  checkinBtn.style.display = isDue ? '' : 'none';
-
-  // If only seizure button, make it full width
-  const row = document.getElementById('quick-actions-row');
-  row.className = isDue ? 'quick-actions' : 'quick-actions single';
+function renderCheckinButton(laepScores) {
+  const btn = document.getElementById('btn-checkin-main');
+  btn.style.display = isCheckinDue(laepScores) ? 'flex' : 'none';
 }
 
 function isCheckinDue(laepScores) {
   if (laepScores.length === 0) return true;
   const lastDate = laepScores[0].date?.toDate ? laepScores[0].date.toDate() : new Date();
-  const nextDue = new Date(lastDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-  return new Date() >= nextDue;
+  return new Date() >= new Date(lastDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 }
+
+// ── WEEK PILLS ────────────────────────────────────────────────────
+
+let activePillWeek = null;
+
+function renderWeekPills(laepScores) {
+  const row = document.getElementById('week-pills-row');
+  const now = new Date();
+
+  // Build last-4-weeks data (week 0 = current, week 3 = 4 weeks ago)
+  const weeks = [];
+  for (let w = 3; w >= 0; w--) {
+    const weekEnd   = new Date(now.getTime() - w * 7 * 24 * 60 * 60 * 1000);
+    const weekStart = new Date(weekEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const scores    = laepScores.filter(a => {
+      const d = a.date?.toDate ? a.date.toDate() : new Date();
+      return d >= weekStart && d < weekEnd;
+    });
+    weeks.push({ w, weekStart, weekEnd, scores, index: 3 - w });
+  }
+
+  row.innerHTML = weeks.map(({ w, scores, index, weekEnd }) => {
+    const hasData  = scores.length > 0;
+    const label    = index === 3 ? 'This week' : index === 2 ? 'Last week' : `${3 - index + 1} wks ago`;
+    let dotClass   = 'pill-dot-grey';
+    if (hasData) {
+      const s = scores[0].score;
+      dotClass = s < 30 ? 'pill-dot-green' : s < 36.5 ? 'pill-dot-amber' : 'pill-dot-red';
+    }
+    return `<button class="week-pill" data-week="${index}" onclick="togglePillAccordion(${index}, ${JSON.stringify(scores).replace(/"/g,'&quot;')})">
+      <span class="pill-dot ${dotClass}"></span>${label}
+    </button>`;
+  }).join('');
+}
+
+window.togglePillAccordion = function(weekIdx, scores) {
+  const acc = document.getElementById('pill-accordion');
+  const pills = document.querySelectorAll('.week-pill');
+
+  if (activePillWeek === weekIdx) {
+    activePillWeek = null;
+    acc.style.display = 'none';
+    pills.forEach(p => p.classList.remove('active'));
+    return;
+  }
+
+  activePillWeek = weekIdx;
+  pills.forEach(p => p.classList.toggle('active', parseInt(p.dataset.week) === weekIdx));
+
+  if (!scores.length) {
+    acc.innerHTML = '<div class="pill-acc-date">No check-in this week</div><div class="pill-acc-summary">Nothing recorded for this period. That\'s okay — your next check-in will capture the full picture.</div>';
+    acc.style.display = '';
+    return;
+  }
+
+  const latest = scores[0];
+  const s = latest.score;
+  const d = latest.date?.toDate ? latest.date.toDate() : new Date();
+  const dateStr = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  let summary, badgeClass, badgeLabel;
+  if (s < 30) {
+    summary = 'Your side effect burden was low this week. Your responses suggest you were tolerating your treatment well.';
+    badgeClass = 'badge-green'; badgeLabel = 'Progressing well';
+  } else if (s < 36.5) {
+    summary = 'Your side effect burden was moderate. Some symptoms were present — your clinical team can see these and will follow up if needed.';
+    badgeClass = 'badge-amber'; badgeLabel = 'Worth monitoring';
+  } else {
+    summary = 'Your side effect burden was elevated this week. Your clinical team has been notified and will be in touch.';
+    badgeClass = 'badge-red'; badgeLabel = "Let's talk";
+  }
+
+  acc.innerHTML = `
+    <div class="pill-acc-date">Completed ${dateStr}</div>
+    <div class="pill-acc-summary">${summary}</div>
+    <div class="pill-acc-items">
+      <span class="pill-acc-item history-badge ${badgeClass}">${badgeLabel}</span>
+      ${scores.length > 1 ? `<span class="pill-acc-item history-badge badge-grey">${scores.length} assessments</span>` : ''}
+    </div>`;
+  acc.style.display = '';
+};
+
+// ── HAMBURGER MENU ────────────────────────────────────────────────
+
+window.toggleHamburger = function() {
+  const menu = document.getElementById('hamburger-menu');
+  menu.classList.toggle('open');
+};
+
+// Close hamburger on outside click
+document.addEventListener('click', e => {
+  const btn  = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('hamburger-menu');
+  if (menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
 
 // ── COLLAPSIBLE SECTIONS ─────────────────────────────────────────
 
@@ -1085,40 +1135,6 @@ window.toggleSection = function(id) {
   body.classList.toggle('open', !isOpen);
   toggle.textContent = isOpen ? 'Show ↓' : 'Hide ↑';
 };
-
-// ── HISTORY TABS ─────────────────────────────────────────────────
-
-window.switchHistoryTab = function(tab, el) {
-  activeHistoryTab = tab;
-  document.querySelectorAll('.history-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderHistory(tab);
-};
-
-function renderHistory(tab = 'all') {
-  const el = document.getElementById('history-list');
-  const filtered = tab === 'all'
-    ? assessmentHistory
-    : assessmentHistory.filter(a => a.type === tab);
-
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty-note">No assessments yet.</div>';
-    return;
-  }
-  el.innerHTML = filtered.slice(0, 12).map(a => {
-    const date = a.date?.toDate
-      ? a.date.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-      : '—';
-    const interp = interpretScore(a.type, a.score);
-    return `<div class="history-item">
-      <div>
-        <div class="history-type">${a.type.toUpperCase()}</div>
-        <div class="history-date">${date}</div>
-      </div>
-      <span class="history-badge ${interp.badgeClass}">${interp.label}</span>
-    </div>`;
-  }).join('');
-}
 
 function renderLaepChart(scores) {
   if (laepChart) laepChart.destroy();
@@ -1176,11 +1192,12 @@ window.saveSeizure = async function() {
       loggedAt: serverTimestamp()
     });
     closeSeizureLog();
-    // Brief confirmation
-    const card = document.getElementById('recovery-card');
-    const orig = card.innerHTML;
-    card.innerHTML = '<div style="text-align:center;padding:16px 0;font-size:16px;color:#6ee7b7;font-weight:600;">✓ Seizure logged</div>';
-    setTimeout(() => { card.innerHTML = orig; }, 2000);
+    // Brief confirmation via status line
+    const statusEl = document.getElementById('rc-status');
+    const orig = statusEl.textContent;
+    statusEl.textContent = '✓ Seizure logged';
+    statusEl.style.color = '#6ee7b7';
+    setTimeout(() => { statusEl.textContent = orig; statusEl.style.color = ''; }, 2000);
   } catch(e) {
     console.error('Error saving seizure:', e);
     alert('Could not save — please try again.');
